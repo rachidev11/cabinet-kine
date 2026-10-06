@@ -1,5 +1,5 @@
 -- =====================================================================
--- SCHEMA DE BASE DE DONNÉES SUPABASE - CABINET DE KINÉSITHÉRAPIE NASSIM
+-- SCHEMA DE BASE DE DONNÉES SUPABASE - CABINET DE KINÉSITHÉRAPIE HASSNA EL-HMAIDI
 -- =====================================================================
 
 -- 1. Table des Patients
@@ -83,8 +83,20 @@ CREATE TABLE IF NOT EXISTS public.payments (
 
 CREATE INDEX IF NOT EXISTS idx_payments_patient_id ON public.payments(patient_id);
 
--- 5. Désactivation RLS pour un accès complet direct
+-- 5. Table des Profils Utilisateurs (profiles)
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    full_name VARCHAR(150) NOT NULL,
+    role VARCHAR(50) NOT NULL CHECK (role IN ('kine', 'assistante')),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
+
+-- 6. Désactivation RLS pour un accès complet direct
 ALTER TABLE public.patients DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.medical_records DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.appointments DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.payments DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.profiles DISABLE ROW LEVEL SECURITY;

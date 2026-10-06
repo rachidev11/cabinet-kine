@@ -4,8 +4,8 @@ import Providers from "@/components/Providers";
 import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = {
-  title: "Cabinet KinéSanté | Nassim Kinésithérapie & Rééducation Fonctionnelle",
-  description: "Plateforme de gestion complète pour cabinet de kinésithérapie, rééducation fonctionnelle et physiothérapie.",
+  title: "Cabinet de Kinésithérapie | Hassna El-Hmaidi — Rééducation Fonctionnelle",
+  description: "Plateforme de gestion du Cabinet de Kinésithérapie de Hassna El-Hmaidi : dossiers patients, agenda, facturation et bilan kiné.",
 };
 
 export default function RootLayout({

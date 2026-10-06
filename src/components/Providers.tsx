@@ -2,7 +2,12 @@
 
 import React from 'react';
 import { PatientProvider } from '@/context/PatientContext';
+import { AuthProvider } from '@/context/AuthContext';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  return <PatientProvider>{children}</PatientProvider>;
+  return (
+    <AuthProvider>
+      <PatientProvider>{children}</PatientProvider>
+    </AuthProvider>
+  );
 }

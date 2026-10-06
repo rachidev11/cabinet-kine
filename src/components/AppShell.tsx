@@ -1,21 +1,23 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import Navbar from '@/components/Navbar';
 import AddPatientModal from '@/components/AddPatientModal';
 import SqlSetupModal from '@/components/SqlSetupModal';
 import ToastContainer from '@/components/Toast';
 import { usePatients } from '@/context/PatientContext';
+import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, PlusCircle } from 'lucide-react';
+import { LayoutDashboard, Users, PlusCircle, Loader2 } from 'lucide-react';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isAddPatientOpen, setIsAddPatientOpen] = useState(false);
   const [isSqlModalOpen, setIsSqlModalOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const {
     patients,
@@ -25,6 +27,32 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     isRefreshing,
     createPatient,
   } = usePatients();
+
+  const { user, loading: authLoading, profile } = useAuth();
+
+  // Client-side auth guard – redirect unauthenticated visitors to /login
+  useEffect(() => {
+    if (!authLoading && !user && pathname !== '/login') {
+      router.replace('/login');
+    }
+  }, [authLoading, user, pathname, router]);
+
+  // While on the login page, render children without the shell
+  if (pathname === '/login') {
+    return <>{children}</>;
+  }
+
+  // Show a full-screen loader while session is being restored
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-8 h-8 text-teal-600 animate-spin" />
+          <p className="text-sm text-slate-500 font-medium">Chargement…</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex print:bg-white print:block">
@@ -36,6 +64,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           onOpenAddPatient={() => setIsAddPatientOpen(true)}
           onOpenSqlModal={() => setIsSqlModalOpen(true)}
           patientCount={patients.length}
+          profile={profile}
         />
       </div>
 
@@ -50,6 +79,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             onRefresh={refreshPatients}
             isRefreshing={isRefreshing}
             supabaseConnected={true}
+            profile={profile}
           />
         </div>
 

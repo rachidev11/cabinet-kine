@@ -398,7 +398,7 @@ export default function FacturationPage() {
 
   const handlePrint = useReactToPrint({
     contentRef: printReceiptRef,
-    documentTitle: `Recu_Paiement_${receiptPayment?.id || 'Cabinet_Nassim'}`,
+    documentTitle: `Recu_Paiement_${receiptPayment?.id || 'Cabinet_Hassna'}`,
     pageStyle: `
       @page {
         size: A4 portrait;

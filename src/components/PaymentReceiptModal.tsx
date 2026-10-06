@@ -24,7 +24,7 @@ export default function PaymentReceiptModal({
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: `Recu_Paiement_${payment?.id || 'Cabinet_Nassim'}`,
+    documentTitle: `Recu_Paiement_${payment?.id || 'Cabinet_Hassna'}`,
     pageStyle: `
       @page {
         size: A4 portrait;

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { usePatients } from '@/context/PatientContext';
+import { useAuth } from '@/context/AuthContext';
 import {
   Users,
   Activity,
@@ -56,6 +57,7 @@ interface AssuranceStat {
 
 export default function DashboardPage() {
   const { createPatient, removePatient, incrementSeanceCount, refreshPatients } = usePatients();
+  const { profile } = useAuth();
 
   // Selected patient for modal details
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
@@ -298,10 +300,10 @@ export default function DashboardPage() {
           <div className="space-y-2 max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium text-teal-200">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Cabinet de Kinésithérapie Nassim • Données en direct</span>
+              <span>Cabinet de Kinésithérapie Hassna El-Hmaidi • Données en direct</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Bonjour Nassim, bienvenue sur votre tableau de bord !
+              Bonjour{profile ? ` ${profile.full_name.split(' ')[0]}` : ''}, bienvenue sur votre tableau de bord !
             </h1>
             <p className="text-sm sm:text-base text-teal-100/90 leading-relaxed">
               Consultez vos statistiques en temps réel, vos séances planifiées aujourd&apos;hui et vos derniers dossiers patients connectés à Supabase.

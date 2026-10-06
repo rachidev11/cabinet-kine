@@ -19,7 +19,8 @@ interface SqlSetupModalProps {
   onClose: () => void;
 }
 
-const SQL_SCRIPT = `-- 1. Table des patients
+const SQL_SCRIPT = `-- Cabinet de Kinésithérapie - Hassna El-Hmaidi
+-- 1. Table des patients
 CREATE TABLE IF NOT EXISTS patients (
   id BIGSERIAL PRIMARY KEY,
   civilite VARCHAR(20) DEFAULT 'Monsieur',
@@ -63,9 +64,46 @@ CREATE TABLE IF NOT EXISTS medical_records (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 3. Accès sans restriction (RLS désactivé)
+-- 3. Table des Rendez-vous (appointments)
+CREATE TABLE IF NOT EXISTS appointments (
+  id BIGSERIAL PRIMARY KEY,
+  patient_id BIGINT REFERENCES patients(id) ON DELETE CASCADE,
+  appointment_date DATE NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  slot_number INTEGER DEFAULT 1,
+  status VARCHAR(30) DEFAULT 'scheduled',
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 4. Table des Règlements (payments)
+CREATE TABLE IF NOT EXISTS payments (
+  id BIGSERIAL PRIMARY KEY,
+  patient_id BIGINT REFERENCES patients(id) ON DELETE CASCADE,
+  amount NUMERIC(10,2) NOT NULL,
+  method VARCHAR(50) DEFAULT 'Espèces',
+  payment_type VARCHAR(50) DEFAULT 'Séance',
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 5. Table des Profils Utilisateurs & Rôles (profiles)
+CREATE TABLE IF NOT EXISTS profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  full_name VARCHAR(150) NOT NULL,
+  role VARCHAR(50) NOT NULL CHECK (role IN ('kine', 'assistante')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 6. Accès direct (RLS désactivé)
 ALTER TABLE patients DISABLE ROW LEVEL SECURITY;
 ALTER TABLE medical_records DISABLE ROW LEVEL SECURITY;
+ALTER TABLE appointments DISABLE ROW LEVEL SECURITY;
+ALTER TABLE payments DISABLE ROW LEVEL SECURITY;
+ALTER TABLE profiles DISABLE ROW LEVEL SECURITY;
 `;
 
 export default function SqlSetupModal({ isOpen, onClose }: SqlSetupModalProps) {

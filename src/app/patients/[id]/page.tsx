@@ -31,12 +31,14 @@ import {
   ShieldCheck,
   Scale,
   Sparkles,
+  Lock,
 } from 'lucide-react';
 import { Patient, AssuranceType } from '@/types/patient';
 import { MedicalRecord } from '@/types/medicalRecord';
 import { Appointment } from '@/types/appointment';
 import { Payment, PAYMENT_METHOD_MAP } from '@/types/payment';
 import { usePatients } from '@/context/PatientContext';
+import { useAuth } from '@/context/AuthContext';
 import {
   getPatientByIdFromSupabase,
   getMedicalRecordByPatientId,
@@ -54,11 +56,19 @@ export default function PatientDetailPage() {
   const id = params?.id as string;
 
   const { patients: contextPatients, incrementSeanceCount } = usePatients();
+  const { isAssistante, isKine } = useAuth();
 
   // Loading & patient data
   const [loading, setLoading] = useState(true);
   const [patient, setPatient] = useState<Patient | null>(null);
   const [activeTab, setActiveTab] = useState<'bilan' | 'seances' | 'paiements'>('bilan');
+
+  // If assistante, automatically default to 'seances' tab as clinical records are restricted to kine
+  useEffect(() => {
+    if (isAssistante && activeTab === 'bilan') {
+      setActiveTab('seances');
+    }
+  }, [isAssistante, activeTab]);
 
   // Medical Record Form state
   const [medicalRecord, setMedicalRecord] = useState<MedicalRecord>({
@@ -527,17 +537,27 @@ export default function PatientDetailPage() {
 
       {/* Tabs Navigation */}
       <div className="flex items-center gap-2 border-b border-slate-200 pb-px">
-        <button
-          onClick={() => setActiveTab('bilan')}
-          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
-            activeTab === 'bilan'
-              ? 'border-teal-600 text-teal-700 bg-teal-50/50 rounded-t-xl'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <Stethoscope className="w-4 h-4" />
-          <span>Bilan Kiné & Dossier Médical</span>
-        </button>
+        {!isAssistante ? (
+          <button
+            onClick={() => setActiveTab('bilan')}
+            className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
+              activeTab === 'bilan'
+                ? 'border-teal-600 text-teal-700 bg-teal-50/50 rounded-t-xl'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <Stethoscope className="w-4 h-4" />
+            <span>Bilan Kiné & Dossier Médical</span>
+          </button>
+        ) : (
+          <div
+            title="Réservé au kinésithérapeute"
+            className="flex items-center gap-1.5 px-4 py-3 text-xs font-semibold text-slate-400 opacity-60 cursor-not-allowed select-none border-b-2 border-transparent"
+          >
+            <Lock className="w-3.5 h-3.5" />
+            <span>Dossier Médical (Réservé Kiné)</span>
+          </div>
+        )}
 
         <button
           onClick={() => setActiveTab('seances')}
@@ -572,6 +592,25 @@ export default function PatientDetailPage() {
 
       {/* TAB 1: BILAN KINÉ FORM */}
       {activeTab === 'bilan' && (
+        isAssistante ? (
+          <div className="bg-white rounded-2xl border border-amber-200/90 p-8 text-center max-w-lg mx-auto my-8 shadow-xs">
+            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center mx-auto mb-3">
+              <Lock className="w-6 h-6" />
+            </div>
+            <h3 className="text-base font-bold text-slate-900">Accès Restreint</h3>
+            <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+              Le Dossier Médical et le Bilan Kiné sont réservés exclusivement au kinésithérapeute.
+              En tant qu&apos;assistante, vous pouvez gérer les séances et les règlements.
+            </p>
+            <button
+              type="button"
+              onClick={() => setActiveTab('seances')}
+              className="mt-4 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-xs transition-all"
+            >
+              Consulter les séances
+            </button>
+          </div>
+        ) : (
         <form onSubmit={handleSaveMedicalRecord} className="space-y-6">
           {/* Notification Alert Banner on Save */}
           {recordSaveSuccess && (
@@ -938,6 +977,7 @@ export default function PatientDetailPage() {
             </div>
           </div>
         </form>
+        )
       )}
 
       {/* TAB 2: HISTORIQUE DES SÉANCES (APPOINTMENTS) */}
@@ -954,7 +994,7 @@ export default function PatientDetailPage() {
               </p>
             </div>
             <Link
-              href="/planning"
+              href="/agenda"
               className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs inline-flex items-center gap-2 shadow-sm transition-all"
             >
               <Plus className="w-4 h-4" />
@@ -971,7 +1011,7 @@ export default function PatientDetailPage() {
                 Ce patient n&apos;a pas encore de rendez-vous dans le planning.
               </p>
               <Link
-                href="/planning"
+                href="/agenda"
                 className="px-4 py-2 rounded-xl bg-teal-600 text-white text-xs font-bold inline-flex items-center gap-1.5"
               >
                 <Plus className="w-3.5 h-3.5" />

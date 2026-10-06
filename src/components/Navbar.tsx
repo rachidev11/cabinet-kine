@@ -1,7 +1,10 @@
 'use client';
 
 import React from 'react';
-import { Menu, Plus, Database, Sparkles, ShieldCheck, RefreshCw } from 'lucide-react';
+import { Menu, Plus, Database, RefreshCw, LogOut, UserCircle2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+import type { UserProfile } from '@/context/AuthContext';
 
 interface NavbarProps {
   onToggleSidebar: () => void;
@@ -10,6 +13,14 @@ interface NavbarProps {
   onRefresh?: () => void;
   isRefreshing?: boolean;
   supabaseConnected?: boolean;
+  profile: UserProfile | null;
+}
+
+function getRoleLabel(profile: UserProfile | null): string {
+  if (!profile) return '';
+  if (profile.role === 'kine') return 'Kinésithérapeute';
+  if (profile.role === 'assistante') return 'Assistante';
+  return profile.role;
 }
 
 export default function Navbar({
@@ -19,7 +30,11 @@ export default function Navbar({
   onRefresh,
   isRefreshing = false,
   supabaseConnected = true,
+  profile,
 }: NavbarProps) {
+  const { signOut } = useAuth();
+  const router = useRouter();
+
   // Format current date in French
   const todayFormatted = new Intl.DateTimeFormat('fr-FR', {
     weekday: 'long',
@@ -30,6 +45,11 @@ export default function Navbar({
 
   // Capitalize first letter of day
   const dateCapitalized = todayFormatted.charAt(0).toUpperCase() + todayFormatted.slice(1);
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/login');
+  };
 
   return (
     <header className="sticky top-0 z-30 h-16 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 flex items-center justify-between transition-all">
@@ -45,28 +65,28 @@ export default function Navbar({
 
         <div>
           <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            Cabinet Nassim Kiné
+            Cabinet de Kinésithérapie
             <span className="hidden sm:inline-block text-[11px] font-normal px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">
-              Rééducation & Kinésithérapie
+              Hassna El-Hmaidi
             </span>
           </h1>
           <p className="text-xs text-slate-500 hidden sm:block">{dateCapitalized}</p>
         </div>
       </div>
 
-      {/* Right: Status Pill & Quick Action Buttons */}
+      {/* Right: Status Pill, User info & Actions */}
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Supabase Status Pill */}
         <button
           onClick={onOpenSqlModal}
           title="Cliquez pour voir la configuration Supabase"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors cursor-pointer"
+          className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors cursor-pointer"
         >
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
           </span>
-          <span className="hidden md:inline">Supabase :</span>
+          <span className="hidden lg:inline">Supabase :</span>
           <span className="font-semibold">Connecté</span>
         </button>
 
@@ -82,6 +102,19 @@ export default function Navbar({
           </button>
         )}
 
+        {/* Logged-in user display */}
+        {profile && (
+          <div className="hidden sm:flex items-center gap-2 pl-2 border-l border-slate-200">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-teal-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xs shadow-xs flex-shrink-0">
+              {profile.full_name.trim().split(/\s+/).map((n) => n[0]).slice(0, 2).join('').toUpperCase() || <UserCircle2 className="w-4 h-4" />}
+            </div>
+            <div className="hidden md:block">
+              <p className="text-sm font-semibold text-slate-800 leading-tight">{profile.full_name}</p>
+              <p className="text-[11px] text-teal-600 font-medium leading-tight">{getRoleLabel(profile)}</p>
+            </div>
+          </div>
+        )}
+
         {/* Primary Add Patient Button */}
         <button
           onClick={onOpenAddPatient}
@@ -89,6 +122,16 @@ export default function Navbar({
         >
           <Plus className="w-4 h-4" />
           <span className="hidden sm:inline">Ajouter un</span> Patient
+        </button>
+
+        {/* Logout button */}
+        <button
+          onClick={handleSignOut}
+          title="Se déconnecter"
+          aria-label="Se déconnecter"
+          className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all cursor-pointer"
+        >
+          <LogOut className="w-4 h-4" />
         </button>
       </div>
     </header>

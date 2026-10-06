@@ -203,7 +203,7 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
                 </div>
                 <div>
                   <h1 className="text-base font-black tracking-tight text-slate-900 uppercase leading-snug">
-                    Cabinet de Kinésithérapie Nassim
+                    Cabinet de Kinésithérapie Hassna El-Hmaidi
                   </h1>
                   <p className="text-[11px] font-semibold text-teal-700 tracking-wide uppercase">
                     Kinésithérapie • Rééducation Fonctionnelle • Physiothérapie
@@ -307,7 +307,7 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between items-baseline">
                   <span className="text-slate-500 font-medium">Praticien :</span>
-                  <span className="font-semibold text-slate-900">M. Nassim (Kinésithérapeute D.E.)</span>
+                  <span className="font-semibold text-slate-900">Mme Hassna El-Hmaidi (Kinésithérapeute D.E.)</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-slate-500 font-medium">Type d&apos;acte :</span>
@@ -424,7 +424,7 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
                   et à la signature
                 </span>
                 <div className="absolute bottom-1 right-2 text-[8px] text-slate-300 font-mono">
-                  Cabinet Nassim
+                  Cabinet Hassna El-Hmaidi
                 </div>
               </div>
             </div>
@@ -433,7 +433,7 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
 
         {/* Document footnote */}
         <div className="mt-2 pt-1.5 border-t border-slate-100 text-center text-[9px] text-slate-400 flex items-center justify-between">
-          <span>Cabinet de Kinésithérapie Nassim • Casablanca</span>
+          <span>Cabinet de Kinésithérapie Hassna El-Hmaidi • Casablanca</span>
           <span>Reçu N° {receiptNumber} • Page 1/1</span>
         </div>
       </div>
