@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
+import { INITIAL_PATIENTS } from '@/lib/mockData';
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -13,11 +14,6 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 interface Patient {
   id: string;
@@ -66,8 +62,33 @@ export default function AgendaPage() {
   }, [selectedDate]);
 
   async function fetchPatients() {
-    const { data } = await supabase.from('patients').select('id, nom, prenom, telephone, civilite');
-    if (data) setPatients(data);
+    try {
+      const { data, error } = await supabase.from('patients').select('id, nom, prenom, telephone, civilite');
+      if (data && data.length > 0) {
+        setPatients(data);
+      } else {
+        // Fallback to initial demo patients
+        setPatients(
+          INITIAL_PATIENTS.map((p) => ({
+            id: String(p.id),
+            nom: p.nom,
+            prenom: p.prenom,
+            telephone: p.telephone,
+            civilite: p.civilite,
+          }))
+        );
+      }
+    } catch {
+      setPatients(
+        INITIAL_PATIENTS.map((p) => ({
+          id: String(p.id),
+          nom: p.nom,
+          prenom: p.prenom,
+          telephone: p.telephone,
+          civilite: p.civilite,
+        }))
+      );
+    }
   }
 
   async function fetchAppointments() {
@@ -143,7 +164,7 @@ export default function AgendaPage() {
 
     const heure = rdv.heure_debut.substring(0, 5);
     const message = encodeURIComponent(
-      `Bonjour ${civilitePrefix} ${patient.nom},\nNous vous rappelons votre séance de kinésithérapie prévue le ${rdv.date} à ${heure} en Salle ${rdv.box}.\nCabinet KinéSanté vous remercie de confirmer votre présence.`
+      `Bonjour ${civilitePrefix} ${patient.nom},\nNous vous rappelons votre séance de kinésithérapie prévue le ${rdv.date} à ${heure} en Salle ${rdv.box}.\nCabinet de Kinésithérapie Hassna El-Hmaidi vous remercie de confirmer votre présence.`
     );
     window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
   }

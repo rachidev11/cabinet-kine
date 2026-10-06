@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -49,6 +49,8 @@ import {
 } from '@/lib/supabase';
 import { INITIAL_PATIENTS } from '@/lib/mockData';
 import PaymentReceiptModal from '@/components/PaymentReceiptModal';
+import { BilanToPrint } from '@/components/BilanToPrint';
+import { useReactToPrint } from 'react-to-print';
 
 export default function PatientDetailPage() {
   const params = useParams();
@@ -99,6 +101,25 @@ export default function PatientDetailPage() {
   // Receipt modal state
   const [receiptPayment, setReceiptPayment] = useState<Payment | null>(null);
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
+
+  // Print Bilan Kiné setup
+  const printBilanRef = useRef<HTMLDivElement>(null);
+  const handlePrintBilan = useReactToPrint({
+    contentRef: printBilanRef,
+    documentTitle: `Bilan_Kine_${patient?.nom || 'Patient'}_${patient?.prenom || ''}`,
+    pageStyle: `
+      @page {
+        size: A4 portrait;
+        margin: 15mm;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+      }
+    `,
+  });
 
   // 1. Fetch patient details, medical record, appointments, payments
   useEffect(() => {
@@ -425,6 +446,19 @@ export default function PatientDetailPage() {
             <Phone className="w-4 h-4 text-teal-600" />
             <span>Appeler</span>
           </a>
+
+          {/* Imprimer Bilan (Visible pour kiné sur onglet bilan) */}
+          {!isAssistante && activeTab === 'bilan' && (
+            <button
+              onClick={() => handlePrintBilan()}
+              type="button"
+              className="px-3.5 py-2 rounded-xl bg-teal-50 text-teal-800 border border-teal-200 hover:bg-teal-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+              title="Imprimer le compte-rendu officiel du bilan"
+            >
+              <Printer className="w-4 h-4 text-teal-600" />
+              <span>Imprimer Bilan</span>
+            </button>
+          )}
 
           {/* Quick Session Increment */}
           <button
@@ -973,6 +1007,15 @@ export default function PatientDetailPage() {
                     </>
                   )}
                 </button>
+
+                <button
+                  type="button"
+                  onClick={() => handlePrintBilan()}
+                  className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-teal-300 font-semibold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
+                >
+                  <Printer className="w-3.5 h-3.5 text-teal-400" />
+                  <span>Imprimer le Bilan Officiel (PDF / Papier)</span>
+                </button>
               </div>
             </div>
           </div>
@@ -1240,6 +1283,13 @@ export default function PatientDetailPage() {
           patient={patient}
         />
       )}
+
+      {/* Hidden Official Bilan for Print */}
+      <div className="hidden">
+        <div ref={printBilanRef}>
+          <BilanToPrint patient={patient} medicalRecord={medicalRecord} />
+        </div>
+      </div>
     </div>
   );
 }

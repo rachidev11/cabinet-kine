@@ -17,8 +17,10 @@ import {
   CheckCircle,
   Clock,
   Trash2,
+  Lock,
 } from 'lucide-react';
 import { Patient } from '@/types/patient';
+import { useAuth } from '@/context/AuthContext';
 
 interface PatientDetailsModalProps {
   patient: Patient | null;
@@ -35,6 +37,8 @@ export default function PatientDetailsModal({
   onDelete,
   onIncrementSeance,
 }: PatientDetailsModalProps) {
+  const { isKine } = useAuth();
+
   if (!isOpen || !patient) return null;
 
   const total = patient.nombre_seances_prescrites || 10;
@@ -209,8 +213,8 @@ export default function PatientDetailsModal({
               <p className="text-slate-700">{patient.adresse || 'Casablanca'}</p>
             </div>
 
-            {/* Notes kiné */}
-            {patient.notes && (
+            {/* Notes kiné (Réservé au kinésithérapeute) */}
+            {isKine && patient.notes && (
               <div className="sm:col-span-2 p-3 rounded-xl bg-teal-50/50 border border-teal-100">
                 <span className="text-[11px] font-semibold text-teal-800 block mb-1">
                   Observations & Bilan Kinésithérapique
@@ -222,7 +226,7 @@ export default function PatientDetailsModal({
 
           {/* Footer Actions */}
           <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-            {onDelete && (
+            {isKine && onDelete && (
               <button
                 onClick={() => {
                   if (confirm(`Êtes-vous sûr de vouloir supprimer le dossier de ${patient.prenom} ${patient.nom} ?`)) {

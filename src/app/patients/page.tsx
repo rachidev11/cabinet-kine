@@ -28,8 +28,10 @@ import {
 import { Patient, AssuranceType } from '@/types/patient';
 import PatientDetailsModal from '@/components/PatientDetailsModal';
 import AddPatientModal from '@/components/AddPatientModal';
+import { useAuth } from '@/context/AuthContext';
 
 export default function PatientsPage() {
+  const { isKine } = useAuth();
   const {
     patients,
     loading,
@@ -433,22 +435,24 @@ export default function PatientsPage() {
                             <Eye className="w-4 h-4" />
                           </button>
 
-                          {/* Delete */}
-                          <button
-                            onClick={() => {
-                              if (
-                                confirm(
-                                  `Supprimer le dossier de ${patient.prenom} ${patient.nom} ?`
-                                )
-                              ) {
-                                removePatient(patient.id);
-                              }
-                            }}
-                            title="Supprimer"
-                            className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          {/* Delete (Réservé au kinésithérapeute / Propriétaire) */}
+                          {isKine && (
+                            <button
+                              onClick={() => {
+                                if (
+                                  confirm(
+                                    `Supprimer le dossier de ${patient.prenom} ${patient.nom} ?`
+                                  )
+                                ) {
+                                  removePatient(patient.id);
+                                }
+                              }}
+                              title="Supprimer définitivement (Propriétaire)"
+                              className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -581,7 +585,7 @@ export default function PatientsPage() {
         isOpen={Boolean(selectedPatient)}
         onClose={() => setSelectedPatient(null)}
         onIncrementSeance={incrementSeanceCount}
-        onDelete={removePatient}
+        onDelete={isKine ? removePatient : undefined}
       />
 
       {/* Add Patient Modal */}

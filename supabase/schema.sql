@@ -70,6 +70,14 @@ CREATE TABLE IF NOT EXISTS public.appointments (
 CREATE INDEX IF NOT EXISTS idx_appointments_patient_id ON public.appointments(patient_id);
 CREATE INDEX IF NOT EXISTS idx_appointments_date ON public.appointments(appointment_date);
 
+-- Colonnes de compatibilité pour l'agenda des séances
+ALTER TABLE public.appointments ADD COLUMN IF NOT EXISTS date DATE;
+ALTER TABLE public.appointments ADD COLUMN IF NOT EXISTS heure_debut TIME;
+ALTER TABLE public.appointments ADD COLUMN IF NOT EXISTS heure_fin TIME;
+ALTER TABLE public.appointments ADD COLUMN IF NOT EXISTS box INTEGER;
+ALTER TABLE public.appointments ADD COLUMN IF NOT EXISTS type_seance VARCHAR(150);
+ALTER TABLE public.appointments ADD COLUMN IF NOT EXISTS statut VARCHAR(50);
+
 -- 4. Table des Règlements (payments)
 CREATE TABLE IF NOT EXISTS public.payments (
     id BIGSERIAL PRIMARY KEY,

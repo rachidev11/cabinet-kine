@@ -17,6 +17,7 @@ import {
   Wallet,
   ChevronDown,
   Printer,
+  Lock,
 } from 'lucide-react';
 import { Patient } from '@/types/patient';
 import { Payment, PaymentMethod, PAYMENT_METHOD_MAP, NewPaymentInput } from '@/types/payment';
@@ -29,6 +30,7 @@ import {
 import PaymentReceiptModal from '@/components/PaymentReceiptModal';
 import { ReceiptToPrint } from '@/components/ReceiptToPrint';
 import { useReactToPrint } from 'react-to-print';
+import { useAuth } from '@/context/AuthContext';
 
 // =====================================================================
 // KPI CARD
@@ -386,6 +388,7 @@ function NewPaymentModal({
 // MAIN PAGE
 // =====================================================================
 export default function FacturationPage() {
+  const { isKine } = useAuth();
   const [payments, setPayments] = useState<Payment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
@@ -536,31 +539,60 @@ export default function FacturationPage() {
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <KpiCard
-            icon={TrendingUp}
-            label="Total encaissé ce mois"
-            value={formatCurrency(kpis.totalMois)}
-            suffix="DH"
-            gradient="bg-gradient-to-br from-teal-400 to-emerald-500"
-            iconBg="bg-gradient-to-br from-teal-500 to-emerald-600"
-          />
-          <KpiCard
-            icon={CreditCard}
-            label="Total encaissé aujourd'hui"
-            value={formatCurrency(kpis.totalAujourdhui)}
-            suffix="DH"
-            gradient="bg-gradient-to-br from-blue-400 to-cyan-500"
-            iconBg="bg-gradient-to-br from-blue-500 to-cyan-600"
-          />
-          <KpiCard
-            icon={CalendarCheck}
-            label="Séances réglées ce mois"
-            value={String(kpis.totalSeancesReglees)}
-            gradient="bg-gradient-to-br from-violet-400 to-purple-500"
-            iconBg="bg-gradient-to-br from-violet-500 to-purple-600"
-          />
-        </div>
+        {isKine ? (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <KpiCard
+              icon={TrendingUp}
+              label="Total encaissé ce mois"
+              value={formatCurrency(kpis.totalMois)}
+              suffix="DH"
+              gradient="bg-gradient-to-br from-teal-400 to-emerald-500"
+              iconBg="bg-gradient-to-br from-teal-500 to-emerald-600"
+            />
+            <KpiCard
+              icon={CreditCard}
+              label="Total encaissé aujourd'hui"
+              value={formatCurrency(kpis.totalAujourdhui)}
+              suffix="DH"
+              gradient="bg-gradient-to-br from-blue-400 to-cyan-500"
+              iconBg="bg-gradient-to-br from-blue-500 to-cyan-600"
+            />
+            <KpiCard
+              icon={CalendarCheck}
+              label="Séances réglées ce mois"
+              value={String(kpis.totalSeancesReglees)}
+              gradient="bg-gradient-to-br from-violet-400 to-purple-500"
+              iconBg="bg-gradient-to-br from-violet-500 to-purple-600"
+            />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <KpiCard
+              icon={CreditCard}
+              label="Caisse & Encaissements du jour"
+              value={formatCurrency(kpis.totalAujourdhui)}
+              suffix="DH"
+              gradient="bg-gradient-to-br from-blue-400 to-cyan-500"
+              iconBg="bg-gradient-to-br from-blue-500 to-cyan-600"
+            />
+            <div className="relative overflow-hidden rounded-2xl bg-slate-50 border border-dashed border-slate-200/90 p-5 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-slate-200/70 flex items-center justify-center text-slate-500 shrink-0">
+                <Lock className="w-5 h-5 text-slate-500" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-0.5">
+                  Statistiques & Chiffre d&apos;Affaires
+                </p>
+                <p className="text-sm font-semibold text-slate-700">
+                  Accès réservé à la Propriétaire (Hassna El-Hmaidi)
+                </p>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Les bilans financiers globaux sont masqués pour le profil Assistante.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Payment Table */}
         <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">

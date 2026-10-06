@@ -29,7 +29,7 @@ export const PROFILES_CONFIG: Record<UserRole, UserProfile> = {
   },
   assistante: {
     id: 'assistante-cabinet',
-    full_name: 'Assistante du Cabinet',
+    full_name: 'Assistante Médicale',
     role: 'assistante',
     email: 'assistante@cabinet-kine.ma',
   },

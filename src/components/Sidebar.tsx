@@ -68,8 +68,8 @@ const NAV_KINE_ONLY = [
 
 function getRoleLabel(profile: UserProfile | null): string {
   if (!profile) return '';
-  if (profile.role === 'kine') return 'Kinésithérapeute';
-  if (profile.role === 'assistante') return 'Assistante';
+  if (profile.role === 'kine') return 'Kinésithérapeute (Propriétaire)';
+  if (profile.role === 'assistante') return 'Assistante Médicale';
   return profile.role;
 }
 
@@ -230,31 +230,35 @@ export default function Sidebar({
             </>
           )}
 
-          <div className="pt-6 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-            Outils & Séances
-          </div>
-
-          <div className="space-y-1 text-sm text-slate-500">
-            <button
-              onClick={() => {
-                onClose();
-                onOpenSqlModal();
-              }}
-              className="w-full group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 transition-all text-left cursor-pointer"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:text-emerald-700 group-hover:bg-emerald-50">
-                  <Database className="w-4 h-4" />
-                </div>
-                <span>Connexion Supabase & SQL</span>
+          {isKine && (
+            <>
+              <div className="pt-6 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                Administration & Base de données
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-400" />
-            </button>
-          </div>
+
+              <div className="space-y-1 text-sm text-slate-500">
+                <button
+                  onClick={() => {
+                    onClose();
+                    onOpenSqlModal();
+                  }}
+                  className="w-full group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 transition-all text-left cursor-pointer"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:text-emerald-700 group-hover:bg-emerald-50">
+                      <Database className="w-4 h-4" />
+                    </div>
+                    <span>Connexion Supabase & SQL</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400" />
+                </button>
+              </div>
+            </>
+          )}
         </nav>
 
         {/* User Profile & Logout */}
-        <div className="p-4 border-t border-slate-100 bg-slate-50/70 flex-shrink-0">
+        <div className="p-3 border-t border-slate-100 bg-slate-50/70 flex-shrink-0 space-y-2">
           <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-slate-200/80 shadow-xs">
             {/* Avatar */}
             <div className="relative flex-shrink-0">
@@ -266,25 +270,24 @@ export default function Sidebar({
 
             {/* Name & Role */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-slate-900 truncate">
+              <p className="text-sm font-bold text-slate-900 truncate">
                 {profile?.full_name ?? 'Utilisateur'}
               </p>
-              <p className="text-xs text-slate-500 truncate flex items-center gap-1">
+              <p className="text-[11px] text-teal-700 font-semibold truncate flex items-center gap-1">
                 <Stethoscope className="w-3 h-3 text-teal-600 flex-shrink-0" />
                 {getRoleLabel(profile)}
               </p>
             </div>
-
-            {/* Bouton Changer d'utilisateur */}
-            <button
-              onClick={handleSignOut}
-              title="Changer d'utilisateur / Se déconnecter"
-              aria-label="Changer d'utilisateur"
-              className="flex-shrink-0 p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all cursor-pointer"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
           </div>
+
+          {/* Bouton visible Déconnexion / Changer de profil */}
+          <button
+            onClick={handleSignOut}
+            className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-300 text-slate-700 hover:text-rose-700 font-semibold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs active:scale-[0.99]"
+          >
+            <LogOut className="w-3.5 h-3.5 text-rose-500" />
+            <span>Déconnexion / Changer de profil</span>
+          </button>
         </div>
       </aside>
     </>

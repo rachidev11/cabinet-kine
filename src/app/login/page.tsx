@@ -145,11 +145,11 @@ export default function LoginPage() {
                       Hassna El-Hmaidi
                     </h2>
                     <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-400/20 text-teal-200 border border-teal-300/30">
-                      Kinésithérapeute
+                      Kinésithérapeute (Propriétaire)
                     </span>
                   </div>
                   <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                    Accès complet : Bilans kiné, dossiers médicaux, agenda 3 salles, facturation et statistiques.
+                    Accès complet (Super-Admin) : Bilan Kiné, dossiers médicaux, chiffre d&apos;affaires, statistiques et administration.
                   </p>
                 </div>
                 <ChevronRight className="w-5 h-5 text-teal-300/70 group-hover:text-teal-200 group-hover:translate-x-1 transition-all flex-shrink-0" />
@@ -167,14 +167,14 @@ export default function LoginPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <h2 className="text-lg font-bold text-white group-hover:text-cyan-200 transition-colors">
-                      Assistante
+                      Assistante Médicale
                     </h2>
                     <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-400/20 text-cyan-200 border border-cyan-300/30">
-                      Accueil & Agenda
+                      Secrétariat & Accueil
                     </span>
                   </div>
                   <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                    Accès : Accueil, gestion des patients, agenda des 3 salles, encaissement et facturation.
+                    Accès restreint : Agenda des 3 salles, fiches administratives, encaissement et impression des reçus du jour.
                   </p>
                 </div>
                 <ChevronRight className="w-5 h-5 text-cyan-300/70 group-hover:text-cyan-200 group-hover:translate-x-1 transition-all flex-shrink-0" />

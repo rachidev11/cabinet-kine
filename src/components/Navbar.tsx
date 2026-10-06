@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Menu, Plus, Database, RefreshCw, LogOut, UserCircle2 } from 'lucide-react';
+import { Menu, Plus, Database, RefreshCw, LogOut, UserCircle2, Stethoscope, UserCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import type { UserProfile } from '@/context/AuthContext';
@@ -102,15 +102,28 @@ export default function Navbar({
           </button>
         )}
 
-        {/* Logged-in user display */}
+        {/* Logged-in user display with exact role badges */}
         {profile && (
           <div className="hidden sm:flex items-center gap-2 pl-2 border-l border-slate-200">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-teal-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xs shadow-xs flex-shrink-0">
-              {profile.full_name.trim().split(/\s+/).map((n) => n[0]).slice(0, 2).join('').toUpperCase() || <UserCircle2 className="w-4 h-4" />}
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-xs flex-shrink-0 ${
+              profile.role === 'kine'
+                ? 'bg-gradient-to-tr from-teal-600 to-emerald-600'
+                : 'bg-gradient-to-tr from-cyan-600 to-blue-600'
+            }`}>
+              {profile.role === 'kine' ? <Stethoscope className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
             </div>
             <div className="hidden md:block">
-              <p className="text-sm font-semibold text-slate-800 leading-tight">{profile.full_name}</p>
-              <p className="text-[11px] text-teal-600 font-medium leading-tight">{getRoleLabel(profile)}</p>
+              {profile.role === 'kine' ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-teal-50 text-teal-900 border border-teal-200 shadow-2xs">
+                  <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
+                  Hassna El-Hmaidi — Kinésithérapeute (Propriétaire)
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-900 border border-blue-200 shadow-2xs">
+                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                  Assistante Médicale
+                </span>
+              )}
             </div>
           </div>
         )}
