@@ -28,7 +28,32 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     createPatient,
   } = usePatients();
 
-  const { profile } = useAuth();
+  const { profile, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && !profile && pathname !== '/login') {
+      router.replace('/login');
+    }
+  }, [authLoading, profile, pathname, router]);
+
+  // Render /login page directly without application shell
+  if (pathname === '/login') {
+    return <>{children}</>;
+  }
+
+  // Brief client loader while checking localStorage
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-8 h-8 text-teal-600 animate-spin" />
+      </div>
+    );
+  }
+
+  // Guard against flash of content before redirecting to /login
+  if (!profile) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex print:bg-white print:block">

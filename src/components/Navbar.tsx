@@ -46,9 +46,9 @@ export default function Navbar({
   // Capitalize first letter of day
   const dateCapitalized = todayFormatted.charAt(0).toUpperCase() + todayFormatted.slice(1);
 
-  const handleSignOut = async () => {
-    await signOut();
-    router.push('/');
+  const handleSignOut = () => {
+    signOut();
+    window.location.href = '/login';
   };
 
   return (
@@ -124,14 +124,15 @@ export default function Navbar({
           <span className="hidden sm:inline">Ajouter un</span> Patient
         </button>
 
-        {/* Logout button */}
+        {/* Bouton visible Changer de profil / Déconnexion */}
         <button
           onClick={handleSignOut}
-          title="Se déconnecter"
-          aria-label="Se déconnecter"
-          className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all cursor-pointer"
+          title="Changer d'utilisateur / Se déconnecter"
+          aria-label="Changer d'utilisateur"
+          className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-600 hover:text-red-600 hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded-xl transition-all cursor-pointer shadow-2xs"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-3.5 h-3.5" />
+          <span className="hidden lg:inline">Changer de profil</span>
         </button>
       </div>
     </header>

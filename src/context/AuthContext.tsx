@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 
-// ─── Types ──────────────────────────────────────────────────────────────────
+// ─── Types & Configuration ──────────────────────────────────────────────────
 
 export type UserRole = 'kine' | 'assistante';
 
@@ -15,13 +15,36 @@ export interface UserProfile {
   email: string;
 }
 
+export const PIN_CODES: Record<UserRole, string> = {
+  kine: '239021',
+  assistante: '000000',
+};
+
+export const PROFILES_CONFIG: Record<UserRole, UserProfile> = {
+  kine: {
+    id: 'kine-hassna',
+    full_name: 'Hassna El-Hmaidi',
+    role: 'kine',
+    email: 'hassna.elhmaidi@cabinet-kine.ma',
+  },
+  assistante: {
+    id: 'assistante-cabinet',
+    full_name: 'Assistante du Cabinet',
+    role: 'assistante',
+    email: 'assistante@cabinet-kine.ma',
+  },
+};
+
+const STORAGE_KEY = 'cabinet_auth_profile';
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: UserProfile | null;
   loading: boolean;
+  loginWithPin: (roleKey: UserRole, pin: string) => { success: boolean; error?: string };
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
-  signOut: () => Promise<void>;
+  signOut: () => void;
   /** Shorthand role helpers */
   isKine: boolean;
   isAssistante: boolean;
@@ -31,164 +54,95 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const DEFAULT_KINE_PROFILE: UserProfile = {
-  id: 'kine-hassna-default',
-  full_name: 'Hassna El-Hmaidi',
-  role: 'kine',
-  email: 'hassna.elhmaidi@cabinet-kine.ma',
-};
-
 // ─── Provider ────────────────────────────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(DEFAULT_KINE_PROFILE);
-  const [loading, setLoading] = useState(false);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch the profile from `profiles` table for a given user id (non-blocking with timeout)
-  const fetchProfile = useCallback(async (userId: string, email: string) => {
+  // Restore session from localStorage on mount
+  useEffect(() => {
     try {
-      // 3-second timeout protection so profile query never hangs the interface
-      const profilePromise = supabase
-        .from('profiles')
-        .select('id, full_name, role')
-        .eq('id', userId)
-        .maybeSingle();
-
-      const timeoutPromise = new Promise<{ data: null; error: { message: string } }>((resolve) =>
-        setTimeout(() => resolve({ data: null, error: { message: 'Timeout profil' } }), 3000)
-      );
-
-      const { data, error } = await Promise.race([profilePromise, timeoutPromise]);
-
-      if (error) {
-        console.warn('Note sur le profil (utilisation fallback):', error.message);
-        return;
-      }
-
-      if (data) {
-        setProfile({
-          id: data.id,
-          full_name: data.full_name || email.split('@')[0] || 'Utilisateur',
-          role: (data.role as UserRole) || 'assistante',
-          email,
-        });
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && (parsed.role === 'kine' || parsed.role === 'assistante')) {
+          setProfile(parsed);
+        }
       }
     } catch (err) {
-      console.warn('fetchProfile exception:', err);
+      console.warn('Erreur lecture session locale:', err);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
-  // Bootstrap: restore existing session on mount
-  useEffect(() => {
-    let mounted = true;
+  // Login with PIN
+  const loginWithPin = useCallback((roleKey: UserRole, pin: string): { success: boolean; error?: string } => {
+    const expectedPin = PIN_CODES[roleKey];
+    if (pin.trim() !== expectedPin) {
+      return { success: false, error: 'Code PIN incorrect. Veuillez réessayer.' };
+    }
 
-    const init = async () => {
-      try {
-        const { data: { session: existingSession } } = await supabase.auth.getSession();
+    const selectedProfile = PROFILES_CONFIG[roleKey];
+    setProfile(selectedProfile);
 
-        if (!mounted) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(selectedProfile));
+    } catch (err) {
+      console.warn('localStorage save error:', err);
+    }
 
-        if (existingSession?.user) {
-          setSession(existingSession);
-          setUser(existingSession.user);
-          // Set initial profile immediately so UI is unblocked
-          setProfile({
-            id: existingSession.user.id,
-            full_name: existingSession.user.email?.split('@')[0] ?? 'Utilisateur',
-            role: 'assistante',
-            email: existingSession.user.email ?? '',
-          });
-          // Asynchronous non-blocking fetch from profiles table
-          fetchProfile(existingSession.user.id, existingSession.user.email ?? '');
-        }
-      } catch (err) {
-        console.warn('Session init error:', err);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
+    return { success: true };
+  }, []);
 
-    init();
-
-    // Listen for auth state changes (login / logout / token refresh)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
-        if (!mounted) return;
-
-        setSession(newSession);
-        setUser(newSession?.user ?? null);
-
-        if (newSession?.user) {
-          // Immediately set fallback profile if none exists
-          setProfile((prev) => prev ?? {
-            id: newSession.user.id,
-            full_name: newSession.user.email?.split('@')[0] ?? 'Utilisateur',
-            role: 'assistante',
-            email: newSession.user.email ?? '',
-          });
-          // Asynchronously enrich from profiles table in the background
-          fetchProfile(newSession.user.id, newSession.user.email ?? '');
-        } else {
-          setProfile(null);
-        }
-
-        setLoading(false);
-      }
-    );
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
-  }, [fetchProfile]);
-
-  // ── Sign-in ─────────────────────────────────────────────────────────────
-
+  // Supabase fallback login (if used)
   const signIn = async (email: string, password: string): Promise<{ error: string | null }> => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        setLoading(false);
-        // Translate common Supabase auth errors to French
-        if (error.message.includes('Invalid login credentials')) {
-          return { error: 'Email ou mot de passe incorrect.' };
-        }
-        if (error.message.includes('Email not confirmed')) {
-          return { error: 'Veuillez confirmer votre email avant de vous connecter.' };
-        }
         return { error: error.message };
       }
-
-      setLoading(false);
+      if (data.user) {
+        setUser(data.user);
+        setSession(data.session);
+      }
       return { error: null };
     } catch (err) {
-      setLoading(false);
-      return { error: err instanceof Error ? err.message : 'Erreur de connexion.' };
+      return { error: err instanceof Error ? err.message : 'Erreur de connexion' };
     }
   };
 
-  // ── Sign-out ─────────────────────────────────────────────────────────────
-
-  const signOut = async () => {
+  // Sign out / Switch user
+  const signOut = useCallback(() => {
     try {
-      await supabase.auth.signOut();
-    } catch {
-      // ignore
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (err) {
+      console.warn('localStorage clear error:', err);
     }
+    setProfile(null);
     setUser(null);
     setSession(null);
-    setProfile(DEFAULT_KINE_PROFILE);
-  };
+  }, []);
 
   const isKine = profile?.role === 'kine';
   const isAssistante = profile?.role === 'assistante';
 
   return (
     <AuthContext.Provider
-      value={{ user, session, profile, loading, signIn, signOut, isKine, isAssistante }}
+      value={{
+        user,
+        session,
+        profile,
+        loading,
+        loginWithPin,
+        signIn,
+        signOut,
+        isKine,
+        isAssistante,
+      }}
     >
       {children}
     </AuthContext.Provider>

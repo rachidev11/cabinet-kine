@@ -100,10 +100,10 @@ export default function Sidebar({
   // Kine gets Bilan Kiné section as its own entry shown (already accessible via patients)
   // We won't duplicate the patients link – instead we add an indicator in the section header
 
-  const handleSignOut = async () => {
+  const handleSignOut = () => {
     onClose();
-    await signOut();
-    router.push('/');
+    signOut();
+    window.location.href = '/login';
   };
 
   return (
@@ -275,11 +275,11 @@ export default function Sidebar({
               </p>
             </div>
 
-            {/* Logout button */}
+            {/* Bouton Changer d'utilisateur */}
             <button
               onClick={handleSignOut}
-              title="Se déconnecter"
-              aria-label="Se déconnecter"
+              title="Changer d'utilisateur / Se déconnecter"
+              aria-label="Changer d'utilisateur"
               className="flex-shrink-0 p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
