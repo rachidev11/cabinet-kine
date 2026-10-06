@@ -103,7 +103,7 @@ export default function Sidebar({
   const handleSignOut = async () => {
     onClose();
     await signOut();
-    router.push('/login');
+    router.push('/');
   };
 
   return (

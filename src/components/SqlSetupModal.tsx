@@ -98,12 +98,26 @@ CREATE TABLE IF NOT EXISTS profiles (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 6. Accès direct (RLS désactivé)
+-- 6. Politiques RLS pour profiles (Lecture sans restriction pour connectés et public)
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Lecture des profils autorisée" ON profiles;
+CREATE POLICY "Lecture des profils autorisée"
+  ON profiles FOR SELECT TO authenticated, anon USING (true);
+
+DROP POLICY IF EXISTS "Modification propre profil" ON profiles;
+CREATE POLICY "Modification propre profil"
+  ON profiles FOR UPDATE TO authenticated USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+
+DROP POLICY IF EXISTS "Insertion profil" ON profiles;
+CREATE POLICY "Insertion profil"
+  ON profiles FOR INSERT TO authenticated, anon WITH CHECK (true);
+
+-- 7. Accès direct tables métier
 ALTER TABLE patients DISABLE ROW LEVEL SECURITY;
 ALTER TABLE medical_records DISABLE ROW LEVEL SECURITY;
 ALTER TABLE appointments DISABLE ROW LEVEL SECURITY;
 ALTER TABLE payments DISABLE ROW LEVEL SECURITY;
-ALTER TABLE profiles DISABLE ROW LEVEL SECURITY;
 `;
 
 export default function SqlSetupModal({ isOpen, onClose }: SqlSetupModalProps) {

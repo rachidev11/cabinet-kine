@@ -94,9 +94,34 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 
 CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
 
--- 6. Désactivation RLS pour un accès complet direct
+-- 6. Politiques RLS permissives pour la table profiles
+-- Permet la lecture à tous les utilisateurs authentifiés (et lecture publique) sans blocage
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Lecture des profils autorisée" ON public.profiles;
+CREATE POLICY "Lecture des profils autorisée"
+    ON public.profiles
+    FOR SELECT
+    TO authenticated, anon
+    USING (true);
+
+DROP POLICY IF EXISTS "Modification de son propre profil" ON public.profiles;
+CREATE POLICY "Modification de son propre profil"
+    ON public.profiles
+    FOR UPDATE
+    TO authenticated
+    USING (auth.uid() = id)
+    WITH CHECK (auth.uid() = id);
+
+DROP POLICY IF EXISTS "Création de profil" ON public.profiles;
+CREATE POLICY "Création de profil"
+    ON public.profiles
+    FOR INSERT
+    TO authenticated, anon
+    WITH CHECK (true);
+
+-- 7. Désactivation RLS sur les tables métier pour un accès direct
 ALTER TABLE public.patients DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.medical_records DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.appointments DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.payments DISABLE ROW LEVEL SECURITY;
-ALTER TABLE public.profiles DISABLE ROW LEVEL SECURITY;

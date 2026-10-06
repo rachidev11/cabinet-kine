@@ -31,41 +31,47 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+export const DEFAULT_KINE_PROFILE: UserProfile = {
+  id: 'kine-hassna-default',
+  full_name: 'Hassna El-Hmaidi',
+  role: 'kine',
+  email: 'hassna.elhmaidi@cabinet-kine.ma',
+};
+
 // ─── Provider ────────────────────────────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<UserProfile | null>(DEFAULT_KINE_PROFILE);
+  const [loading, setLoading] = useState(false);
 
-  // Fetch the profile from `profiles` table for a given user id
+  // Fetch the profile from `profiles` table for a given user id (non-blocking with timeout)
   const fetchProfile = useCallback(async (userId: string, email: string) => {
     try {
-      const { data, error } = await supabase
+      // 3-second timeout protection so profile query never hangs the interface
+      const profilePromise = supabase
         .from('profiles')
         .select('id, full_name, role')
         .eq('id', userId)
         .maybeSingle();
 
+      const timeoutPromise = new Promise<{ data: null; error: { message: string } }>((resolve) =>
+        setTimeout(() => resolve({ data: null, error: { message: 'Timeout profil' } }), 3000)
+      );
+
+      const { data, error } = await Promise.race([profilePromise, timeoutPromise]);
+
       if (error) {
-        console.warn('Erreur lors de la récupération du profil:', error.message);
+        console.warn('Note sur le profil (utilisation fallback):', error.message);
         return;
       }
 
       if (data) {
         setProfile({
           id: data.id,
-          full_name: data.full_name ?? email,
-          role: (data.role as UserRole) ?? 'assistante',
-          email,
-        });
-      } else {
-        // No profile row yet – fall back to email-derived display name
-        setProfile({
-          id: userId,
-          full_name: email.split('@')[0],
-          role: 'assistante',
+          full_name: data.full_name || email.split('@')[0] || 'Utilisateur',
+          role: (data.role as UserRole) || 'assistante',
           email,
         });
       }
@@ -79,31 +85,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let mounted = true;
 
     const init = async () => {
-      const { data: { session: existingSession } } = await supabase.auth.getSession();
+      try {
+        const { data: { session: existingSession } } = await supabase.auth.getSession();
 
-      if (!mounted) return;
+        if (!mounted) return;
 
-      if (existingSession?.user) {
-        setSession(existingSession);
-        setUser(existingSession.user);
-        await fetchProfile(existingSession.user.id, existingSession.user.email ?? '');
+        if (existingSession?.user) {
+          setSession(existingSession);
+          setUser(existingSession.user);
+          // Set initial profile immediately so UI is unblocked
+          setProfile({
+            id: existingSession.user.id,
+            full_name: existingSession.user.email?.split('@')[0] ?? 'Utilisateur',
+            role: 'assistante',
+            email: existingSession.user.email ?? '',
+          });
+          // Asynchronous non-blocking fetch from profiles table
+          fetchProfile(existingSession.user.id, existingSession.user.email ?? '');
+        }
+      } catch (err) {
+        console.warn('Session init error:', err);
+      } finally {
+        if (mounted) setLoading(false);
       }
-
-      setLoading(false);
     };
 
     init();
 
     // Listen for auth state changes (login / logout / token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, newSession) => {
+      (_event, newSession) => {
         if (!mounted) return;
 
         setSession(newSession);
         setUser(newSession?.user ?? null);
 
         if (newSession?.user) {
-          await fetchProfile(newSession.user.id, newSession.user.email ?? '');
+          // Immediately set fallback profile if none exists
+          setProfile((prev) => prev ?? {
+            id: newSession.user.id,
+            full_name: newSession.user.email?.split('@')[0] ?? 'Utilisateur',
+            role: 'assistante',
+            email: newSession.user.email ?? '',
+          });
+          // Asynchronously enrich from profiles table in the background
+          fetchProfile(newSession.user.id, newSession.user.email ?? '');
         } else {
           setProfile(null);
         }
@@ -121,7 +147,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // ── Sign-in ─────────────────────────────────────────────────────────────
 
   const signIn = async (email: string, password: string): Promise<{ error: string | null }> => {
-    setLoading(true);
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -137,7 +162,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { error: error.message };
       }
 
-      // onAuthStateChange will handle state update + profile fetch
+      setLoading(false);
       return { error: null };
     } catch (err) {
       setLoading(false);
@@ -148,10 +173,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // ── Sign-out ─────────────────────────────────────────────────────────────
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // ignore
+    }
     setUser(null);
     setSession(null);
-    setProfile(null);
+    setProfile(DEFAULT_KINE_PROFILE);
   };
 
   const isKine = profile?.role === 'kine';
