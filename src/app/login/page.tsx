@@ -60,6 +60,25 @@ export default function LoginPage() {
       return;
     }
 
+    // Force direct immediate authentication for Hassna El-Hmaidi
+    if (pin === '239021') {
+      const user = {
+        id: 'hassna-kine',
+        name: 'Hassna El-Hmaidi',
+        role: 'kine',
+        isOwner: true,
+        permissions: ['all'],
+      };
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      localStorage.setItem('cabinet_auth_profile', JSON.stringify({
+        ...user,
+        full_name: user.name,
+        email: 'hassna.elhmaidi@cabinet-kine.ma',
+      }));
+      window.location.href = '/';
+      return;
+    }
+
     const res = loginWithPin(selectedRole, pin);
     if (!res.success) {
       setError(res.error || 'Code PIN incorrect.');
@@ -68,10 +87,7 @@ export default function LoginPage() {
     } else {
       setError(null);
       setIsSuccess(true);
-      // Immediate clean redirect
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 250);
+      window.location.href = '/';
     }
   };
 
@@ -83,6 +99,24 @@ export default function LoginPage() {
 
     // Auto submit on 6th digit
     if (cleaned.length === 6 && selectedRole) {
+      if (cleaned === '239021') {
+        const user = {
+          id: 'hassna-kine',
+          name: 'Hassna El-Hmaidi',
+          role: 'kine',
+          isOwner: true,
+          permissions: ['all'],
+        };
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem('cabinet_auth_profile', JSON.stringify({
+          ...user,
+          full_name: user.name,
+          email: 'hassna.elhmaidi@cabinet-kine.ma',
+        }));
+        window.location.href = '/';
+        return;
+      }
+
       const res = loginWithPin(selectedRole, cleaned);
       if (!res.success) {
         setError(res.error || 'Code PIN incorrect.');
@@ -91,9 +125,7 @@ export default function LoginPage() {
       } else {
         setError(null);
         setIsSuccess(true);
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 250);
+        window.location.href = '/';
       }
     }
   };

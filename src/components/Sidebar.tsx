@@ -14,6 +14,7 @@ import {
   Stethoscope,
   ClipboardList,
   TrendingUp,
+  Settings,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -30,34 +31,6 @@ interface SidebarProps {
 
 // ─── Role-based navigation configuration ────────────────────────────────────
 
-/** Navigation items visible to ALL roles */
-const NAV_COMMON = [
-  {
-    name: 'Tableau de bord',
-    href: '/',
-    icon: LayoutDashboard,
-    badge: null as string | null,
-  },
-  {
-    name: 'Gestion des Patients',
-    href: '/patients',
-    icon: Users,
-    badge: null as string | null,
-  },
-  {
-    name: 'Planning & Agenda',
-    href: '/agenda',
-    icon: Calendar,
-    badge: null,
-  },
-  {
-    name: 'Facturation & Règlements',
-    href: '/facturation',
-    icon: CreditCard,
-    badge: null,
-  },
-];
-
 /** Extra items reserved for the kinésithérapeute */
 const NAV_KINE_ONLY = [
   {
@@ -70,7 +43,7 @@ const NAV_KINE_ONLY = [
 
 function getRoleLabel(profile: UserProfile | null): string {
   if (!profile) return '';
-  if (profile.role === 'kine') return 'Kinésithérapeute (Propriétaire)';
+  if (profile.role === 'kine' || profile.isOwner) return 'Kinésithérapeute (Propriétaire)';
   if (profile.role === 'assistante') return 'Assistante Médicale';
   return profile.role;
 }
@@ -91,47 +64,94 @@ export default function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { signOut, isKine } = useAuth();
+  const { signOut, isKine, isOwner } = useAuth();
   const { t } = useLanguage();
 
-  // Build navigation dynamically based on active language and count
-  const navigation = [
-    {
-      name: t('dashboard'),
-      href: '/',
-      icon: LayoutDashboard,
-      badge: null as string | null,
-    },
-    {
-      name: t('patients'),
-      href: '/patients',
-      icon: Users,
-      badge: patientCount > 0 ? patientCount.toString() : null,
-    },
-    {
-      name: t('agenda'),
-      href: '/agenda',
-      icon: Calendar,
-      badge: null as string | null,
-    },
-    ...(isKine
-      ? [
-          {
-            name: t('statsRevenue'),
-            href: '/facturation',
-            icon: TrendingUp,
-            badge: null as string | null,
-          },
-        ]
-      : [
-          {
-            name: t('caisseJour'),
-            href: '/facturation',
-            icon: CreditCard,
-            badge: null as string | null,
-          },
-        ]),
-  ];
+  // Robust check for Hassna El-Hmaidi / Kiné (code 239021, role 'kine', isOwner, etc.)
+  const isHassnaOrKine = Boolean(
+    isKine ||
+    isOwner ||
+    profile?.role === 'kine' ||
+    profile?.isOwner === true ||
+    (profile?.name && profile.name.includes('Hassna')) ||
+    (profile?.full_name && profile.full_name.includes('Hassna')) ||
+    (typeof window !== 'undefined' && (
+      localStorage.getItem('currentUser')?.includes('kine') ||
+      localStorage.getItem('currentUser')?.includes('Hassna') ||
+      localStorage.getItem('currentUser')?.includes('239021') ||
+      localStorage.getItem('cabinet_auth_profile')?.includes('kine') ||
+      localStorage.getItem('cabinet_auth_profile')?.includes('Hassna') ||
+      localStorage.getItem('cabinet_auth_profile')?.includes('239021')
+    ))
+  );
+
+  // Build navigation dynamically: All menus without exception for Hassna / Kiné
+  const navigation = isHassnaOrKine
+    ? [
+        {
+          name: 'Tableau de bord',
+          href: '/',
+          icon: LayoutDashboard,
+          badge: null as string | null,
+        },
+        {
+          name: 'Agenda (3 salles)',
+          href: '/agenda',
+          icon: Calendar,
+          badge: null as string | null,
+        },
+        {
+          name: 'Patients & Dossiers',
+          href: '/patients',
+          icon: Users,
+          badge: patientCount > 0 ? patientCount.toString() : null,
+        },
+        {
+          name: 'Facturation & Devis',
+          href: '/facturation',
+          icon: CreditCard,
+          badge: null as string | null,
+        },
+        {
+          name: 'Statistiques & Revenus globaux',
+          href: '/facturation',
+          icon: TrendingUp,
+          badge: null as string | null,
+        },
+        {
+          name: 'Paramètres',
+          href: '#settings',
+          icon: Settings,
+          badge: null as string | null,
+          onClick: () => onOpenSqlModal(),
+        },
+      ]
+    : [
+        {
+          name: t('dashboard'),
+          href: '/',
+          icon: LayoutDashboard,
+          badge: null as string | null,
+        },
+        {
+          name: 'Agenda (3 salles)',
+          href: '/agenda',
+          icon: Calendar,
+          badge: null as string | null,
+        },
+        {
+          name: 'Patients & Dossiers',
+          href: '/patients',
+          icon: Users,
+          badge: patientCount > 0 ? patientCount.toString() : null,
+        },
+        {
+          name: t('caisseJour'),
+          href: '/facturation',
+          icon: CreditCard,
+          badge: null as string | null,
+        },
+      ];
 
   const handleSignOut = () => {
     onClose();
@@ -203,11 +223,34 @@ export default function Sidebar({
             const isActive =
               item.href === '/'
                 ? pathname === '/'
-                : pathname.startsWith(item.href);
+                : item.href !== '#settings' && pathname.startsWith(item.href);
             const Icon = item.icon;
+
+            if (item.onClick) {
+              return (
+                <button
+                  key={item.name}
+                  onClick={() => {
+                    onClose();
+                    item.onClick!();
+                  }}
+                  type="button"
+                  className="w-full group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 cursor-pointer text-left rtl:text-right"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors bg-slate-100 text-slate-500 group-hover:text-[#0B57D0] group-hover:bg-blue-50">
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <span>{item.name}</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400 rtl:rotate-180" />
+                </button>
+              );
+            }
+
             return (
               <Link
-                key={item.href}
+                key={item.name}
                 href={item.href}
                 onClick={onClose}
                 className={`group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
@@ -245,7 +288,7 @@ export default function Sidebar({
           })}
 
           {/* Kine-only section */}
-          {isKine && (
+          {isHassnaOrKine && (
             <>
               <div className="pt-6 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                 {t('clinicalSpace')}
@@ -272,7 +315,7 @@ export default function Sidebar({
             </>
           )}
 
-          {isKine && (
+          {isHassnaOrKine && (
             <>
               <div className="pt-6 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                 {t('supabaseDb')}
@@ -317,7 +360,7 @@ export default function Sidebar({
               </p>
               <p className="text-[11px] text-[#0B57D0] font-semibold truncate flex items-center gap-1">
                 <Stethoscope className="w-3 h-3 text-[#0B57D0] flex-shrink-0" />
-                {profile?.role === 'kine' ? `${t('kineName')} — ${t('kineRole')}` : t('assistantRole')}
+                {isHassnaOrKine ? `${t('kineName')} — ${t('kineRole')}` : t('assistantRole')}
               </p>
             </div>
           </div>
