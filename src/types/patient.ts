@@ -1,5 +1,7 @@
 export type CiviliteType = 'Monsieur' | 'Madame' | 'Mademoiselle';
 
+export type GenderType = 'M' | 'F';
+
 export type AssuranceType = 'AMO' | 'CNSS' | 'CNOPS' | 'Assurance Privée' | 'Aucune';
 
 export type PatientStatus = 'Actif' | 'En attente' | 'Terminé' | 'Archivé';
@@ -7,6 +9,7 @@ export type PatientStatus = 'Actif' | 'En attente' | 'Terminé' | 'Archivé';
 export interface Patient {
   id: string | number;
   civilite?: CiviliteType;
+  gender?: GenderType;
   nom: string;
   prenom: string;
   telephone: string;

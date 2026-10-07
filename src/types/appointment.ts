@@ -15,6 +15,12 @@ export interface Appointment {
   notes?: string | null;
   created_at?: string;
   patient?: Patient;
+  // Aliases for agenda & schema compatibility
+  date?: string;
+  heure_debut?: string;
+  heure_fin?: string;
+  box?: number;
+  patients?: Patient;
 }
 
 export interface NewAppointmentInput {

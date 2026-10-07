@@ -9,6 +9,7 @@ import SqlSetupModal from '@/components/SqlSetupModal';
 import ToastContainer from '@/components/Toast';
 import { usePatients } from '@/context/PatientContext';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 import Link from 'next/link';
 import { LayoutDashboard, Users, PlusCircle, Loader2 } from 'lucide-react';
 
@@ -18,6 +19,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [isSqlModalOpen, setIsSqlModalOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const { t } = useLanguage();
 
   const {
     patients,
@@ -70,7 +72,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 lg:pl-72 print:pl-0 print:block">
+      <div className="flex-1 flex flex-col min-w-0 lg:pl-72 rtl:lg:pl-0 rtl:lg:pr-72 print:pl-0 print:pr-0 print:block transition-all">
         {/* Top Navbar */}
         <div className="print:hidden">
           <Navbar
@@ -98,14 +100,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             }`}
           >
             <LayoutDashboard className="w-5 h-5" />
-            <span>Tableau de bord</span>
+            <span>{t('dashboard')}</span>
           </Link>
 
           {/* Quick Add Patient Floating Center Button */}
           <button
             onClick={() => setIsAddPatientOpen(true)}
             className="flex flex-col items-center justify-center -mt-5 w-12 h-12 rounded-full bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1] text-white shadow-lg shadow-blue-600/30 cursor-pointer active:scale-90 transition-transform"
-            aria-label="Ajouter un patient"
+            aria-label={t('addPatient')}
           >
             <PlusCircle className="w-7 h-7" />
           </button>
@@ -117,7 +119,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             }`}
           >
             <Users className="w-5 h-5" />
-            <span>Patients</span>
+            <span>{t('patients')}</span>
             {patients.length > 0 && (
               <span className="absolute top-1 right-2 w-4 h-4 rounded-full bg-[#F05A28] text-white text-[9px] flex items-center justify-center font-bold">
                 {patients.length}

@@ -17,7 +17,7 @@ import {
   Activity,
 } from 'lucide-react';
 import { Appointment, DbAppointmentStatus, STATUS_MAP } from '@/types/appointment';
-import { generateWhatsAppReminderUrl } from '@/lib/whatsapp';
+import WhatsAppReminderModal from '@/components/WhatsAppReminderModal';
 
 interface AppointmentActionModalProps {
   appointment: Appointment | null;
@@ -35,14 +35,12 @@ export default function AppointmentActionModal({
   onDelete,
 }: AppointmentActionModalProps) {
   const [updating, setUpdating] = useState(false);
+  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
 
   if (!isOpen || !appointment) return null;
 
   const patient = appointment.patient;
   const currentStatusConfig = STATUS_MAP[appointment.status] || STATUS_MAP.scheduled;
-
-  // WhatsApp reminder URL
-  const whatsAppUrl = generateWhatsAppReminderUrl(appointment);
 
   const handleSetStatus = async (status: DbAppointmentStatus) => {
     setUpdating(true);
@@ -137,16 +135,14 @@ export default function AppointmentActionModal({
 
           {/* 1-Click WhatsApp Reminder Button */}
           {patient?.telephone && (
-            <a
-              href={whatsAppUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => setIsWhatsAppModalOpen(true)}
               className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer active:scale-95"
             >
               <MessageSquare className="w-4 h-4" />
-              <span>Envoyer confirmation WhatsApp (1-Clic)</span>
-              <ExternalLink className="w-3.5 h-3.5 opacity-80" />
-            </a>
+              <span>Rappel WhatsApp (Bilingue FR / AR)</span>
+            </button>
           )}
 
           {/* Change Status Section */}
@@ -235,6 +231,16 @@ export default function AppointmentActionModal({
           </div>
         </div>
       </div>
+
+      {/* WhatsApp Reminder Modal */}
+      {patient && (
+        <WhatsAppReminderModal
+          isOpen={isWhatsAppModalOpen}
+          onClose={() => setIsWhatsAppModalOpen(false)}
+          patient={patient}
+          appointment={appointment}
+        />
+      )}
     </div>
   );
 }

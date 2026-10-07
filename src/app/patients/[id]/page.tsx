@@ -49,6 +49,7 @@ import {
 } from '@/lib/supabase';
 import { INITIAL_PATIENTS } from '@/lib/mockData';
 import PaymentReceiptModal from '@/components/PaymentReceiptModal';
+import WhatsAppReminderModal from '@/components/WhatsAppReminderModal';
 import { BilanToPrint } from '@/components/BilanToPrint';
 import { useReactToPrint } from 'react-to-print';
 
@@ -64,6 +65,7 @@ export default function PatientDetailPage() {
   const [loading, setLoading] = useState(true);
   const [patient, setPatient] = useState<Patient | null>(null);
   const [activeTab, setActiveTab] = useState<'bilan' | 'seances' | 'paiements'>('bilan');
+  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
 
   // If assistante, automatically default to 'seances' tab as clinical records are restricted to kine
   useEffect(() => {
@@ -427,16 +429,14 @@ export default function PatientDetailPage() {
 
         {/* Quick Communication Buttons */}
         <div className="flex items-center gap-2.5">
-          {/* WhatsApp Direct */}
-          <a
-            href={`https://wa.me/212${patient.telephone.replace(/^0/, '')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3.5 py-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs"
+          {/* WhatsApp Reminder */}
+          <button
+            onClick={() => setIsWhatsAppModalOpen(true)}
+            className="px-3.5 py-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
           >
             <MessageCircle className="w-4 h-4 text-emerald-600" />
-            <span>WhatsApp</span>
-          </a>
+            <span>Rappel WhatsApp</span>
+          </button>
 
           {/* Call direct */}
           <a
@@ -488,6 +488,9 @@ export default function PatientDetailPage() {
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
                   {patient.civilite || 'Monsieur'}
+                </span>
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
+                  {patient.gender === 'F' ? 'Femme / أنثى' : 'Homme / ذكر'}
                 </span>
                 <span
                   className={`text-xs font-bold px-2 py-0.5 rounded-full ${
@@ -1283,6 +1286,13 @@ export default function PatientDetailPage() {
           patient={patient}
         />
       )}
+
+      {/* WhatsApp Reminder Modal */}
+      <WhatsAppReminderModal
+        patient={patient}
+        isOpen={isWhatsAppModalOpen}
+        onClose={() => setIsWhatsAppModalOpen(false)}
+      />
 
       {/* Hidden Official Bilan for Print */}
       <div className="hidden">

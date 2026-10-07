@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   X,
   User,
@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Patient } from '@/types/patient';
 import { useAuth } from '@/context/AuthContext';
+import WhatsAppReminderModal from '@/components/WhatsAppReminderModal';
 
 interface PatientDetailsModalProps {
   patient: Patient | null;
@@ -38,6 +39,7 @@ export default function PatientDetailsModal({
   onIncrementSeance,
 }: PatientDetailsModalProps) {
   const { isKine } = useAuth();
+  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
 
   if (!isOpen || !patient) return null;
 
@@ -88,6 +90,9 @@ export default function PatientDetailsModal({
                 <span className="text-xs px-2.5 py-0.5 rounded-full bg-white/20 border border-white/20 font-medium">
                   {patient.statut || 'Actif'}
                 </span>
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-white/20 border border-white/20 font-medium">
+                  {patient.gender === 'F' ? 'Femme / أنثى' : 'Homme / ذكر'}
+                </span>
               </div>
               <p className="text-sm text-blue-100/90 mt-0.5 flex items-center gap-3">
                 <span>{patient.age} ans</span>
@@ -116,15 +121,13 @@ export default function PatientDetailsModal({
               <span>Appeler ({patient.telephone})</span>
             </a>
 
-            <a
-              href={`https://wa.me/${cleanPhone}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs sm:text-sm font-semibold transition-colors"
+            <button
+              onClick={() => setIsWhatsAppModalOpen(true)}
+              className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
             >
               <MessageSquare className="w-4 h-4 text-emerald-600" />
-              <span>Message WhatsApp</span>
-            </a>
+              <span>Rappel WhatsApp</span>
+            </button>
           </div>
 
           {/* Session Progress Card */}
@@ -250,6 +253,13 @@ export default function PatientDetailsModal({
           </div>
         </div>
       </div>
+
+      {/* WhatsApp Reminder Modal */}
+      <WhatsAppReminderModal
+        patient={patient}
+        isOpen={isWhatsAppModalOpen}
+        onClose={() => setIsWhatsAppModalOpen(false)}
+      />
     </div>
   );
 }

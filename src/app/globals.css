@@ -31,6 +31,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* RTL Typography enhancements for Arabic display */
+html[dir="rtl"] body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, Arial, sans-serif;
+  letter-spacing: normal;
+}
+
 /* Custom Scrollbar for medical tables and modals */
 ::-webkit-scrollbar {
   width: 6px;

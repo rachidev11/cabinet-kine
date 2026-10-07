@@ -18,7 +18,7 @@ import {
   Loader2,
   Copy,
 } from 'lucide-react';
-import { NewPatientInput, AssuranceType, Patient, CiviliteType } from '@/types/patient';
+import { NewPatientInput, AssuranceType, Patient, CiviliteType, GenderType } from '@/types/patient';
 import { addPatientToSupabase } from '@/lib/supabase';
 
 interface AddPatientModalProps {
@@ -45,6 +45,7 @@ export default function AddPatientModal({
   // Form state
   const [formData, setFormData] = useState<NewPatientInput>({
     civilite: 'Monsieur',
+    gender: 'M',
     nom: '',
     prenom: '',
     telephone: '',
@@ -72,6 +73,7 @@ export default function AddPatientModal({
   // Validate form
   const validate = (): boolean => {
     const errors: Record<string, string> = {};
+    if (!formData.gender) errors.gender = 'Le genre est obligatoire';
     if (!formData.nom.trim()) errors.nom = 'Le nom est obligatoire';
     if (!formData.prenom.trim()) errors.prenom = 'Le prénom est obligatoire';
     if (!formData.telephone.trim()) errors.telephone = 'Le numéro de téléphone est obligatoire';
@@ -92,10 +94,14 @@ export default function AddPatientModal({
     setLoading(true);
 
     try {
+      const determinedGender: GenderType = formData.gender ||
+        (formData.civilite === 'Madame' || formData.civilite === 'Mademoiselle' ? 'F' : 'M');
+
       // 1. Save directly to Supabase
       const res = await addPatientToSupabase({
         ...formData,
         civilite: formData.civilite || 'Monsieur',
+        gender: determinedGender,
         nom: formData.nom.toUpperCase().trim(),
         prenom: formData.prenom.trim(),
         cin: formData.cin.toUpperCase().trim(),
@@ -121,6 +127,7 @@ export default function AddPatientModal({
             id: `temp-${Date.now()}`,
             ...formData,
             civilite: formData.civilite || 'Monsieur',
+            gender: determinedGender,
             nom: formData.nom.toUpperCase().trim(),
             cin: formData.cin.toUpperCase().trim(),
             created_at: new Date().toISOString(),
@@ -141,6 +148,7 @@ export default function AddPatientModal({
   const handleResetAndClose = () => {
     setFormData({
       civilite: 'Monsieur',
+      gender: 'M',
       nom: '',
       prenom: '',
       telephone: '',
@@ -221,22 +229,61 @@ export default function AddPatientModal({
               État Civil & Identité
             </h3>
 
-            {/* Champ Civilité */}
-            <div className="mb-4">
-              <label htmlFor="civilite" className="block text-xs font-semibold text-slate-700 mb-1">
-                Civilité <span className="text-rose-500">*</span>
-              </label>
-              <select
-                id="civilite"
-                name="civilite"
-                value={formData.civilite || 'Monsieur'}
-                onChange={(e) => setFormData({ ...formData, civilite: e.target.value as CiviliteType })}
-                className="w-full px-3.5 py-2.5 rounded-xl text-sm border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0] transition-all font-medium text-slate-800 cursor-pointer"
-              >
-                <option value="Monsieur">Monsieur (Homme)</option>
-                <option value="Madame">Madame (Femme mariée)</option>
-                <option value="Mademoiselle">Mademoiselle (Jeune femme)</option>
-              </select>
+            {/* Champs Genre & Civilité */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              {/* Champ Genre / الجنس */}
+              <div>
+                <label htmlFor="gender" className="block text-xs font-semibold text-slate-700 mb-1">
+                  Genre / الجنس <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  id="gender"
+                  name="gender"
+                  value={formData.gender || 'M'}
+                  onChange={(e) => {
+                    const g = e.target.value as GenderType;
+                    setFormData({
+                      ...formData,
+                      gender: g,
+                      civilite: g === 'M' ? 'Monsieur' : (formData.civilite === 'Monsieur' ? 'Madame' : formData.civilite),
+                    });
+                  }}
+                  className={`w-full px-3.5 py-2.5 rounded-xl text-sm border ${
+                    validationErrors.gender ? 'border-rose-400 bg-rose-50/30' : 'border-slate-200'
+                  } bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0] transition-all font-medium text-slate-800 cursor-pointer`}
+                >
+                  <option value="M">Homme / ذكر (M)</option>
+                  <option value="F">Femme / أنثى (F)</option>
+                </select>
+                {validationErrors.gender && (
+                  <p className="text-[11px] text-rose-500 mt-1">{validationErrors.gender}</p>
+                )}
+              </div>
+
+              {/* Champ Civilité */}
+              <div>
+                <label htmlFor="civilite" className="block text-xs font-semibold text-slate-700 mb-1">
+                  Civilité <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  id="civilite"
+                  name="civilite"
+                  value={formData.civilite || 'Monsieur'}
+                  onChange={(e) => {
+                    const civ = e.target.value as CiviliteType;
+                    setFormData({
+                      ...formData,
+                      civilite: civ,
+                      gender: (civ === 'Madame' || civ === 'Mademoiselle') ? 'F' : 'M',
+                    });
+                  }}
+                  className="w-full px-3.5 py-2.5 rounded-xl text-sm border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0] transition-all font-medium text-slate-800 cursor-pointer"
+                >
+                  <option value="Monsieur">Monsieur (Homme)</option>
+                  <option value="Madame">Madame (Femme mariée)</option>
+                  <option value="Mademoiselle">Mademoiselle (Jeune femme)</option>
+                </select>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

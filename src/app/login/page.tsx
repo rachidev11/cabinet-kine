@@ -14,9 +14,11 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { useAuth, UserRole, PROFILES_CONFIG } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function LoginPage() {
   const { profile, loginWithPin, loading } = useAuth();
+  const { language, setLanguage, t, isArabic } = useLanguage();
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [pin, setPin] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
@@ -107,6 +109,37 @@ export default function LoginPage() {
         {/* Main Card */}
         <div className="bg-slate-900/60 backdrop-blur-2xl border border-white/20 rounded-3xl shadow-2xl shadow-black/50 p-6 sm:p-10 text-white transition-all">
           
+          {/* Top Language Toggle */}
+          <div className="flex justify-between items-center mb-6">
+            <span className="text-xs font-bold text-orange-200 uppercase tracking-wider">
+              {isArabic ? 'تسجيل الدخول' : 'Espace Connexion'}
+            </span>
+            <div className="inline-flex items-center bg-white/10 p-0.5 rounded-xl border border-white/20" dir="ltr">
+              <button
+                type="button"
+                onClick={() => setLanguage('fr')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  language === 'fr'
+                    ? 'bg-white text-[#0B57D0] shadow-sm font-extrabold'
+                    : 'text-white/80 hover:text-white'
+                }`}
+              >
+                FR
+              </button>
+              <button
+                type="button"
+                onClick={() => setLanguage('ar')}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer font-arabic ${
+                  language === 'ar'
+                    ? 'bg-[#0B57D0] text-white shadow-sm font-extrabold'
+                    : 'text-white/80 hover:text-white'
+                }`}
+              >
+                عربي
+              </button>
+            </div>
+          </div>
+
           {/* Clinic Brand Header */}
           <div className="flex flex-col items-center text-center mb-8">
             <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white p-2 flex items-center justify-center shadow-2xl shadow-blue-950/60 mb-4 border-2 border-white/80 ring-4 ring-white/20">
@@ -117,10 +150,10 @@ export default function LoginPage() {
               />
             </div>
             <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white leading-tight">
-              Centre de Kinésithérapie Nassim Al Massira
+              {t('clinicName')}
             </h1>
             <p className="text-[#FF7A45] font-extrabold text-base sm:text-lg mt-1 tracking-wide">
-              Hassna El-Hmaidi
+              {t('kineName')}
             </p>
             <p className="text-blue-100/90 text-xs sm:text-sm mt-1 max-w-md font-medium">
               3 BLOC 4 HAY NASSIM BENSOUDA RDC FES, Fez • 30000
@@ -131,7 +164,7 @@ export default function LoginPage() {
           {!selectedRole ? (
             <div className="space-y-4 animate-in fade-in zoom-in-95 duration-200">
               <div className="text-xs font-bold text-orange-200 uppercase tracking-wider text-center mb-2">
-                Sélectionnez votre profil d&apos;accès
+                {isArabic ? 'اختر حساب الدخول' : 'Sélectionnez votre profil d\'accès'}
               </div>
 
               {/* Profile Card 1: Hassna El-Hmaidi */}
@@ -344,7 +377,7 @@ export default function LoginPage() {
                     onClick={handleBack}
                     className="flex-1 py-3 px-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-xs transition-all cursor-pointer"
                   >
-                    Retour
+                    {isArabic ? 'رجوع' : 'Retour'}
                   </button>
                   <button
                     type="submit"
@@ -352,7 +385,7 @@ export default function LoginPage() {
                     className="flex-2 py-3 px-4 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#F05A28] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                   >
                     <KeyRound className="w-4 h-4" />
-                    <span>Valider le PIN</span>
+                    <span>{isArabic ? 'تأكيد الرمز والدخول' : 'Valider le PIN'}</span>
                   </button>
                 </div>
               </form>

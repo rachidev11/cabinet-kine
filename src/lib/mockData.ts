@@ -4,6 +4,7 @@ export const INITIAL_PATIENTS: Patient[] = [
   {
     id: 'pat-1',
     civilite: 'Monsieur',
+    gender: 'M',
     nom: 'EL AMRANI',
     prenom: 'Karim',
     telephone: '0661234567',
@@ -24,6 +25,7 @@ export const INITIAL_PATIENTS: Patient[] = [
   {
     id: 'pat-2',
     civilite: 'Madame',
+    gender: 'F',
     nom: 'BENNANI',
     prenom: 'Fatima Zahra',
     telephone: '0662987654',
@@ -44,6 +46,7 @@ export const INITIAL_PATIENTS: Patient[] = [
   {
     id: 'pat-3',
     civilite: 'Monsieur',
+    gender: 'M',
     nom: 'TAZI',
     prenom: 'Omar',
     telephone: '0663456789',
@@ -64,6 +67,7 @@ export const INITIAL_PATIENTS: Patient[] = [
   {
     id: 'pat-4',
     civilite: 'Mademoiselle',
+    gender: 'F',
     nom: 'MANSOURI',
     prenom: 'Sanaa',
     telephone: '0671122334',
@@ -84,6 +88,7 @@ export const INITIAL_PATIENTS: Patient[] = [
   {
     id: 'pat-5',
     civilite: 'Monsieur',
+    gender: 'M',
     nom: 'IDRISSI',
     prenom: 'Mehdi',
     telephone: '0665554433',

@@ -6,6 +6,7 @@
 CREATE TABLE IF NOT EXISTS public.patients (
     id BIGSERIAL PRIMARY KEY,
     civilite VARCHAR(20) DEFAULT 'Monsieur',
+    gender VARCHAR(10) DEFAULT 'M',
     nom VARCHAR(100) NOT NULL,
     prenom VARCHAR(100) NOT NULL,
     telephone VARCHAR(30) NOT NULL,
@@ -26,6 +27,7 @@ CREATE TABLE IF NOT EXISTS public.patients (
 );
 
 ALTER TABLE public.patients ADD COLUMN IF NOT EXISTS civilite VARCHAR(20) DEFAULT 'Monsieur';
+ALTER TABLE public.patients ADD COLUMN IF NOT EXISTS gender VARCHAR(10) DEFAULT 'M';
 CREATE INDEX IF NOT EXISTS idx_patients_nom ON public.patients(nom);
 CREATE INDEX IF NOT EXISTS idx_patients_cin ON public.patients(cin);
 CREATE INDEX IF NOT EXISTS idx_patients_telephone ON public.patients(telephone);

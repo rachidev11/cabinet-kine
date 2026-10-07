@@ -14,6 +14,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
+import WhatsAppReminderModal from '@/components/WhatsAppReminderModal';
 
 interface Patient {
   id: string;
@@ -21,6 +22,7 @@ interface Patient {
   prenom: string;
   telephone: string;
   civilite?: string;
+  gender?: 'M' | 'F';
 }
 
 interface Appointment {
@@ -48,6 +50,7 @@ export default function AgendaPage() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<{ heure: string; box: number } | null>(null);
+  const [reminderAppointment, setReminderAppointment] = useState<Appointment | null>(null);
 
   // Form State
   const [selectedPatientId, setSelectedPatientId] = useState('');
@@ -63,7 +66,7 @@ export default function AgendaPage() {
 
   async function fetchPatients() {
     try {
-      const { data, error } = await supabase.from('patients').select('id, nom, prenom, telephone, civilite');
+      const { data, error } = await supabase.from('patients').select('id, nom, prenom, telephone, civilite, gender');
       if (data && data.length > 0) {
         setPatients(data);
       } else {
@@ -75,6 +78,7 @@ export default function AgendaPage() {
             prenom: p.prenom,
             telephone: p.telephone,
             civilite: p.civilite,
+            gender: p.gender,
           }))
         );
       }
@@ -86,6 +90,7 @@ export default function AgendaPage() {
           prenom: p.prenom,
           telephone: p.telephone,
           civilite: p.civilite,
+          gender: p.gender,
         }))
       );
     }
@@ -94,7 +99,7 @@ export default function AgendaPage() {
   async function fetchAppointments() {
     const { data, error } = await supabase
       .from('appointments')
-      .select('*, patients(id, nom, prenom, telephone, civilite)')
+      .select('*, patients(id, nom, prenom, telephone, civilite, gender)')
       .eq('date', selectedDate);
 
     if (data) setAppointments(data);
@@ -143,30 +148,8 @@ export default function AgendaPage() {
     fetchAppointments();
   }
 
-  function sendWhatsAppReminder(rdv: Appointment) {
-    const patient = rdv.patients;
-    if (!patient || !patient.telephone) return;
-
-    let phone = patient.telephone.replace(/\s+/g, '').replace(/^0/, '212');
-
-    // Personnalisation selon la Civilité :
-    // Si Monsieur -> Bonjour M. [Nom]
-    // Si Madame -> Bonjour Mme [Nom]
-    // Si Mademoiselle -> Bonjour Mlle [Nom]
-    let civilitePrefix = 'M./Mme';
-    if (patient.civilite === 'Monsieur') {
-      civilitePrefix = 'M.';
-    } else if (patient.civilite === 'Madame') {
-      civilitePrefix = 'Mme';
-    } else if (patient.civilite === 'Mademoiselle') {
-      civilitePrefix = 'Mlle';
-    }
-
-    const heure = rdv.heure_debut.substring(0, 5);
-    const message = encodeURIComponent(
-      `Bonjour ${civilitePrefix} ${patient.nom},\nNous vous rappelons votre séance de kinésithérapie prévue le ${rdv.date} à ${heure} en Salle ${rdv.box}.\nCentre de Kinésithérapie Nassim Al Massira (Hassna El-Hmaidi) vous remercie de confirmer votre présence.`
-    );
-    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+  function handleOpenWhatsAppReminder(rdv: Appointment) {
+    setReminderAppointment(rdv);
   }
 
   return (
@@ -240,9 +223,9 @@ export default function AgendaPage() {
                             </select>
 
                             <button
-                              onClick={() => sendWhatsAppReminder(rdv)}
+                              onClick={() => handleOpenWhatsAppReminder(rdv)}
                               title="Envoyer rappel WhatsApp"
-                              className="text-[#0B57D0] hover:text-[#0D47A1] bg-white p-1 rounded-md shadow-2xs border border-blue-200"
+                              className="text-[#0B57D0] hover:text-[#0D47A1] bg-white p-1 rounded-md shadow-2xs border border-blue-200 cursor-pointer"
                             >
                               <MessageCircle className="w-4 h-4" />
                             </button>
@@ -324,6 +307,36 @@ export default function AgendaPage() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* WhatsApp Bilingual Reminder Modal */}
+      {reminderAppointment && reminderAppointment.patients && (
+        <WhatsAppReminderModal
+          isOpen={!!reminderAppointment}
+          onClose={() => setReminderAppointment(null)}
+          patient={{
+            id: reminderAppointment.patients.id,
+            nom: reminderAppointment.patients.nom,
+            prenom: reminderAppointment.patients.prenom,
+            telephone: reminderAppointment.patients.telephone,
+            civilite: (reminderAppointment.patients.civilite as any) || 'Monsieur',
+            gender:
+              reminderAppointment.patients.gender ||
+              (reminderAppointment.patients.civilite === 'Madame' ||
+              reminderAppointment.patients.civilite === 'Mademoiselle'
+                ? 'F'
+                : 'M'),
+            age: 30,
+            cin: '',
+            statut: 'Actif',
+            motif_consultation: reminderAppointment.type_seance,
+            nombre_seances_prescrites: 10,
+            nombre_seances_effectuees: 0,
+            assurance: 'CNSS',
+          }}
+          defaultDate={reminderAppointment.date}
+          defaultTime={reminderAppointment.heure_debut.slice(0, 5)}
+        />
       )}
     </div>
   );
