@@ -11,6 +11,8 @@ export interface Translations {
   agenda: string;
   patients: string;
   facturation: string;
+  statsRevenue: string;
+  caisseJour: string;
   medicalRecord: string;
   supabaseDb: string;
   login: string;
@@ -59,6 +61,8 @@ export const DICTIONARY: Record<Language, Translations> = {
     agenda: 'Planning & Agenda',
     patients: 'Gestion des Patients',
     facturation: 'Facturation & Règlements',
+    statsRevenue: "Statistiques & Chiffre d'affaires",
+    caisseJour: "Encaissements du jour",
     medicalRecord: 'Dossier Médical & Bilan Kiné',
     supabaseDb: 'Base de Données Supabase',
     login: 'Connexion',
@@ -102,6 +106,8 @@ export const DICTIONARY: Record<Language, Translations> = {
     agenda: 'المواعيد والجدول',
     patients: 'سجل المرضى',
     facturation: 'الفواتير والتحصيل',
+    statsRevenue: 'الإحصائيات ورقم المعاملات',
+    caisseJour: 'مداخيل وصندوق اليوم',
     medicalRecord: 'الملف الطبي والتقييم Kiné',
     supabaseDb: 'قاعدة بيانات سوبابيز',
     login: 'الدخول',

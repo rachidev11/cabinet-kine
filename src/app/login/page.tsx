@@ -184,9 +184,6 @@ export default function LoginPage() {
                     <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#F05A28]/25 text-orange-200 border border-[#F05A28]/50">
                       Kinésithérapeute (Propriétaire)
                     </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/30 text-blue-100 border border-blue-400/30">
-                      PIN: 239021
-                    </span>
                   </div>
                   <p className="text-xs text-slate-200 mt-1 leading-relaxed">
                     Accès total : Bilan Kiné clinique, agenda 3 salles, facturation, statistiques et gestion.
@@ -211,9 +208,6 @@ export default function LoginPage() {
                     </h2>
                     <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-500/25 text-blue-200 border border-blue-400/40">
                       Secrétariat & Accueil
-                    </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-orange-500/30 text-orange-100 border border-orange-400/30">
-                      PIN: 000000
                     </span>
                   </div>
                   <p className="text-xs text-slate-200 mt-1 leading-relaxed">
@@ -268,11 +262,12 @@ export default function LoginPage() {
 
               {/* PIN Form */}
               <form onSubmit={handlePinSubmit} className="space-y-5">
-                {/* Hidden actual input for mobile & keyboard support */}
+                {/* Actual password input with strict masking */}
                 <input
                   ref={inputRef}
                   type="password"
                   inputMode="numeric"
+                  autoComplete="current-password"
                   pattern="[0-9]*"
                   maxLength={6}
                   value={pin}

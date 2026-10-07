@@ -32,6 +32,15 @@ import {
   Scale,
   Sparkles,
   Lock,
+  Trash2,
+  UploadCloud,
+  Image as ImageIcon,
+  Download,
+  Maximize2,
+  X,
+  FileCheck,
+  ZoomIn,
+  FileDown,
 } from 'lucide-react';
 import { Patient, AssuranceType } from '@/types/patient';
 import { MedicalRecord } from '@/types/medicalRecord';
@@ -52,27 +61,31 @@ import PaymentReceiptModal from '@/components/PaymentReceiptModal';
 import WhatsAppReminderModal from '@/components/WhatsAppReminderModal';
 import { BilanToPrint } from '@/components/BilanToPrint';
 import { useReactToPrint } from 'react-to-print';
+import MedicalDocumentsGallery, { MedicalDocument } from '@/components/MedicalDocumentsGallery';
 
 export default function PatientDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
 
-  const { patients: contextPatients, incrementSeanceCount } = usePatients();
+  const { patients: contextPatients, incrementSeanceCount, removePatient } = usePatients();
   const { isAssistante, isKine } = useAuth();
 
   // Loading & patient data
   const [loading, setLoading] = useState(true);
   const [patient, setPatient] = useState<Patient | null>(null);
-  const [activeTab, setActiveTab] = useState<'bilan' | 'seances' | 'paiements'>('bilan');
+  const [activeTab, setActiveTab] = useState<'bilan' | 'seances' | 'paiements' | 'radios'>('bilan');
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
 
   // If assistante, automatically default to 'seances' tab as clinical records are restricted to kine
   useEffect(() => {
-    if (isAssistante && activeTab === 'bilan') {
+    if (isAssistante && (activeTab === 'bilan' || activeTab === 'radios')) {
       setActiveTab('seances');
     }
   }, [isAssistante, activeTab]);
+
+  // Galerie des Radios & Documents Médicaux State
+  const [medicalDocs, setMedicalDocs] = useState<MedicalDocument[]>([]);
 
   // Medical Record Form state
   const [medicalRecord, setMedicalRecord] = useState<MedicalRecord>({
@@ -267,6 +280,70 @@ export default function PatientDetailPage() {
       isMounted = false;
     };
   }, [id, contextPatients]);
+
+  // Load Radios & Medical Documents from localStorage with clinical samples
+  useEffect(() => {
+    if (!id) return;
+    try {
+      const storageKey = `cabinet_medical_docs_${id}`;
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        setMedicalDocs(JSON.parse(saved));
+      } else {
+        const sampleDocs: MedicalDocument[] = [
+          {
+            id: `doc-${id}-1`,
+            patient_id: id,
+            title: 'Radiographie du Genou Droit (Face & Profil)',
+            category: 'Radio',
+            date: new Date(Date.now() - 14 * 86400000).toISOString().split('T')[0],
+            imageDataUrl: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"><rect width="600" height="400" fill="%230b1329"/><rect x="20" y="20" width="560" height="360" rx="12" fill="%23111c38" stroke="%231e293b" stroke-width="2"/><text x="40" y="55" fill="%2338bdf8" font-family="monospace" font-size="14" font-weight="bold">CENTRE DE RADIOLOGIE AL MASSIRA • FÈS</text><text x="40" y="75" fill="%2394a3b8" font-family="sans-serif" font-size="11">Réf: RX-2026-9041 • Incidences Face et Profil comparatif</text><circle cx="300" cy="210" r="90" fill="%231e293b" stroke="%2338bdf8" stroke-width="1.5" stroke-dasharray="4"/><path d="M 270 120 L 270 290 Q 300 310 330 290 L 330 120 Z" fill="%23475569" opacity="0.6"/><ellipse cx="300" cy="205" rx="42" ry="16" fill="%23cbd5e1" opacity="0.8"/><text x="300" y="350" fill="%23e2e8f0" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Contrôle Articulaire • Intégrité trame osseuse</text></svg>`,
+            fileSizeKb: 78,
+            originalSizeKb: 3420,
+            notes: 'Cliché pré-opératoire transmis par le chirurgien. Pas de cal vicieux visible.',
+            uploaded_at: new Date(Date.now() - 14 * 86400000).toISOString(),
+          },
+          {
+            id: `doc-${id}-2`,
+            patient_id: id,
+            title: 'Ordonnance Médicale - Rééducation Kiné',
+            category: 'Ordonnance',
+            date: new Date(Date.now() - 10 * 86400000).toISOString().split('T')[0],
+            imageDataUrl: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"><rect width="600" height="400" fill="%23ffffff"/><rect x="20" y="20" width="560" height="360" rx="8" fill="%23f8fafc" stroke="%23cbd5e1" stroke-width="2"/><text x="40" y="60" fill="%230f172a" font-family="sans-serif" font-size="16" font-weight="bold">CABINET MÉDICAL DR. BENJELLOUN</text><text x="40" y="80" fill="%2364748b" font-family="sans-serif" font-size="11">Chirurgie Orthopédique &amp; Traumatologie du Sport • Fès</text><line x1="40" y1="95" x2="560" y2="95" stroke="%23e2e8f0" stroke-width="2"/><text x="40" y="140" fill="%230284c7" font-family="sans-serif" font-size="28" font-weight="bold">Rx</text><text x="40" y="180" fill="%231e293b" font-family="sans-serif" font-size="14" font-weight="600">Prescription de 10 séances de masso-kinésithérapie :</text><text x="50" y="210" fill="%23334155" font-family="sans-serif" font-size="12">• Rééducation proprioceptive et renforcement musculaire</text><text x="50" y="235" fill="%23334155" font-family="sans-serif" font-size="12">• Mobilisation passive et active aidée</text><text x="50" y="260" fill="%23334155" font-family="sans-serif" font-size="12">• Physiothérapie antalgique selon tolérance</text><text x="420" y="340" fill="%230f172a" font-family="cursive" font-size="16">Dr. Benjelloun</text></svg>`,
+            fileSizeKb: 64,
+            originalSizeKb: 1850,
+            notes: 'Prescription initiale de 10 séances. À renouveler si besoin.',
+            uploaded_at: new Date(Date.now() - 10 * 86400000).toISOString(),
+          },
+        ];
+        setMedicalDocs(sampleDocs);
+        localStorage.setItem(storageKey, JSON.stringify(sampleDocs));
+      }
+    } catch (err) {
+      console.warn('Erreur chargement radios/documents:', err);
+    }
+  }, [id]);
+
+  const handleAddMedicalDoc = (doc: MedicalDocument) => {
+    const updated = [doc, ...medicalDocs];
+    setMedicalDocs(updated);
+    try {
+      localStorage.setItem(`cabinet_medical_docs_${id}`, JSON.stringify(updated));
+    } catch (err) {
+      console.warn('Erreur sauvegarde locale doc:', err);
+    }
+  };
+
+  const handleDeleteMedicalDoc = (docId: string) => {
+    if (!confirm('Supprimer définitivement ce document médical ?')) return;
+    const updated = medicalDocs.filter((d) => d.id !== docId);
+    setMedicalDocs(updated);
+    try {
+      localStorage.setItem(`cabinet_medical_docs_${id}`, JSON.stringify(updated));
+    } catch (err) {
+      console.warn('Erreur suppression doc:', err);
+    }
+  };
 
   // Handle Medical Record Save
   const handleSaveMedicalRecord = async (e: React.FormEvent) => {
@@ -469,6 +546,27 @@ export default function PatientDetailPage() {
             <CheckCircle className="w-4 h-4" />
             <span>+1 Séance</span>
           </button>
+
+          {/* Supprimer / Archiver le dossier (Réservé au kinésithérapeute / Propriétaire) */}
+          {isKine && (
+            <button
+              onClick={() => {
+                if (
+                  confirm(
+                    `Confirmez-vous l'archivage ou la suppression du dossier de ${patient.prenom} ${patient.nom} ?`
+                  )
+                ) {
+                  removePatient(patient.id);
+                  router.push('/patients');
+                }
+              }}
+              className="px-3.5 py-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+              title="Supprimer ou archiver ce dossier patient (Propriétaire)"
+            >
+              <Trash2 className="w-4 h-4 text-rose-600" />
+              <span>Supprimer / Archiver</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -595,6 +693,24 @@ export default function PatientDetailPage() {
             <span>Dossier Médical (Réservé Kiné)</span>
           </div>
         )}
+
+        {/* TAB RADIOS & DOCUMENTS MÉDICAUX (Kiné uniquement) */}
+        {!isAssistante ? (
+          <button
+            onClick={() => setActiveTab('radios')}
+            className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'radios'
+                ? 'border-[#0B57D0] text-[#0B57D0] bg-blue-50/50 rounded-t-xl'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <ImageIcon className="w-4 h-4" />
+            <span>Radios & Documents Médicaux</span>
+            <span className="px-2 py-0.5 rounded-full bg-blue-100 text-[#0B57D0] text-xs font-bold">
+              {medicalDocs.length}
+            </span>
+          </button>
+        ) : null}
 
         <button
           onClick={() => setActiveTab('seances')}
@@ -1272,6 +1388,30 @@ export default function PatientDetailPage() {
             </div>
           )}
         </div>
+      )}
+
+      {/* TAB 4: RADIOS & DOCUMENTS MÉDICAUX */}
+      {activeTab === 'radios' && (
+        !isAssistante ? (
+          <MedicalDocumentsGallery
+            patientId={id}
+            patientName={`${patient.prenom} ${patient.nom}`}
+            medicalDocs={medicalDocs}
+            onAddDocument={handleAddMedicalDoc}
+            onDeleteDocument={handleDeleteMedicalDoc}
+            isKine={isKine}
+          />
+        ) : (
+          <div className="bg-white rounded-2xl border border-amber-200/90 p-8 text-center max-w-lg mx-auto my-8 shadow-xs">
+            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center mx-auto mb-3">
+              <Lock className="w-6 h-6" />
+            </div>
+            <h3 className="text-base font-bold text-slate-900">Accès Restreint</h3>
+            <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+              La galerie des radios et documents médicaux est réservée exclusivement au kinésithérapeute.
+            </p>
+          </div>
+        )
       )}
 
       {/* Official Receipt Print Modal */}

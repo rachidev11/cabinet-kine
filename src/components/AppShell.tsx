@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { LayoutDashboard, Users, PlusCircle, Loader2 } from 'lucide-react';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isAddPatientOpen, setIsAddPatientOpen] = useState(false);
   const [isSqlModalOpen, setIsSqlModalOpen] = useState(false);
@@ -33,18 +34,22 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const { profile, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    if (!authLoading && !profile && pathname !== '/login') {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && !authLoading && !profile && pathname !== '/login') {
       router.replace('/login');
     }
-  }, [authLoading, profile, pathname, router]);
+  }, [mounted, authLoading, profile, pathname, router]);
 
   // Render /login page directly without application shell
   if (pathname === '/login') {
     return <>{children}</>;
   }
 
-  // Brief client loader while checking localStorage
-  if (authLoading) {
+  // Client mounting skeleton / neutral container to prevent SSR-Client hydration mismatch
+  if (!mounted || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <Loader2 className="w-8 h-8 text-[#0B57D0] animate-spin" />

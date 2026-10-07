@@ -571,6 +571,23 @@ export default function PatientsPage() {
                     >
                       <Eye className="w-4 h-4" />
                     </button>
+                    {isKine && (
+                      <button
+                        onClick={() => {
+                          if (
+                            confirm(
+                              `Supprimer le dossier de ${patient.prenom} ${patient.nom} ?`
+                            )
+                          ) {
+                            removePatient(patient.id);
+                          }
+                        }}
+                        title="Supprimer définitivement (Propriétaire)"
+                        className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

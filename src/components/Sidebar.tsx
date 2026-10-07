@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Stethoscope,
   ClipboardList,
+  TrendingUp,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -113,12 +114,23 @@ export default function Sidebar({
       icon: Calendar,
       badge: null as string | null,
     },
-    {
-      name: t('facturation'),
-      href: '/facturation',
-      icon: CreditCard,
-      badge: null as string | null,
-    },
+    ...(isKine
+      ? [
+          {
+            name: t('statsRevenue'),
+            href: '/facturation',
+            icon: TrendingUp,
+            badge: null as string | null,
+          },
+        ]
+      : [
+          {
+            name: t('caisseJour'),
+            href: '/facturation',
+            icon: CreditCard,
+            badge: null as string | null,
+          },
+        ]),
   ];
 
   const handleSignOut = () => {
@@ -241,18 +253,20 @@ export default function Sidebar({
               {NAV_KINE_ONLY.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <div
+                  <Link
                     key={item.name}
-                    className="group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 bg-blue-50/50 border border-blue-100"
+                    href={item.href}
+                    onClick={onClose}
+                    className="group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 bg-blue-50/70 hover:bg-blue-100/80 border border-blue-200/80 transition-all cursor-pointer shadow-2xs"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-[#0B57D0]">
+                      <div className="w-8 h-8 rounded-lg bg-[#0B57D0] flex items-center justify-center text-white shadow-2xs">
                         <Icon className="w-4 h-4" />
                       </div>
-                      <span className="text-[#0D47A1] font-semibold">{t('medicalRecord')}</span>
+                      <span className="text-[#0D47A1] font-bold">{t('medicalRecord')}</span>
                     </div>
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F05A28]/15 text-[#F05A28] font-bold">Kiné</span>
-                  </div>
+                  </Link>
                 );
               })}
             </>

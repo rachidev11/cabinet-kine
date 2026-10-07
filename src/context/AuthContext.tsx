@@ -10,9 +10,11 @@ export type UserRole = 'kine' | 'assistante';
 
 export interface UserProfile {
   id: string;
+  name: string;
   full_name: string;
   role: UserRole;
   email: string;
+  isOwner: boolean;
 }
 
 export const PIN_CODES: Record<UserRole, string> = {
@@ -23,19 +25,46 @@ export const PIN_CODES: Record<UserRole, string> = {
 export const PROFILES_CONFIG: Record<UserRole, UserProfile> = {
   kine: {
     id: 'kine-hassna',
+    name: 'Hassna El-Hmaidi',
     full_name: 'Hassna El-Hmaidi',
     role: 'kine',
     email: 'hassna.elhmaidi@cabinet-kine.ma',
+    isOwner: true,
   },
   assistante: {
     id: 'assistante-cabinet',
+    name: 'Assistante Médicale',
     full_name: 'Assistante Médicale',
     role: 'assistante',
     email: 'assistante@cabinet-kine.ma',
+    isOwner: false,
   },
 };
 
 const STORAGE_KEY = 'cabinet_auth_profile';
+
+function getInitialProfile(): UserProfile | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (parsed && (parsed.role === 'kine' || parsed.role === 'assistante')) {
+        return {
+          id: parsed.id || (parsed.role === 'kine' ? 'kine-hassna' : 'assistante-cabinet'),
+          name: parsed.name || parsed.full_name || (parsed.role === 'kine' ? 'Hassna El-Hmaidi' : 'Assistante Médicale'),
+          full_name: parsed.full_name || parsed.name || (parsed.role === 'kine' ? 'Hassna El-Hmaidi' : 'Assistante Médicale'),
+          role: parsed.role,
+          email: parsed.email || '',
+          isOwner: parsed.role === 'kine' ? true : Boolean(parsed.isOwner),
+        };
+      }
+    }
+  } catch (err) {
+    console.warn('Erreur lecture session locale:', err);
+  }
+  return null;
+}
 
 interface AuthContextType {
   user: User | null;
@@ -48,6 +77,7 @@ interface AuthContextType {
   /** Shorthand role helpers */
   isKine: boolean;
   isAssistante: boolean;
+  isOwner: boolean;
 }
 
 // ─── Context ─────────────────────────────────────────────────────────────────
@@ -62,21 +92,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Restore session from localStorage on mount
+  // Restore session from localStorage on mount and sync state
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (parsed && (parsed.role === 'kine' || parsed.role === 'assistante')) {
-          setProfile(parsed);
-        }
-      }
-    } catch (err) {
-      console.warn('Erreur lecture session locale:', err);
-    } finally {
-      setLoading(false);
+    const current = getInitialProfile();
+    if (current) {
+      setProfile(current);
     }
+    setLoading(false);
   }, []);
 
   // Login with PIN
@@ -86,7 +108,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return { success: false, error: 'Code PIN incorrect. Veuillez réessayer.' };
     }
 
-    const selectedProfile = PROFILES_CONFIG[roleKey];
+    const config = PROFILES_CONFIG[roleKey];
+    const selectedProfile: UserProfile = {
+      id: config.id,
+      name: config.name,
+      full_name: config.full_name,
+      role: roleKey,
+      email: config.email,
+      isOwner: roleKey === 'kine',
+    };
+
     setProfile(selectedProfile);
 
     try {
@@ -127,8 +158,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSession(null);
   }, []);
 
-  const isKine = profile?.role === 'kine';
-  const isAssistante = profile?.role === 'assistante';
+  const isKine = profile?.role === 'kine' || profile?.isOwner === true;
+  const isOwner = Boolean(profile?.isOwner || profile?.role === 'kine');
+  const isAssistante = profile?.role === 'assistante' && !isKine;
 
   return (
     <AuthContext.Provider
@@ -142,6 +174,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signOut,
         isKine,
         isAssistante,
+        isOwner,
       }}
     >
       {children}
