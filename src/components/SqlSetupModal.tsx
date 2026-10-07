@@ -19,7 +19,7 @@ interface SqlSetupModalProps {
   onClose: () => void;
 }
 
-const SQL_SCRIPT = `-- Cabinet de Kinésithérapie - Hassna El-Hmaidi
+const SQL_SCRIPT = `-- Centre de Kinésithérapie Nassim Al Massira - Hassna El-Hmaidi
 -- 1. Table des patients
 CREATE TABLE IF NOT EXISTS patients (
   id BIGSERIAL PRIMARY KEY,
@@ -159,19 +159,19 @@ export default function SqlSetupModal({ isOpen, onClose }: SqlSetupModalProps) {
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
       <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden my-8">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-5 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-[#0B57D0] via-[#0D47A1] to-[#0A387E] text-white p-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center border border-teal-500/30">
-              <Database className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-white/15 text-white flex items-center justify-center border border-white/20">
+              <Database className="w-5 h-5 text-[#FF7A45]" />
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-bold">Configuration Supabase & Droits SQL</h2>
-              <p className="text-xs text-slate-400">Paramètres de la base de données du cabinet</p>
+              <p className="text-xs text-blue-100">Paramètres de la base de données du cabinet</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+            className="text-white/80 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -183,7 +183,7 @@ export default function SqlSetupModal({ isOpen, onClose }: SqlSetupModalProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
               <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1.5 mb-1">
-                <Server className="w-3.5 h-3.5 text-teal-600" />
+                <Server className="w-3.5 h-3.5 text-[#0B57D0]" />
                 URL Supabase
               </span>
               <p className="font-mono text-xs text-slate-800 truncate" title={supabaseUrl}>
@@ -193,7 +193,7 @@ export default function SqlSetupModal({ isOpen, onClose }: SqlSetupModalProps) {
 
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
               <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1.5 mb-1">
-                <KeyRound className="w-3.5 h-3.5 text-teal-600" />
+                <KeyRound className="w-3.5 h-3.5 text-[#0B57D0]" />
                 Clé Publique (Anon Key)
               </span>
               <p className="font-mono text-xs text-slate-800 truncate" title={supabaseAnonKey}>
@@ -203,15 +203,15 @@ export default function SqlSetupModal({ isOpen, onClose }: SqlSetupModalProps) {
           </div>
 
           {/* Test connection button */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-teal-50/70 border border-teal-200/80">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-blue-50/70 border border-blue-200/80">
             <div>
-              <p className="font-semibold text-teal-900">Tester la connexion Supabase</p>
-              <p className="text-xs text-teal-700">Vérifie l&apos;accessibilité de la table &apos;patients&apos;</p>
+              <p className="font-semibold text-[#0D47A1]">Tester la connexion Supabase</p>
+              <p className="text-xs text-[#0B57D0]">Vérifie l&apos;accessibilité de la table &apos;patients&apos;</p>
             </div>
             <button
               onClick={handleTestConnection}
               disabled={isTesting}
-              className="px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium text-xs flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+              className="px-3.5 py-1.5 rounded-lg bg-[#0B57D0] hover:bg-[#0D47A1] text-white font-medium text-xs flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isTesting ? 'animate-spin' : ''}`} />
               <span>{isTesting ? 'Test en cours...' : 'Tester maintenant'}</span>
@@ -228,7 +228,7 @@ export default function SqlSetupModal({ isOpen, onClose }: SqlSetupModalProps) {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                <ShieldAlert className="w-4 h-4 text-teal-600" />
+                <ShieldAlert className="w-4 h-4 text-[#0B57D0]" />
                 Script SQL pour activer les autorisations (RLS)
               </span>
               <button

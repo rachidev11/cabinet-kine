@@ -178,10 +178,10 @@ function NewPaymentModal({
       {/* Modal */}
       <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-gradient-to-r from-teal-600 via-teal-700 to-cyan-700">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-blue-900/40 bg-gradient-to-r from-[#0B57D0] via-[#0D47A1] to-[#0A387E]">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-white/15 flex items-center justify-center">
-              <Receipt className="w-5 h-5 text-white" />
+              <Receipt className="w-5 h-5 text-[#FF7A45]" />
             </div>
             <h2 className="text-lg font-bold text-white">Nouveau Paiement</h2>
           </div>
@@ -206,7 +206,7 @@ function NewPaymentModal({
               <button
                 type="button"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-left hover:border-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition-all cursor-pointer"
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm text-left hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0] transition-all cursor-pointer"
               >
                 <span className={selectedPatient ? 'text-slate-900' : 'text-slate-400'}>
                   {selectedPatient
@@ -226,7 +226,7 @@ function NewPaymentModal({
                         placeholder="Rechercher par nom ou téléphone..."
                         value={patientSearch}
                         onChange={(e) => setPatientSearch(e.target.value)}
-                        className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500"
+                        className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
                         autoFocus
                       />
                     </div>
@@ -246,8 +246,8 @@ function NewPaymentModal({
                             setIsDropdownOpen(false);
                             setPatientSearch('');
                           }}
-                          className={`w-full text-left px-4 py-2.5 text-sm hover:bg-teal-50 transition-colors flex items-center justify-between cursor-pointer ${
-                            String(p.id) === selectedPatientId ? 'bg-teal-50 text-teal-700' : 'text-slate-700'
+                          className={`w-full text-left px-4 py-2.5 text-sm hover:bg-blue-50 transition-colors flex items-center justify-between cursor-pointer ${
+                            String(p.id) === selectedPatientId ? 'bg-blue-50 text-[#0B57D0] font-bold' : 'text-slate-700'
                           }`}
                         >
                           <span className="font-medium">
@@ -278,7 +278,7 @@ function NewPaymentModal({
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
                 required
-                className="w-full pl-10 pr-12 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition-all"
+                className="w-full pl-10 pr-12 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0] transition-all"
               />
               <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400">
                 DH
@@ -295,7 +295,7 @@ function NewPaymentModal({
               <select
                 value={method}
                 onChange={(e) => setMethod(e.target.value as PaymentMethod)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition-all cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0] transition-all cursor-pointer"
               >
                 <option value="cash">💵 Espèces</option>
                 <option value="cheque">📝 Chèque</option>
@@ -310,7 +310,7 @@ function NewPaymentModal({
               <select
                 value={sessionsCovered}
                 onChange={(e) => setSessionsCovered(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition-all cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0] transition-all cursor-pointer"
               >
                 {[1, 2, 3, 4, 5, 10, 15, 20].map((n) => (
                   <option key={n} value={n}>
@@ -331,7 +331,7 @@ function NewPaymentModal({
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
               placeholder="Remarques ou détails supplémentaires..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 transition-all resize-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0] transition-all resize-none"
             />
           </div>
 
@@ -368,7 +368,7 @@ function NewPaymentModal({
             <button
               type="submit"
               disabled={submitting || !selectedPatientId || !amount}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white text-sm font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 text-white text-sm font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all cursor-pointer"
             >
               {submitting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -401,7 +401,7 @@ export default function FacturationPage() {
 
   const handlePrint = useReactToPrint({
     contentRef: printReceiptRef,
-    documentTitle: `Recu_Paiement_${receiptPayment?.id || 'Cabinet_Hassna'}`,
+    documentTitle: `Recu_Paiement_${receiptPayment?.id || 'Centre_Nassim'}`,
     pageStyle: `
       @page {
         size: A4 portrait;
@@ -520,7 +520,7 @@ export default function FacturationPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0B57D0] to-[#0D47A1] flex items-center justify-center shadow-sm">
                 <Wallet className="w-5 h-5 text-white" />
               </div>
               Facturation & Règlements
@@ -531,9 +531,9 @@ export default function FacturationPage() {
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white text-sm font-semibold shadow-sm shadow-teal-600/20 transition-all hover:shadow-md cursor-pointer active:scale-[0.98]"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 text-white text-sm font-semibold shadow-sm shadow-blue-600/20 transition-all hover:shadow-md cursor-pointer active:scale-[0.98]"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 text-[#FF7A45]" />
             Nouveau Paiement
           </button>
         </div>
@@ -546,8 +546,8 @@ export default function FacturationPage() {
               label="Total encaissé ce mois"
               value={formatCurrency(kpis.totalMois)}
               suffix="DH"
-              gradient="bg-gradient-to-br from-teal-400 to-emerald-500"
-              iconBg="bg-gradient-to-br from-teal-500 to-emerald-600"
+              gradient="bg-gradient-to-br from-[#0B57D0] to-[#0D47A1]"
+              iconBg="bg-gradient-to-br from-[#0B57D0] to-[#0A387E]"
             />
             <KpiCard
               icon={CreditCard}
@@ -599,7 +599,7 @@ export default function FacturationPage() {
           {/* Table Header */}
           <div className="px-5 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
-              <Receipt className="w-5 h-5 text-teal-600" />
+              <Receipt className="w-5 h-5 text-[#0B57D0]" />
               Historique des Règlements
               <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-semibold">
                 {payments.length}
@@ -612,7 +612,7 @@ export default function FacturationPage() {
                 placeholder="Rechercher un paiement..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400 transition-all"
+                className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0] transition-all"
               />
             </div>
           </div>
@@ -620,7 +620,7 @@ export default function FacturationPage() {
           {/* Table Content */}
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
+              <Loader2 className="w-8 h-8 animate-spin text-[#0B57D0]" />
               <span className="ml-3 text-sm text-slate-500">Chargement des paiements...</span>
             </div>
           ) : filteredPayments.length === 0 ? (
@@ -674,7 +674,7 @@ export default function FacturationPage() {
                     >
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-white text-xs font-bold shadow-sm flex-shrink-0">
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#0B57D0] to-[#0D47A1] flex items-center justify-center text-white text-xs font-bold shadow-sm flex-shrink-0">
                             {payment.patient
                               ? `${payment.patient.prenom?.[0] || ''}${payment.patient.nom?.[0] || ''}`
                               : '?'}
@@ -705,7 +705,7 @@ export default function FacturationPage() {
                         {getMethodBadge(payment.method)}
                       </td>
                       <td className="px-5 py-3.5 text-center">
-                        <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-teal-50 text-teal-700 text-sm font-bold border border-teal-200">
+                        <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-[#0B57D0] text-sm font-bold border border-blue-200">
                           {payment.payment_type
                             ? payment.payment_type.replace(/[^\d]/g, '') || '1'
                             : '1'}
@@ -720,10 +720,10 @@ export default function FacturationPage() {
                         <button
                           type="button"
                           onClick={() => setReceiptPayment(payment)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-700 hover:text-teal-800 text-xs font-semibold border border-teal-200/80 hover:border-teal-300 transition-all cursor-pointer shadow-xs active:scale-95 group"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#0B57D0] hover:text-[#0D47A1] text-xs font-semibold border border-blue-200/80 hover:border-blue-300 transition-all cursor-pointer shadow-xs active:scale-95 group"
                           title="Imprimer le reçu de paiement"
                         >
-                          <Printer className="w-3.5 h-3.5 text-teal-600 group-hover:text-teal-800 transition-colors" />
+                          <Printer className="w-3.5 h-3.5 text-[#0B57D0] group-hover:text-[#0D47A1] transition-colors" />
                           <span>Imprimer</span>
                         </button>
                       </td>
@@ -743,7 +743,7 @@ export default function FacturationPage() {
               </p>
               <p className="text-xs font-semibold text-slate-600">
                 Total affiché :{' '}
-                <span className="text-teal-700">
+                <span className="text-[#0B57D0] font-bold">
                   {formatCurrency(
                     filteredPayments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)
                   )}{' '}

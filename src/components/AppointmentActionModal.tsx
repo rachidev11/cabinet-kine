@@ -57,14 +57,14 @@ export default function AppointmentActionModal({
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
       <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden my-8">
         {/* Header */}
-        <div className="bg-gradient-to-r from-teal-700 via-teal-800 to-cyan-900 text-white p-5 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-[#061B3B] via-[#0B57D0] to-[#0D47A1] text-white p-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/20">
               <Calendar className="w-5 h-5 text-white" />
             </div>
             <div>
               <h2 className="text-base font-bold">Détails du Rendez-vous</h2>
-              <p className="text-xs text-teal-100">Salle {appointment.slot_number} • {appointment.start_time.slice(0, 5)} - {appointment.end_time.slice(0, 5)}</p>
+              <p className="text-xs text-blue-100">Salle {appointment.slot_number} • {appointment.start_time.slice(0, 5)} - {appointment.end_time.slice(0, 5)}</p>
             </div>
           </div>
           <button
@@ -81,7 +81,7 @@ export default function AppointmentActionModal({
           {patient ? (
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-teal-500 to-cyan-500 text-white font-bold text-sm flex items-center justify-center shrink-0">
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1] text-white font-bold text-sm flex items-center justify-center shrink-0">
                   {patient.prenom[0]}
                   {patient.nom[0]}
                 </div>
@@ -93,7 +93,7 @@ export default function AppointmentActionModal({
                     CIN: {patient.cin} • {patient.age} ans
                   </p>
                   {patient.motif_consultation && (
-                    <p className="text-[11px] text-teal-700 font-medium truncate max-w-[200px] mt-0.5">
+                    <p className="text-[11px] text-[#0B57D0] font-medium truncate max-w-[200px] mt-0.5">
                       {patient.motif_consultation}
                     </p>
                   )}
@@ -114,7 +114,7 @@ export default function AppointmentActionModal({
           <div className="grid grid-cols-2 gap-3">
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
               <span className="text-[11px] font-semibold text-slate-400 block mb-1 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-teal-600" />
+                <Clock className="w-3.5 h-3.5 text-[#0B57D0]" />
                 Horaire
               </span>
               <p className="font-bold text-slate-900">
@@ -125,7 +125,7 @@ export default function AppointmentActionModal({
 
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
               <span className="text-[11px] font-semibold text-slate-400 block mb-1 flex items-center gap-1">
-                <Bed className="w-3.5 h-3.5 text-teal-600" />
+                <Bed className="w-3.5 h-3.5 text-[#0B57D0]" />
                 Emplacement
               </span>
               <p className="font-bold text-slate-900">Salle {appointment.slot_number}</p>
@@ -161,7 +161,7 @@ export default function AppointmentActionModal({
                 onClick={() => handleSetStatus('scheduled')}
                 className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                   appointment.status === 'scheduled'
-                    ? 'bg-teal-600 text-white border-teal-600 shadow-xs'
+                    ? 'bg-[#0B57D0] text-white border-[#0B57D0] shadow-xs'
                     : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                 }`}
               >

@@ -186,14 +186,14 @@ export default function AddAppointmentModal({
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
       <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden my-8">
         {/* Header */}
-        <div className="bg-gradient-to-r from-teal-700 to-cyan-800 text-white px-6 py-4 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-[#061B3B] via-[#0B57D0] to-[#0D47A1] text-white px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/20">
               <Calendar className="w-5 h-5 text-white" />
             </div>
             <div>
               <h2 className="text-lg font-bold">Nouveau Rendez-vous</h2>
-              <p className="text-xs text-teal-100">Planification d&apos;une séance de kinésithérapie</p>
+              <p className="text-xs text-blue-100">Planification d&apos;une séance de kinésithérapie</p>
             </div>
           </div>
           <button
@@ -220,9 +220,9 @@ export default function AddAppointmentModal({
             </label>
 
             {selectedPatient ? (
-              <div className="flex items-center justify-between p-3 rounded-xl border border-teal-200 bg-teal-50/50">
+              <div className="flex items-center justify-between p-3 rounded-xl border border-blue-200 bg-blue-50/50">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-teal-600 text-white text-xs font-bold flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-[#0B57D0] text-white text-xs font-bold flex items-center justify-center">
                     {selectedPatient.prenom[0]}
                     {selectedPatient.nom[0]}
                   </div>
@@ -241,7 +241,7 @@ export default function AddAppointmentModal({
                     setSelectedPatientId('');
                     setIsPatientDropdownOpen(true);
                   }}
-                  className="text-xs text-teal-700 hover:text-teal-900 font-semibold p-1 hover:bg-teal-100 rounded-lg cursor-pointer"
+                  className="text-xs text-[#0B57D0] hover:text-blue-900 font-semibold p-1 hover:bg-blue-100 rounded-lg cursor-pointer"
                 >
                   Changer
                 </button>
@@ -259,7 +259,7 @@ export default function AddAppointmentModal({
                       setIsPatientDropdownOpen(true);
                     }}
                     onFocus={() => setIsPatientDropdownOpen(true)}
-                    className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-600"
+                    className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
                   />
                   <ChevronDown className="w-4 h-4 absolute right-3 top-3 text-slate-400 pointer-events-none" />
                 </div>
@@ -279,7 +279,7 @@ export default function AddAppointmentModal({
                             setIsPatientDropdownOpen(false);
                             setPatientSearch('');
                           }}
-                          className="p-2.5 hover:bg-teal-50/60 cursor-pointer flex items-center justify-between text-xs transition-colors"
+                          className="p-2.5 hover:bg-blue-50/60 cursor-pointer flex items-center justify-between text-xs transition-colors"
                         >
                           <div>
                             <p className="font-bold text-slate-900">
@@ -311,7 +311,7 @@ export default function AddAppointmentModal({
               required
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
             />
             {new Date(date).getDay() === 0 && (
               <p className="text-[11px] text-amber-600 font-medium">
@@ -332,7 +332,7 @@ export default function AddAppointmentModal({
               <select
                 value={timeSlotIndex}
                 onChange={(e) => setTimeSlotIndex(Number(e.target.value))}
-                className="col-span-2 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-600"
+                className="col-span-2 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
               >
                 {TIME_SLOTS.map((slot, idx) => (
                   <option key={slot.label} value={idx}>
@@ -367,13 +367,13 @@ export default function AddAppointmentModal({
                     onClick={() => setSlotNumber(box.id)}
                     className={`p-3 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center gap-1.5 ${
                       isSelected
-                        ? 'border-teal-600 bg-teal-50 text-teal-900 shadow-2xs font-bold'
+                        ? 'border-[#0B57D0] bg-blue-50 text-[#0B57D0] shadow-2xs font-bold'
                         : boxOccupied
                         ? 'border-slate-200 bg-slate-100/70 text-slate-400 opacity-60'
                         : 'border-slate-200 hover:border-slate-300 bg-white text-slate-700'
                     }`}
                   >
-                    <Bed className={`w-5 h-5 ${isSelected ? 'text-teal-600' : 'text-slate-400'}`} />
+                    <Bed className={`w-5 h-5 ${isSelected ? 'text-[#0B57D0]' : 'text-slate-400'}`} />
                     <span className="text-xs font-bold">{box.name}</span>
                     <span className="text-[10px] text-slate-400 truncate w-full">
                       {boxOccupied ? 'Occupé' : 'Libre'}
@@ -404,7 +404,7 @@ export default function AddAppointmentModal({
             <button
               type="submit"
               disabled={loading || isOccupied || !selectedPatientId}
-              className="px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 shadow-md shadow-teal-600/20 flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
+              className="px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:from-[#08429E] hover:to-[#0A387E] shadow-md shadow-blue-600/20 flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
             >
               {loading ? (
                 <>

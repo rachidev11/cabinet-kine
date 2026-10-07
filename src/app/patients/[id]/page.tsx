@@ -359,7 +359,7 @@ export default function PatientDetailPage() {
   // EVA Color & Label Helper
   const getEvaVisual = (score: number) => {
     if (score === 0) return { label: 'Aucune douleur', color: 'text-emerald-600', bg: 'bg-emerald-500' };
-    if (score <= 3) return { label: 'Douleur légère', color: 'text-teal-600', bg: 'bg-teal-500' };
+    if (score <= 3) return { label: 'Douleur légère', color: 'text-blue-600', bg: 'bg-blue-500' };
     if (score <= 6) return { label: 'Douleur modérée', color: 'text-amber-600', bg: 'bg-amber-500' };
     if (score <= 8) return { label: 'Douleur intense', color: 'text-orange-600', bg: 'bg-orange-500' };
     return { label: 'Douleur intolérable', color: 'text-rose-600', bg: 'bg-rose-600' };
@@ -368,7 +368,7 @@ export default function PatientDetailPage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
-        <RefreshCw className="w-8 h-8 text-teal-600 animate-spin" />
+        <RefreshCw className="w-8 h-8 text-[#0B57D0] animate-spin" />
         <p className="text-sm font-semibold text-slate-600">Chargement du dossier patient...</p>
       </div>
     );
@@ -386,7 +386,7 @@ export default function PatientDetailPage() {
         </p>
         <Link
           href="/patients"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0B57D0] text-white font-semibold text-sm hover:bg-[#0D47A1] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Retour à la liste des patients
@@ -406,14 +406,14 @@ export default function PatientDetailPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.push('/patients')}
-            className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-teal-700 hover:border-teal-300 hover:bg-teal-50/50 transition-all shadow-2xs cursor-pointer"
+            className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-[#0B57D0] hover:border-blue-300 hover:bg-blue-50/50 transition-all shadow-2xs cursor-pointer"
             title="Retour à la liste"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-teal-600 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-[#0B57D0] uppercase tracking-wider">
                 Dossier Médical Kiné
               </span>
               <span className="text-xs text-slate-400">•</span>
@@ -443,7 +443,7 @@ export default function PatientDetailPage() {
             href={`tel:${patient.telephone}`}
             className="px-3.5 py-2 rounded-xl bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs"
           >
-            <Phone className="w-4 h-4 text-teal-600" />
+            <Phone className="w-4 h-4 text-[#0B57D0]" />
             <span>Appeler</span>
           </a>
 
@@ -452,10 +452,10 @@ export default function PatientDetailPage() {
             <button
               onClick={() => handlePrintBilan()}
               type="button"
-              className="px-3.5 py-2 rounded-xl bg-teal-50 text-teal-800 border border-teal-200 hover:bg-teal-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-blue-50 text-[#0B57D0] border border-blue-200 hover:bg-blue-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
               title="Imprimer le compte-rendu officiel du bilan"
             >
-              <Printer className="w-4 h-4 text-teal-600" />
+              <Printer className="w-4 h-4 text-[#0B57D0]" />
               <span>Imprimer Bilan</span>
             </button>
           )}
@@ -463,7 +463,7 @@ export default function PatientDetailPage() {
           {/* Quick Session Increment */}
           <button
             onClick={handleIncrementSession}
-            className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#F05A28] hover:bg-[#FF7A45] text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
             title="Valider 1 séance effectuée"
           >
             <CheckCircle className="w-4 h-4" />
@@ -475,12 +475,12 @@ export default function PatientDetailPage() {
       {/* Patient Header Card (Full Info) */}
       <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs relative overflow-hidden">
         {/* Decorative subtle gradient background */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-teal-500/5 via-cyan-500/5 to-transparent rounded-full -mr-20 -mt-20 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-blue-500/5 via-[#0B57D0]/5 to-transparent rounded-full -mr-20 -mt-20 pointer-events-none" />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
           {/* Left Avatar & Identity */}
           <div className="lg:col-span-4 flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-teal-600 via-teal-500 to-cyan-500 text-white font-extrabold text-2xl flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#0B57D0] via-[#0D47A1] to-[#0A387E] text-white font-extrabold text-2xl flex items-center justify-center shrink-0 shadow-md">
               {patient.prenom[0]}
               {patient.nom[0]}
             </div>
@@ -493,7 +493,7 @@ export default function PatientDetailPage() {
                   className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                     patient.statut === 'Terminé'
                       ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                      : 'bg-teal-50 text-teal-700 border border-teal-200'
+                      : 'bg-blue-50 text-[#0B57D0] border border-blue-200'
                   }`}
                 >
                   {patient.statut || 'Actif'}
@@ -546,22 +546,22 @@ export default function PatientDetailPage() {
           </div>
 
           {/* Right Progress Card */}
-          <div className="lg:col-span-3 p-4 rounded-xl bg-gradient-to-br from-teal-50/80 to-cyan-50/80 border border-teal-100/80 space-y-2.5">
+          <div className="lg:col-span-3 p-4 rounded-xl bg-gradient-to-br from-blue-50/80 to-indigo-50/80 border border-blue-100/80 space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-teal-900">Suivi des Séances</span>
-              <span className="text-xs font-black text-teal-700 bg-white px-2 py-0.5 rounded-md shadow-2xs">
+              <span className="text-xs font-bold text-[#0D47A1]">Suivi des Séances</span>
+              <span className="text-xs font-black text-[#0B57D0] bg-white px-2 py-0.5 rounded-md shadow-2xs">
                 {doneSessions} / {prescSessions}
               </span>
             </div>
 
-            <div className="w-full h-3 rounded-full bg-teal-200/50 overflow-hidden">
+            <div className="w-full h-3 rounded-full bg-blue-200/50 overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full transition-all duration-500"
+                className="h-full bg-gradient-to-r from-[#0B57D0] to-[#F05A28] rounded-full transition-all duration-500"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
 
-            <div className="flex items-center justify-between text-[11px] text-teal-800 font-medium">
+            <div className="flex items-center justify-between text-[11px] text-[#0D47A1] font-medium">
               <span>{progressPct}% complété</span>
               <span>{Math.max(0, prescSessions - doneSessions)} restantes</span>
             </div>
@@ -576,7 +576,7 @@ export default function PatientDetailPage() {
             onClick={() => setActiveTab('bilan')}
             className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
               activeTab === 'bilan'
-                ? 'border-teal-600 text-teal-700 bg-teal-50/50 rounded-t-xl'
+                ? 'border-[#0B57D0] text-[#0B57D0] bg-blue-50/50 rounded-t-xl'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -597,7 +597,7 @@ export default function PatientDetailPage() {
           onClick={() => setActiveTab('seances')}
           className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
             activeTab === 'seances'
-              ? 'border-teal-600 text-teal-700 bg-teal-50/50 rounded-t-xl'
+              ? 'border-[#0B57D0] text-[#0B57D0] bg-blue-50/50 rounded-t-xl'
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
@@ -612,7 +612,7 @@ export default function PatientDetailPage() {
           onClick={() => setActiveTab('paiements')}
           className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
             activeTab === 'paiements'
-              ? 'border-teal-600 text-teal-700 bg-teal-50/50 rounded-t-xl'
+              ? 'border-[#0B57D0] text-[#0B57D0] bg-blue-50/50 rounded-t-xl'
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
@@ -639,7 +639,7 @@ export default function PatientDetailPage() {
             <button
               type="button"
               onClick={() => setActiveTab('seances')}
-              className="mt-4 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-xs transition-all"
+              className="mt-4 px-4 py-2 bg-[#0B57D0] hover:bg-[#0D47A1] text-white text-xs font-bold rounded-xl cursor-pointer shadow-xs transition-all"
             >
               Consulter les séances
             </button>
@@ -671,7 +671,7 @@ export default function PatientDetailPage() {
               {/* Card 1: Diagnostic & Prescription */}
               <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-4">
                 <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
-                  <div className="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 text-[#0B57D0] flex items-center justify-center font-bold">
                     1
                   </div>
                   <div>
@@ -698,7 +698,7 @@ export default function PatientDetailPage() {
                         setMedicalRecord({ ...medicalRecord, diagnostic: e.target.value })
                       }
                       placeholder="Ex: Rééducation post-opératoire LCA genou droit, Lombalgie..."
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
                     />
                   </div>
 
@@ -714,7 +714,7 @@ export default function PatientDetailPage() {
                         setMedicalRecord({ ...medicalRecord, pathologie: e.target.value })
                       }
                       placeholder="Ex: Ligamentoplastie DIDT M+1"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
                     />
                   </div>
 
@@ -733,7 +733,7 @@ export default function PatientDetailPage() {
                         })
                       }
                       placeholder="Ex: Dr. Benjelloun (Chirurgien Ortho)"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
                     />
                   </div>
 
@@ -753,7 +753,7 @@ export default function PatientDetailPage() {
                           seances_prescrites: parseInt(e.target.value) || 1,
                         })
                       }
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
                     />
                   </div>
 
@@ -768,7 +768,7 @@ export default function PatientDetailPage() {
                       onChange={(e) =>
                         setMedicalRecord({ ...medicalRecord, date_bilan: e.target.value })
                       }
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
                     />
                   </div>
                 </div>
@@ -777,7 +777,7 @@ export default function PatientDetailPage() {
               {/* Card 2: Bilan Initial & Objectifs de Rééducation */}
               <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-4">
                 <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
-                  <div className="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 text-[#0B57D0] flex items-center justify-center font-bold">
                     2
                   </div>
                   <div>
@@ -803,7 +803,7 @@ export default function PatientDetailPage() {
                         setMedicalRecord({ ...medicalRecord, bilan_initial: e.target.value })
                       }
                       placeholder="Ex: Douleur vive en fin d'extension. Boiterie d'esquive. Flexion active limitée à 90°. Pas d'épanchement notable..."
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
                     />
                   </div>
 
@@ -822,7 +822,7 @@ export default function PatientDetailPage() {
                         })
                       }
                       placeholder="Ex: 1. Récupération des amplitudes articulaires complètes (flexion 130°). 2. Renforcement du quadriceps & ischio-jambiers. 3. Reprise de l'appui complet sans béquilles."
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
                     />
                   </div>
                 </div>
@@ -831,7 +831,7 @@ export default function PatientDetailPage() {
               {/* Card 3: Bilans Articulaire & Musculaire Spécifiques */}
               <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs space-y-4">
                 <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
-                  <div className="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 text-[#0B57D0] flex items-center justify-center font-bold">
                     3
                   </div>
                   <div>
@@ -847,7 +847,7 @@ export default function PatientDetailPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                      <Scale className="w-3.5 h-3.5 text-teal-600" />
+                      <Scale className="w-3.5 h-3.5 text-[#0B57D0]" />
                       <span>Bilan Articulaire & Mobilités</span>
                     </label>
                     <textarea
@@ -860,13 +860,13 @@ export default function PatientDetailPage() {
                         })
                       }
                       placeholder="Flexion: 110°, Extension: -5°. Pas de blocage méniscal..."
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                      <Dumbbell className="w-3.5 h-3.5 text-teal-600" />
+                      <Dumbbell className="w-3.5 h-3.5 text-[#0B57D0]" />
                       <span>Bilan Musculaire & Testing</span>
                     </label>
                     <textarea
@@ -879,7 +879,7 @@ export default function PatientDetailPage() {
                         })
                       }
                       placeholder="Quadriceps côté 3+/5, amyotrophie cuisse de 1.5 cm vs controlatéral..."
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
                     />
                   </div>
                 </div>
@@ -892,7 +892,7 @@ export default function PatientDetailPage() {
               <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2">
-                    <Activity className="w-5 h-5 text-teal-600" />
+                    <Activity className="w-5 h-5 text-[#0B57D0]" />
                     <h3 className="font-bold text-slate-900 text-sm">Échelle de Douleur (EVA)</h3>
                   </div>
                   <span
@@ -925,7 +925,7 @@ export default function PatientDetailPage() {
                         eva_douleur: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full accent-teal-600 cursor-pointer h-2 bg-slate-200 rounded-lg"
+                    className="w-full accent-[#0B57D0] cursor-pointer h-2 bg-slate-200 rounded-lg"
                   />
 
                   {/* Visual gauge ticks */}
@@ -935,7 +935,7 @@ export default function PatientDetailPage() {
                         key={val}
                         className={
                           (medicalRecord.eva_douleur ?? 5) === val
-                            ? 'font-bold text-teal-700 underline'
+                            ? 'font-bold text-[#0B57D0] underline'
                             : ''
                         }
                       >
@@ -949,7 +949,7 @@ export default function PatientDetailPage() {
               {/* Antécédents Médicaux Card */}
               <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs space-y-3">
                 <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-teal-600" />
+                  <ShieldCheck className="w-4 h-4 text-[#0B57D0]" />
                   <span>Antécédents du Patient</span>
                 </h3>
                 <textarea
@@ -959,14 +959,14 @@ export default function PatientDetailPage() {
                     setMedicalRecord({ ...medicalRecord, antecedents: e.target.value })
                   }
                   placeholder="Chirurgies, pathologies associées, allergies..."
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
                 />
               </div>
 
               {/* Observations & Notes Complémentaires */}
               <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs space-y-3">
                 <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-teal-600" />
+                  <FileText className="w-4 h-4 text-[#0B57D0]" />
                   <span>Observations & Évolution</span>
                 </h3>
                 <textarea
@@ -976,24 +976,24 @@ export default function PatientDetailPage() {
                     setMedicalRecord({ ...medicalRecord, observations: e.target.value })
                   }
                   placeholder="Remarques de séance, tolérance aux exercices, précautions..."
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0]"
                 />
               </div>
 
               {/* Save Button Card */}
-              <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-5 text-white shadow-lg space-y-3">
-                <div className="flex items-center gap-2 text-teal-400 text-xs font-bold uppercase tracking-wider">
-                  <Sparkles className="w-4 h-4" />
+              <div className="bg-gradient-to-br from-[#061B3B] via-[#0B57D0] to-[#0D47A1] rounded-2xl p-5 text-white shadow-lg space-y-3">
+                <div className="flex items-center gap-2 text-orange-200 text-xs font-bold uppercase tracking-wider">
+                  <Sparkles className="w-4 h-4 text-[#F05A28]" />
                   <span>Mise à Jour Dossier</span>
                 </div>
-                <p className="text-xs text-slate-300">
+                <p className="text-xs text-blue-100">
                   Enregistre le bilan initial et les objectifs thérapeutiques dans la table
                   médicale du patient.
                 </p>
                 <button
                   type="submit"
                   disabled={isSavingRecord}
-                  className="w-full py-3 rounded-xl bg-teal-500 hover:bg-teal-600 active:bg-teal-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer disabled:opacity-50"
+                  className="w-full py-3 rounded-xl bg-[#F05A28] hover:bg-[#FF7A45] active:bg-orange-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer disabled:opacity-50"
                 >
                   {isSavingRecord ? (
                     <>
@@ -1011,9 +1011,9 @@ export default function PatientDetailPage() {
                 <button
                   type="button"
                   onClick={() => handlePrintBilan()}
-                  className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-teal-300 font-semibold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
+                  className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
                 >
-                  <Printer className="w-3.5 h-3.5 text-teal-400" />
+                  <Printer className="w-3.5 h-3.5 text-[#FF7A45]" />
                   <span>Imprimer le Bilan Officiel (PDF / Papier)</span>
                 </button>
               </div>
@@ -1038,7 +1038,7 @@ export default function PatientDetailPage() {
             </div>
             <Link
               href="/agenda"
-              className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs inline-flex items-center gap-2 shadow-sm transition-all"
+              className="px-4 py-2 rounded-xl bg-[#0B57D0] hover:bg-[#0D47A1] text-white font-semibold text-xs inline-flex items-center gap-2 shadow-sm transition-all"
             >
               <Plus className="w-4 h-4" />
               <span>Planifier une Séance</span>
@@ -1055,7 +1055,7 @@ export default function PatientDetailPage() {
               </p>
               <Link
                 href="/agenda"
-                className="px-4 py-2 rounded-xl bg-teal-600 text-white text-xs font-bold inline-flex items-center gap-1.5"
+                className="px-4 py-2 rounded-xl bg-[#0B57D0] hover:bg-[#0D47A1] text-white text-xs font-bold inline-flex items-center gap-1.5"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Créer un rendez-vous</span>
@@ -1081,11 +1081,11 @@ export default function PatientDetailPage() {
                         new Date().setHours(0, 0, 0, 0);
 
                       return (
-                        <tr key={appt.id} className="hover:bg-teal-50/30 transition-colors">
+                        <tr key={appt.id} className="hover:bg-blue-50/30 transition-colors">
                           {/* Date */}
                           <td className="py-4 px-4 font-semibold text-slate-900">
                             <div className="flex items-center gap-2">
-                              <Calendar className="w-4 h-4 text-teal-600" />
+                              <Calendar className="w-4 h-4 text-[#0B57D0]" />
                               <span>{appt.appointment_date}</span>
                             </div>
                           </td>
@@ -1117,7 +1117,7 @@ export default function PatientDetailPage() {
                                   ? 'bg-amber-50 text-amber-700 border border-amber-200'
                                   : appt.status === 'cancelled'
                                   ? 'bg-rose-50 text-rose-700 border border-rose-200'
-                                  : 'bg-teal-50 text-teal-700 border border-teal-200'
+                                  : 'bg-blue-50 text-[#0B57D0] border border-blue-200'
                               }`}
                             >
                               {appt.status === 'completed'
@@ -1154,7 +1154,7 @@ export default function PatientDetailPage() {
               <span className="text-xs font-semibold text-slate-400 block uppercase">
                 Total Encaissé
               </span>
-              <span className="text-2xl font-black text-teal-700 mt-1 block">
+              <span className="text-2xl font-black text-[#0B57D0] mt-1 block">
                 {totalPaid.toLocaleString()} DH
               </span>
               <span className="text-[11px] text-slate-500 mt-1 block">
@@ -1197,7 +1197,7 @@ export default function PatientDetailPage() {
               </p>
               <Link
                 href="/facturation"
-                className="px-4 py-2 rounded-xl bg-teal-600 text-white text-xs font-bold inline-flex items-center gap-1.5"
+                className="px-4 py-2 rounded-xl bg-[#0B57D0] hover:bg-[#0D47A1] text-white text-xs font-bold inline-flex items-center gap-1.5"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Enregistrer un encaissement</span>
@@ -1219,7 +1219,7 @@ export default function PatientDetailPage() {
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {payments.map((p) => (
-                      <tr key={p.id} className="hover:bg-teal-50/30 transition-colors">
+                      <tr key={p.id} className="hover:bg-blue-50/30 transition-colors">
                         {/* ID */}
                         <td className="py-4 px-4 font-mono font-bold text-slate-800 text-xs">
                           #{p.id}
@@ -1254,7 +1254,7 @@ export default function PatientDetailPage() {
                               setReceiptPayment({ ...p, patient });
                               setIsReceiptModalOpen(true);
                             }}
-                            className="px-3 py-1.5 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-700 text-xs font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                            className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#0B57D0] text-xs font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                             title="Imprimer le reçu officiel"
                           >
                             <Printer className="w-3.5 h-3.5" />

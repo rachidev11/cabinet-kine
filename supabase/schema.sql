@@ -1,5 +1,5 @@
 -- =====================================================================
--- SCHEMA DE BASE DE DONNÉES SUPABASE - CABINET DE KINÉSITHÉRAPIE HASSNA EL-HMAIDI
+-- SCHEMA DE BASE DE DONNÉES SUPABASE - CENTRE DE KINÉSITHÉRAPIE NASSIM AL MASSIRA (HASSNA EL-HMAIDI)
 -- =====================================================================
 
 -- 1. Table des Patients

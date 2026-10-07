@@ -63,14 +63,19 @@ export default function Navbar({
           <Menu className="w-5 h-5" />
         </button>
 
-        <div>
-          <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            Cabinet de Kinésithérapie
-            <span className="hidden sm:inline-block text-[11px] font-normal px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">
-              Hassna El-Hmaidi
-            </span>
-          </h1>
-          <p className="text-xs text-slate-500 hidden sm:block">{dateCapitalized}</p>
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/90 p-1 flex items-center justify-center shadow-xs flex-shrink-0">
+            <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+          </div>
+          <div>
+            <h1 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <span>Centre Nassim Al Massira</span>
+              <span className="hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-[#0B57D0] border border-blue-200">
+                Hassna El-Hmaidi
+              </span>
+            </h1>
+            <p className="text-xs text-slate-500 hidden sm:block">{dateCapitalized}</p>
+          </div>
         </div>
       </div>
 
@@ -96,9 +101,9 @@ export default function Navbar({
             onClick={onRefresh}
             disabled={isRefreshing}
             title="Rafraîchir les données"
-            className="p-2 text-slate-500 hover:text-teal-600 rounded-xl hover:bg-slate-100 transition-all cursor-pointer disabled:opacity-50"
+            className="p-2 text-slate-500 hover:text-[#0B57D0] rounded-xl hover:bg-slate-100 transition-all cursor-pointer disabled:opacity-50"
           >
-            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-teal-600' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-[#0B57D0]' : ''}`} />
           </button>
         )}
 
@@ -107,20 +112,20 @@ export default function Navbar({
           <div className="hidden sm:flex items-center gap-2 pl-2 border-l border-slate-200">
             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-xs flex-shrink-0 ${
               profile.role === 'kine'
-                ? 'bg-gradient-to-tr from-teal-600 to-emerald-600'
-                : 'bg-gradient-to-tr from-cyan-600 to-blue-600'
+                ? 'bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1]'
+                : 'bg-gradient-to-tr from-[#F05A28] to-[#FF7A45]'
             }`}>
               {profile.role === 'kine' ? <Stethoscope className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
             </div>
             <div className="hidden md:block">
               {profile.role === 'kine' ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-teal-50 text-teal-900 border border-teal-200 shadow-2xs">
-                  <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-[#0B57D0] border border-blue-200 shadow-2xs">
+                  <span className="w-2 h-2 rounded-full bg-[#0B57D0] animate-pulse" />
                   Hassna El-Hmaidi — Kinésithérapeute (Propriétaire)
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-900 border border-blue-200 shadow-2xs">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-[#F05A28] border border-orange-200 shadow-2xs">
+                  <span className="w-2 h-2 rounded-full bg-[#F05A28] animate-pulse" />
                   Assistante Médicale
                 </span>
               )}
@@ -131,7 +136,7 @@ export default function Navbar({
         {/* Primary Add Patient Button */}
         <button
           onClick={onOpenAddPatient}
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-medium text-xs sm:text-sm shadow-xs transition-all active:scale-95 cursor-pointer"
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0B57D0] hover:bg-[#0D47A1] text-white font-semibold text-xs sm:text-sm shadow-xs transition-all active:scale-95 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span className="hidden sm:inline">Ajouter un</span> Patient

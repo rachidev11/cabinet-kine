@@ -45,7 +45,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="w-8 h-8 text-teal-600 animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#0B57D0] animate-spin" />
       </div>
     );
   }
@@ -94,7 +94,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <Link
             href="/"
             className={`flex flex-col items-center gap-1 text-[11px] font-semibold p-1.5 transition-colors ${
-              pathname === '/' ? 'text-teal-600' : 'text-slate-500'
+              pathname === '/' ? 'text-[#0B57D0]' : 'text-slate-500'
             }`}
           >
             <LayoutDashboard className="w-5 h-5" />
@@ -104,7 +104,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           {/* Quick Add Patient Floating Center Button */}
           <button
             onClick={() => setIsAddPatientOpen(true)}
-            className="flex flex-col items-center justify-center -mt-5 w-12 h-12 rounded-full bg-gradient-to-tr from-teal-600 to-cyan-600 text-white shadow-lg shadow-teal-600/30 cursor-pointer active:scale-90 transition-transform"
+            className="flex flex-col items-center justify-center -mt-5 w-12 h-12 rounded-full bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1] text-white shadow-lg shadow-blue-600/30 cursor-pointer active:scale-90 transition-transform"
             aria-label="Ajouter un patient"
           >
             <PlusCircle className="w-7 h-7" />
@@ -113,13 +113,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <Link
             href="/patients"
             className={`flex flex-col items-center gap-1 text-[11px] font-semibold p-1.5 transition-colors relative ${
-              pathname === '/patients' ? 'text-teal-600' : 'text-slate-500'
+              pathname === '/patients' ? 'text-[#0B57D0]' : 'text-slate-500'
             }`}
           >
             <Users className="w-5 h-5" />
             <span>Patients</span>
             {patients.length > 0 && (
-              <span className="absolute top-1 right-2 w-4 h-4 rounded-full bg-teal-600 text-white text-[9px] flex items-center justify-center font-bold">
+              <span className="absolute top-1 right-2 w-4 h-4 rounded-full bg-[#F05A28] text-white text-[9px] flex items-center justify-center font-bold">
                 {patients.length}
               </span>
             )}

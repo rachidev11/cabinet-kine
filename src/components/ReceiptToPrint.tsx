@@ -193,20 +193,20 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
         }}
         className="receipt-print-container p-6 bg-white text-slate-800 text-xs"
       >
-        {/* 1. EN-TÊTE DU CABINET */}
-        <div className="border-b-2 border-teal-600 pb-3 mb-3">
+        {/* 1. EN-TÊTE DU CENTRE */}
+        <div className="border-b-2 border-[#0B57D0] pb-3 mb-3">
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-0.5">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center flex-shrink-0">
-                  <Building2 className="w-4 h-4" />
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center flex-shrink-0 shadow-xs">
+                  <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
                 </div>
                 <div>
                   <h1 className="text-base font-black tracking-tight text-slate-900 uppercase leading-snug">
-                    Cabinet de Kinésithérapie Hassna El-Hmaidi
+                    Centre de Kinésithérapie Nassim Al Massira
                   </h1>
-                  <p className="text-[11px] font-semibold text-teal-700 tracking-wide uppercase">
-                    Kinésithérapie • Rééducation Fonctionnelle • Physiothérapie
+                  <p className="text-[11px] font-bold text-[#0B57D0] tracking-wide uppercase">
+                    Hassna El-Hmaidi • Kinésithérapie • Rééducation Fonctionnelle
                   </p>
                 </div>
               </div>
@@ -214,11 +214,11 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
               <div className="pt-1 text-[11px] text-slate-600 space-y-0.5">
                 <p className="flex items-center gap-1.5 leading-tight">
                   <MapPin className="w-3 h-3 text-slate-400 flex-shrink-0" />
-                  <span>45 Boulevard Zerktouni, Résidence Al Manar, 2ème étage, Casablanca</span>
+                  <span>3 BLOC 4 HAY NASSIM BENSOUDA RDC FES, Fez, Morocco, 30000</span>
                 </p>
                 <p className="flex items-center gap-1.5 leading-tight">
                   <Phone className="w-3 h-3 text-slate-400 flex-shrink-0" />
-                  <span>Tél : +212 5 22 40 50 60 / +212 6 61 23 45 67</span>
+                  <span>Tél : +212 5 35 60 70 80 / +212 6 61 23 45 67</span>
                 </p>
                 <p className="text-[10px] text-slate-400 pt-0.5 leading-tight">
                   N° INPE : 108429381 • Patente : 34820194 • IF : 4829104
@@ -228,8 +228,8 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
 
             {/* Right Badge: Reçu de Paiement */}
             <div className="text-right flex flex-col items-end justify-between">
-              <div className="inline-block bg-teal-50 border border-teal-200 px-3 py-1 rounded-lg text-teal-800 text-right">
-                <span className="text-[9px] font-bold uppercase tracking-wider block text-teal-600 leading-tight">
+              <div className="inline-block bg-blue-50 border border-blue-200 px-3 py-1 rounded-lg text-[#0B57D0] text-right">
+                <span className="text-[9px] font-bold uppercase tracking-wider block text-[#F05A28] leading-tight">
                   Document Officiel
                 </span>
                 <span className="text-xs font-extrabold tracking-tight leading-tight">
@@ -257,7 +257,7 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
           {/* Patient Box */}
           <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-2.5">
             <div className="flex items-center gap-1.5 pb-1 mb-1 border-b border-slate-200">
-              <User className="w-3.5 h-3.5 text-teal-700" />
+              <User className="w-3.5 h-3.5 text-[#0B57D0]" />
               <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-700">
                 Informations du Patient
               </h3>
@@ -281,8 +281,8 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-500 font-medium">Assurance / Mutuelle :</span>
-                <span className="inline-flex items-center gap-1 font-bold text-teal-800 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200 text-[11px]">
-                  <ShieldCheck className="w-3 h-3 text-teal-600" />
+                <span className="inline-flex items-center gap-1 font-bold text-blue-900 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 text-[11px]">
+                  <ShieldCheck className="w-3 h-3 text-[#0B57D0]" />
                   {patientAssurance}
                 </span>
               </div>
@@ -299,7 +299,7 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
           <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-2.5 flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-1.5 pb-1 mb-1 border-b border-slate-200">
-                <FileText className="w-3.5 h-3.5 text-teal-700" />
+                <FileText className="w-3.5 h-3.5 text-[#0B57D0]" />
                 <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-700">
                   Détails de la Prestation
                 </h3>
@@ -354,7 +354,7 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
                   </p>
                 </td>
                 <td className="px-3 py-1.5 text-center">
-                  <span className="inline-block px-2 py-0.5 rounded bg-teal-50 text-teal-800 font-bold border border-teal-200 text-xs">
+                  <span className="inline-block px-2 py-0.5 rounded bg-blue-50 text-[#0B57D0] font-bold border border-blue-200 text-xs">
                     {sessionsCount} séance{sessionsCount > 1 ? 's' : ''}
                   </span>
                 </td>
@@ -375,7 +375,7 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
                   Montant Total Réglé :
                 </td>
                 <td className="px-3 py-1.5 text-right">
-                  <span className="text-sm font-black text-teal-800">
+                  <span className="text-sm font-black text-[#0B57D0]">
                     {formattedAmount} DH
                   </span>
                 </td>
@@ -387,7 +387,7 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
         {/* Montant en toutes lettres */}
         <div className="mb-2.5 p-2 rounded-lg bg-slate-50 border border-slate-200 text-xs">
           <span className="font-semibold text-slate-600">Arrêté le présent reçu à la somme de : </span>
-          <span className="font-bold text-slate-900 italic underline decoration-teal-500 decoration-1 underline-offset-4">
+          <span className="font-bold text-slate-900 italic underline decoration-[#0B57D0] decoration-1 underline-offset-4">
             {amountInWords}
           </span>
           <span className="font-medium text-slate-500"> ({formattedAmount} DH TTC)</span>
@@ -407,7 +407,7 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
                 (CNSS, AMO, CNOPS, Assurances privées).
               </p>
               <p className="text-[9px] text-slate-400 pt-0.5">
-                Fait à Casablanca, le {formattedDate}
+                Fait à Fès, le {formattedDate}
               </p>
             </div>
 
@@ -423,8 +423,8 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
                 <span className="text-[9px] text-slate-400 italic">
                   et à la signature
                 </span>
-                <div className="absolute bottom-1 right-2 text-[8px] text-slate-300 font-mono">
-                  Cabinet Hassna El-Hmaidi
+                <div className="absolute bottom-1 right-2 text-[8px] text-slate-400 font-mono">
+                  Hassna El-Hmaidi • Fès
                 </div>
               </div>
             </div>
@@ -433,7 +433,7 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
 
         {/* Document footnote */}
         <div className="mt-2 pt-1.5 border-t border-slate-100 text-center text-[9px] text-slate-400 flex items-center justify-between">
-          <span>Cabinet de Kinésithérapie Hassna El-Hmaidi • Casablanca</span>
+          <span>Centre de Kinésithérapie Nassim Al Massira • Fès</span>
           <span>Reçu N° {receiptNumber} • Page 1/1</span>
         </div>
       </div>

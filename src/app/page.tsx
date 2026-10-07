@@ -153,10 +153,10 @@ export default function DashboardPage() {
 
       // --- Répartition des Assurances (CNSS, AMO, CNOPS, Privée, Aucune) ---
       const categories = [
-        { name: 'CNSS', color: 'from-teal-500 to-teal-600', bgColor: 'bg-teal-500' },
-        { name: 'AMO', color: 'from-cyan-500 to-cyan-600', bgColor: 'bg-cyan-500' },
+        { name: 'CNSS', color: 'from-[#0B57D0] to-[#0D47A1]', bgColor: 'bg-[#0B57D0]' },
+        { name: 'AMO', color: 'from-blue-400 to-blue-500', bgColor: 'bg-blue-400' },
         { name: 'CNOPS', color: 'from-indigo-500 to-indigo-600', bgColor: 'bg-indigo-500' },
-        { name: 'Privée', color: 'from-blue-500 to-blue-600', bgColor: 'bg-blue-500' },
+        { name: 'Privée', color: 'from-[#F05A28] to-[#FF7A45]', bgColor: 'bg-[#F05A28]' },
         { name: 'Aucune', color: 'from-slate-400 to-slate-500', bgColor: 'bg-slate-400' },
       ];
 
@@ -261,8 +261,8 @@ export default function DashboardPage() {
       default:
         return {
           label: 'Planifié',
-          className: 'bg-teal-50 text-teal-700 border-teal-200/80',
-          dot: 'bg-teal-500',
+          className: 'bg-blue-50 text-[#0B57D0] border-blue-200/80',
+          dot: 'bg-[#0B57D0]',
         };
     }
   };
@@ -278,7 +278,7 @@ export default function DashboardPage() {
       case 2:
         return {
           name: 'Salle 2',
-          className: 'bg-teal-50 text-teal-700 border-teal-200',
+          className: 'bg-blue-50 text-[#0B57D0] border-blue-200',
         };
       case 3:
       default:
@@ -292,20 +292,20 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-teal-700 via-teal-800 to-cyan-900 text-white p-6 sm:p-8 shadow-xl shadow-teal-900/10">
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#0B57D0] via-[#0D47A1] to-[#0A387E] text-white p-6 sm:p-8 shadow-xl shadow-blue-900/15">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 rounded-full bg-white/5 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-1/3 -mb-10 w-48 h-48 rounded-full bg-cyan-400/10 blur-2xl pointer-events-none" />
+        <div className="absolute bottom-0 right-1/3 -mb-10 w-48 h-48 rounded-full bg-[#F05A28]/15 blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium text-teal-200">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Cabinet de Kinésithérapie Hassna El-Hmaidi • Données en direct</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold text-orange-200">
+              <Sparkles className="w-3.5 h-3.5 text-[#F05A28]" />
+              <span>Centre de Kinésithérapie Nassim Al Massira • Fès</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
               Bonjour{profile ? ` ${profile.full_name.split(' ')[0]}` : ''}, bienvenue sur votre tableau de bord !
             </h1>
-            <p className="text-sm sm:text-base text-teal-100/90 leading-relaxed">
+            <p className="text-sm sm:text-base text-blue-100/90 leading-relaxed">
               Consultez vos statistiques en temps réel, vos séances planifiées aujourd&apos;hui et vos derniers dossiers patients connectés à Supabase.
             </p>
           </div>
@@ -323,9 +323,9 @@ export default function DashboardPage() {
 
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="px-5 py-3 rounded-xl bg-white text-teal-800 hover:bg-teal-50 font-bold text-sm shadow-md transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
+              className="px-5 py-3 rounded-xl bg-[#F05A28] hover:bg-[#FF7A45] text-white font-bold text-sm shadow-md transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
             >
-              <Plus className="w-4 h-4 text-teal-700" />
+              <Plus className="w-4 h-4 text-white" />
               <span>Nouveau Patient</span>
             </button>
 
@@ -364,7 +364,7 @@ export default function DashboardPage() {
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               Total Patients
             </span>
-            <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center text-teal-600">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#0B57D0]">
               <Users className="w-5 h-5" />
             </div>
           </div>
@@ -484,7 +484,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
-                <Users className="w-5 h-5 text-teal-600" />
+                <Users className="w-5 h-5 text-[#0B57D0]" />
                 Dossiers Patients Récents
               </h2>
               <p className="text-xs text-slate-500">
@@ -494,7 +494,7 @@ export default function DashboardPage() {
 
             <Link
               href="/patients"
-              className="text-xs font-semibold text-teal-700 hover:text-teal-900 flex items-center gap-1 group"
+              className="text-xs font-semibold text-[#0B57D0] hover:text-[#0D47A1] flex items-center gap-1 group"
             >
               <span>Tous les patients ({totalPatientsCount})</span>
               <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -514,7 +514,7 @@ export default function DashboardPage() {
               <p className="text-sm">Aucun patient enregistré pour le moment.</p>
               <button
                 onClick={() => setIsAddModalOpen(true)}
-                className="px-4 py-2 bg-teal-600 text-white rounded-xl text-xs font-semibold hover:bg-teal-700 transition"
+                className="px-4 py-2 bg-[#0B57D0] text-white rounded-xl text-xs font-semibold hover:bg-[#0D47A1] transition cursor-pointer"
               >
                 Créer un premier patient
               </button>
@@ -546,7 +546,7 @@ export default function DashboardPage() {
                         {/* Name & Age */}
                         <td className="py-3.5 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-500 to-cyan-500 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
                               {patient.prenom ? patient.prenom[0].toUpperCase() : 'P'}
                               {patient.nom ? patient.nom[0].toUpperCase() : ''}
                             </div>
@@ -561,7 +561,7 @@ export default function DashboardPage() {
                                       : 'Mlle'}
                                   </span>
                                 )}
-                                <p className="font-semibold text-slate-900 group-hover:text-teal-700 transition-colors">
+                                <p className="font-semibold text-slate-900 group-hover:text-[#0B57D0] transition-colors">
                                   {patient.prenom} {patient.nom}
                                 </p>
                               </div>
@@ -598,7 +598,7 @@ export default function DashboardPage() {
                           </div>
                           <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
                             <div
-                              className="h-full bg-teal-500 rounded-full transition-all"
+                              className="h-full bg-gradient-to-r from-[#0B57D0] to-[#F05A28] rounded-full transition-all"
                               style={{ width: `${pct}%` }}
                             />
                           </div>
@@ -611,7 +611,7 @@ export default function DashboardPage() {
                               e.stopPropagation();
                               setSelectedPatient(patient);
                             }}
-                            className="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700 transition-colors cursor-pointer"
+                            className="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 hover:bg-blue-50 hover:text-[#0B57D0] text-slate-700 transition-colors cursor-pointer"
                           >
                             Dossier
                           </button>
@@ -631,16 +631,16 @@ export default function DashboardPage() {
           <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-2">
-                <Clock className="w-4 h-4 text-teal-600" />
+                <Clock className="w-4 h-4 text-[#0B57D0]" />
                 Séances du Jour
               </h3>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200/60">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-[#0B57D0] border border-blue-200/60">
                   {todayAppointments.length} rdv
                 </span>
                 <Link
                   href="/agenda"
-                  className="text-xs font-medium text-teal-600 hover:text-teal-800"
+                  className="text-xs font-medium text-[#0B57D0] hover:text-[#0D47A1]"
                   title="Voir l'agenda complet"
                 >
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -660,7 +660,7 @@ export default function DashboardPage() {
                 <p className="text-xs">Aucune séance planifiée pour aujourd&apos;hui.</p>
                 <Link
                   href="/agenda"
-                  className="inline-block mt-1 text-xs font-bold text-teal-600 hover:underline"
+                  className="inline-block mt-1 text-xs font-bold text-[#0B57D0] hover:underline"
                 >
                   Ajouter un rendez-vous
                 </Link>
@@ -731,7 +731,7 @@ export default function DashboardPage() {
           <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-3.5">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-teal-600" />
+                <ShieldCheck className="w-4 h-4 text-[#0B57D0]" />
                 Répartition des Assurances
               </h3>
               <span className="text-[11px] text-slate-400 font-medium">

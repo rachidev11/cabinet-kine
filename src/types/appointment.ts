@@ -42,8 +42,8 @@ export const TIME_SLOTS = [
 ] as const;
 
 export const BOX_LIST = [
-  { id: 1, name: 'Salle 1', desc: 'Table & Électrothérapie', color: 'teal' },
-  { id: 2, name: 'Salle 2', desc: 'Table & Ultrasons / Chaleur', color: 'cyan' },
+  { id: 1, name: 'Salle 1', desc: 'Table & Électrothérapie', color: 'blue' },
+  { id: 2, name: 'Salle 2', desc: 'Table & Ultrasons / Chaleur', color: 'sky' },
   { id: 3, name: 'Salle 3', desc: 'Plateau Rééducation & Marche', color: 'indigo' },
 ] as const;
 
@@ -54,8 +54,8 @@ export const ROOM_LIST = BOX_LIST;
 export const STATUS_MAP: Record<DbAppointmentStatus, { label: FrenchAppointmentStatus; badge: string; border: string }> = {
   scheduled: {
     label: 'Planifié',
-    badge: 'bg-teal-50 text-teal-700 border-teal-200',
-    border: 'border-l-teal-500',
+    badge: 'bg-blue-50 text-[#0B57D0] border-blue-200',
+    border: 'border-l-[#0B57D0]',
   },
   no_show: {
     label: 'En séance',

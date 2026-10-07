@@ -97,87 +97,97 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-teal-950 to-cyan-950 p-4 sm:p-6 relative overflow-hidden font-sans select-none">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#061B3B] via-[#0B57D0] to-[#0D47A1] p-4 sm:p-6 relative overflow-hidden font-sans select-none">
       {/* Decorative ambient background glows */}
-      <div className="absolute -top-32 -right-32 w-96 h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-teal-400/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-32 -right-32 w-96 h-96 bg-[#F05A28]/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-[#0B57D0]/40 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-xl mx-auto">
         {/* Main Card */}
-        <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl shadow-2xl shadow-black/40 p-6 sm:p-10 text-white transition-all">
+        <div className="bg-slate-900/60 backdrop-blur-2xl border border-white/20 rounded-3xl shadow-2xl shadow-black/50 p-6 sm:p-10 text-white transition-all">
           
           {/* Clinic Brand Header */}
           <div className="flex flex-col items-center text-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-teal-400 to-cyan-400 flex items-center justify-center shadow-lg shadow-teal-500/30 mb-4 border border-white/30">
-              <Activity className="w-8 h-8 text-white" />
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white p-2 flex items-center justify-center shadow-2xl shadow-blue-950/60 mb-4 border-2 border-white/80 ring-4 ring-white/20">
+              <img
+                src="/logo.png"
+                alt="Centre de Kinésithérapie Nassim Al Massira"
+                className="w-full h-full object-contain"
+              />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
-              Cabinet de Kinésithérapie
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white leading-tight">
+              Centre de Kinésithérapie Nassim Al Massira
             </h1>
-            <p className="text-teal-300 font-bold text-lg mt-1 tracking-wide">
+            <p className="text-[#FF7A45] font-extrabold text-base sm:text-lg mt-1 tracking-wide">
               Hassna El-Hmaidi
             </p>
-            <p className="text-slate-300/80 text-xs sm:text-sm mt-1.5 max-w-sm">
-              Connexion sécurisée par Code PIN • Choisissez votre profil d&apos;accès
+            <p className="text-blue-100/90 text-xs sm:text-sm mt-1 max-w-md font-medium">
+              3 BLOC 4 HAY NASSIM BENSOUDA RDC FES, Fez • 30000
             </p>
           </div>
 
           {/* VIEW 1: Profile Selection */}
           {!selectedRole ? (
             <div className="space-y-4 animate-in fade-in zoom-in-95 duration-200">
-              <div className="text-xs font-semibold text-teal-200 uppercase tracking-wider text-center mb-2">
-                Sélectionnez votre profil
+              <div className="text-xs font-bold text-orange-200 uppercase tracking-wider text-center mb-2">
+                Sélectionnez votre profil d&apos;accès
               </div>
 
               {/* Profile Card 1: Hassna El-Hmaidi */}
               <button
                 type="button"
                 onClick={() => handleSelectRole('kine')}
-                className="w-full group p-5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 hover:border-teal-400/60 transition-all duration-200 flex items-center gap-4 text-left shadow-lg hover:shadow-teal-500/20 active:scale-[0.99] cursor-pointer"
+                className="w-full group p-5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 hover:border-blue-300 transition-all duration-200 flex items-center gap-4 text-left shadow-lg hover:shadow-blue-500/20 active:scale-[0.99] cursor-pointer"
               >
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-teal-500 to-emerald-500 flex items-center justify-center text-white shadow-md flex-shrink-0 group-hover:scale-105 transition-transform">
-                  <Stethoscope className="w-7 h-7" />
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1] border border-blue-300/40 flex items-center justify-center text-white shadow-md flex-shrink-0 group-hover:scale-105 transition-transform">
+                  <Stethoscope className="w-7 h-7 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-bold text-white group-hover:text-teal-200 transition-colors">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h2 className="text-lg font-bold text-white group-hover:text-blue-200 transition-colors">
                       Hassna El-Hmaidi
                     </h2>
-                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-400/20 text-teal-200 border border-teal-300/30">
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#F05A28]/25 text-orange-200 border border-[#F05A28]/50">
                       Kinésithérapeute (Propriétaire)
                     </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/30 text-blue-100 border border-blue-400/30">
+                      PIN: 239021
+                    </span>
                   </div>
-                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                    Accès complet (Super-Admin) : Bilan Kiné, dossiers médicaux, chiffre d&apos;affaires, statistiques et administration.
+                  <p className="text-xs text-slate-200 mt-1 leading-relaxed">
+                    Accès total : Bilan Kiné clinique, agenda 3 salles, facturation, statistiques et gestion.
                   </p>
                 </div>
-                <ChevronRight className="w-5 h-5 text-teal-300/70 group-hover:text-teal-200 group-hover:translate-x-1 transition-all flex-shrink-0" />
+                <ChevronRight className="w-5 h-5 text-blue-200/70 group-hover:text-white group-hover:translate-x-1 transition-all flex-shrink-0" />
               </button>
 
               {/* Profile Card 2: Assistante */}
               <button
                 type="button"
                 onClick={() => handleSelectRole('assistante')}
-                className="w-full group p-5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 hover:border-cyan-400/60 transition-all duration-200 flex items-center gap-4 text-left shadow-lg hover:shadow-cyan-500/20 active:scale-[0.99] cursor-pointer"
+                className="w-full group p-5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 hover:border-orange-400/60 transition-all duration-200 flex items-center gap-4 text-left shadow-lg hover:shadow-orange-500/20 active:scale-[0.99] cursor-pointer"
               >
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-500 flex items-center justify-center text-white shadow-md flex-shrink-0 group-hover:scale-105 transition-transform">
-                  <UserCheck className="w-7 h-7" />
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#F05A28] to-[#FF7A45] border border-orange-300/40 flex items-center justify-center text-white shadow-md flex-shrink-0 group-hover:scale-105 transition-transform">
+                  <UserCheck className="w-7 h-7 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-bold text-white group-hover:text-cyan-200 transition-colors">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h2 className="text-lg font-bold text-white group-hover:text-orange-200 transition-colors">
                       Assistante Médicale
                     </h2>
-                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-400/20 text-cyan-200 border border-cyan-300/30">
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-500/25 text-blue-200 border border-blue-400/40">
                       Secrétariat & Accueil
                     </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-orange-500/30 text-orange-100 border border-orange-400/30">
+                      PIN: 000000
+                    </span>
                   </div>
-                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                    Accès restreint : Agenda des 3 salles, fiches administratives, encaissement et impression des reçus du jour.
+                  <p className="text-xs text-slate-200 mt-1 leading-relaxed">
+                    Accès réception : Agenda 3 salles, fiches patients, encaissement du jour (Bilan clinique et statistiques masqués).
                   </p>
                 </div>
-                <ChevronRight className="w-5 h-5 text-cyan-300/70 group-hover:text-cyan-200 group-hover:translate-x-1 transition-all flex-shrink-0" />
+                <ChevronRight className="w-5 h-5 text-orange-300/70 group-hover:text-white group-hover:translate-x-1 transition-all flex-shrink-0" />
               </button>
             </div>
           ) : (
@@ -188,14 +198,14 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={handleBack}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-teal-200 hover:text-white transition-colors cursor-pointer py-1 px-2 rounded-lg hover:bg-white/10"
+                  className="flex items-center gap-1.5 text-xs font-semibold text-blue-200 hover:text-white transition-colors cursor-pointer py-1 px-2 rounded-lg hover:bg-white/10"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   <span>Changer de profil</span>
                 </button>
 
                 <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#F05A28] animate-pulse" />
                   <span className="text-xs font-bold text-white">
                     {PROFILES_CONFIG[selectedRole].full_name}
                   </span>
@@ -204,7 +214,11 @@ export default function LoginPage() {
 
               {/* Profile Avatar Badge */}
               <div className="text-center mb-6">
-                <div className="w-16 h-16 rounded-2xl mx-auto mb-3 flex items-center justify-center shadow-lg border border-white/30 bg-gradient-to-tr from-teal-500 to-cyan-500 text-white">
+                <div className={`w-16 h-16 rounded-2xl mx-auto mb-3 flex items-center justify-center shadow-lg border border-white/30 text-white ${
+                  selectedRole === 'kine'
+                    ? 'bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1]'
+                    : 'bg-gradient-to-tr from-[#F05A28] to-[#FF7A45]'
+                }`}>
                   {selectedRole === 'kine' ? (
                     <Stethoscope className="w-8 h-8" />
                   ) : (
@@ -214,7 +228,7 @@ export default function LoginPage() {
                 <h2 className="text-xl font-bold text-white">
                   {PROFILES_CONFIG[selectedRole].full_name}
                 </h2>
-                <p className="text-xs text-teal-200 mt-0.5">
+                <p className="text-xs text-blue-200 mt-0.5">
                   Veuillez saisir votre code PIN à 6 chiffres
                 </p>
               </div>
@@ -247,9 +261,9 @@ export default function LoginPage() {
                         key={idx}
                         className={`w-11 h-14 sm:w-12 sm:h-16 rounded-2xl flex items-center justify-center text-2xl font-bold transition-all ${
                           digit
-                            ? 'bg-teal-500/30 border-2 border-teal-400 text-white shadow-md shadow-teal-500/20'
+                            ? 'bg-[#0B57D0]/60 border-2 border-[#FF7A45] text-white shadow-md shadow-blue-500/20'
                             : isCurrent
-                            ? 'bg-white/15 border-2 border-white ring-4 ring-teal-400/30 text-white animate-pulse'
+                            ? 'bg-white/15 border-2 border-white ring-4 ring-[#F05A28]/40 text-white animate-pulse'
                             : 'bg-white/5 border border-white/20 text-slate-400'
                         }`}
                       >
@@ -335,7 +349,7 @@ export default function LoginPage() {
                   <button
                     type="submit"
                     disabled={pin.length !== 6 || isSuccess}
-                    className="flex-2 py-3 px-4 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs shadow-lg shadow-teal-500/30 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                    className="flex-2 py-3 px-4 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#F05A28] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                   >
                     <KeyRound className="w-4 h-4" />
                     <span>Valider le PIN</span>
@@ -346,9 +360,9 @@ export default function LoginPage() {
           )}
 
           {/* Footer note */}
-          <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-center gap-2 text-[11px] text-slate-400">
-            <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
-            <span>Système interne sécurisé • Cabinet Hassna El-Hmaidi</span>
+          <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-center gap-2 text-[11px] text-slate-300">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#F05A28]" />
+            <span>Centre de Kinésithérapie Nassim Al Massira • Fès</span>
           </div>
         </div>
       </div>

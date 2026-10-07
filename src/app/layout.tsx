@@ -4,8 +4,12 @@ import Providers from "@/components/Providers";
 import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = {
-  title: "Cabinet de Kinésithérapie | Hassna El-Hmaidi — Rééducation Fonctionnelle",
-  description: "Plateforme de gestion du Cabinet de Kinésithérapie de Hassna El-Hmaidi : dossiers patients, agenda, facturation et bilan kiné.",
+  title: "Centre de Kinésithérapie Nassim Al Massira | Hassna El-Hmaidi",
+  description: "Plateforme de gestion du Centre de Kinésithérapie Nassim Al Massira de Hassna El-Hmaidi à Fès : dossiers patients, agenda des 3 salles, facturation et bilan kiné.",
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
 };
 
 export default function RootLayout({
@@ -15,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className="h-full bg-slate-50 text-slate-900 antialiased">
-      <body className="min-h-full flex flex-col font-sans selection:bg-teal-500 selection:text-white">
+      <body className="min-h-full flex flex-col font-sans selection:bg-[#0B57D0] selection:text-white">
         <Providers>
           <AppShell>{children}</AppShell>
         </Providers>

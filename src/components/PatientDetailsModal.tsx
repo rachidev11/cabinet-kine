@@ -67,7 +67,7 @@ export default function PatientDetailsModal({
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
       <div className="relative w-full max-w-xl bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden my-8">
         {/* Header with Avatar and Basic Info */}
-        <div className="bg-gradient-to-r from-teal-700 to-cyan-800 text-white p-6 relative">
+        <div className="bg-gradient-to-r from-[#0B57D0] via-[#0D47A1] to-[#0A387E] text-white p-6 relative">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-white/80 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
@@ -89,7 +89,7 @@ export default function PatientDetailsModal({
                   {patient.statut || 'Actif'}
                 </span>
               </div>
-              <p className="text-sm text-teal-100/90 mt-0.5 flex items-center gap-3">
+              <p className="text-sm text-blue-100/90 mt-0.5 flex items-center gap-3">
                 <span>{patient.age} ans</span>
                 <span>•</span>
                 <span>CIN : {patient.cin}</span>
@@ -112,7 +112,7 @@ export default function PatientDetailsModal({
               href={`tel:${patient.telephone}`}
               className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs sm:text-sm font-semibold transition-colors"
             >
-              <Phone className="w-4 h-4 text-teal-600" />
+              <Phone className="w-4 h-4 text-[#0B57D0]" />
               <span>Appeler ({patient.telephone})</span>
             </a>
 
@@ -131,17 +131,17 @@ export default function PatientDetailsModal({
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-                <Activity className="w-4 h-4 text-teal-600" />
+                <Activity className="w-4 h-4 text-[#0B57D0]" />
                 Progression des séances de kinésithérapie
               </span>
-              <span className="text-xs font-bold text-teal-700">
+              <span className="text-xs font-bold text-[#0B57D0]">
                 {done} / {total} séances ({percent}%)
               </span>
             </div>
 
             <div className="w-full h-3 rounded-full bg-slate-200 overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full transition-all duration-500"
+                className="h-full bg-gradient-to-r from-[#0B57D0] to-[#F05A28] rounded-full transition-all duration-500"
                 style={{ width: `${percent}%` }}
               />
             </div>
@@ -150,9 +150,9 @@ export default function PatientDetailsModal({
               <div className="mt-3 flex justify-end">
                 <button
                   onClick={() => onIncrementSeance(patient)}
-                  className="text-xs font-medium text-teal-700 hover:text-teal-900 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs hover:bg-teal-50 transition-colors flex items-center gap-1 cursor-pointer"
+                  className="text-xs font-medium text-[#0B57D0] hover:text-[#0D47A1] bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs hover:bg-blue-50 transition-colors flex items-center gap-1 cursor-pointer"
                 >
-                  <CheckCircle className="w-3.5 h-3.5 text-teal-600" />
+                  <CheckCircle className="w-3.5 h-3.5 text-[#0B57D0]" />
                   Valider une séance effectuée (+1)
                 </button>
               </div>
@@ -210,13 +210,13 @@ export default function PatientDetailsModal({
               <span className="text-[11px] font-semibold text-slate-400 block mb-1">
                 Adresse
               </span>
-              <p className="text-slate-700">{patient.adresse || 'Casablanca'}</p>
+              <p className="text-slate-700">{patient.adresse || 'Fès'}</p>
             </div>
 
             {/* Notes kiné (Réservé au kinésithérapeute) */}
             {isKine && patient.notes && (
-              <div className="sm:col-span-2 p-3 rounded-xl bg-teal-50/50 border border-teal-100">
-                <span className="text-[11px] font-semibold text-teal-800 block mb-1">
+              <div className="sm:col-span-2 p-3 rounded-xl bg-blue-50/60 border border-blue-100">
+                <span className="text-[11px] font-semibold text-[#0B57D0] block mb-1">
                   Observations & Bilan Kinésithérapique
                 </span>
                 <p className="text-slate-700">{patient.notes}</p>

@@ -123,32 +123,39 @@ export default function Sidebar({
         }`}
       >
         {/* Clinic Brand Header */}
-        <div className="h-20 px-6 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-teal-600 via-teal-700 to-cyan-700 text-white shadow-sm flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-xl bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner flex-shrink-0">
-              <Activity className="w-6 h-6 text-white" />
+        <div className="h-20 px-4 border-b border-blue-900/20 flex items-center justify-between bg-gradient-to-r from-[#0B57D0] via-[#0D47A1] to-[#0A387E] text-white shadow-sm flex-shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-12 h-12 rounded-xl bg-white p-1 flex items-center justify-center border border-white/40 shadow-md flex-shrink-0">
+              <img
+                src="/logo.png"
+                alt="Logo"
+                className="w-full h-full object-contain"
+              />
             </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold text-sm leading-tight tracking-tight truncate">
-                  Cabinet Kinésithérapie
-                </span>
-              </div>
-              <p className="text-xs text-teal-100/90 font-medium truncate">Hassna El-Hmaidi</p>
+              <span className="font-extrabold text-xs tracking-tight text-white block leading-tight truncate">
+                Centre Nassim Al Massira
+              </span>
+              <span className="text-[10px] text-[#FF7A45] font-bold block uppercase tracking-wide truncate">
+                Kinésithérapie • Fès
+              </span>
+              <p className="text-[11px] text-blue-100 font-semibold truncate leading-tight">
+                Hassna El-Hmaidi
+              </p>
             </div>
           </div>
         </div>
 
         {/* Quick Add Patient Button */}
-        <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
+        <div className="p-3.5 border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
           <button
             onClick={() => {
               onClose();
               onOpenAddPatient();
             }}
-            className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-medium text-sm flex items-center justify-center gap-2 shadow-sm shadow-teal-600/20 transition-all hover:shadow-md cursor-pointer active:scale-[0.99]"
+            className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm shadow-blue-600/25 transition-all hover:shadow-md cursor-pointer active:scale-[0.99]"
           >
-            <Sparkles className="w-4 h-4 text-teal-200" />
+            <Sparkles className="w-4 h-4 text-[#F05A28]" />
             <span>Nouveau Patient</span>
           </button>
         </div>
@@ -172,7 +179,7 @@ export default function Sidebar({
                 onClick={onClose}
                 className={`group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
                   isActive
-                    ? 'bg-teal-50 text-teal-800 font-semibold shadow-xs'
+                    ? 'bg-blue-50 text-[#0B57D0] font-bold shadow-2xs border-l-4 border-[#0B57D0]'
                     : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
                 }`}
               >
@@ -180,7 +187,7 @@ export default function Sidebar({
                   <div
                     className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
                       isActive
-                        ? 'bg-teal-600 text-white'
+                        ? 'bg-[#0B57D0] text-white shadow-xs'
                         : 'bg-slate-100 text-slate-500 group-hover:text-slate-700 group-hover:bg-slate-200/70'
                     }`}
                   >
@@ -191,9 +198,9 @@ export default function Sidebar({
 
                 {item.badge && (
                   <span
-                    className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                    className={`text-xs px-2 py-0.5 rounded-full font-bold ${
                       isActive
-                        ? 'bg-teal-200 text-teal-900'
+                        ? 'bg-orange-100 text-[#F05A28]'
                         : 'bg-slate-200/70 text-slate-600'
                     }`}
                   >
@@ -215,15 +222,15 @@ export default function Sidebar({
                 return (
                   <div
                     key={item.name}
-                    className="group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 bg-teal-50/50 border border-teal-100"
+                    className="group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 bg-blue-50/50 border border-blue-100"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center text-teal-600">
+                      <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-[#0B57D0]">
                         <Icon className="w-4 h-4" />
                       </div>
-                      <span className="text-teal-800 font-medium">Bilan Kiné (via Dossier)</span>
+                      <span className="text-[#0D47A1] font-semibold">Bilan Kiné (via Dossier)</span>
                     </div>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-200/60 text-teal-700 font-semibold">Kiné</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F05A28]/15 text-[#F05A28] font-bold">Kiné</span>
                   </div>
                 );
               })}
@@ -262,7 +269,7 @@ export default function Sidebar({
           <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-slate-200/80 shadow-xs">
             {/* Avatar */}
             <div className="relative flex-shrink-0">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-teal-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm shadow-xs">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1] flex items-center justify-center text-white font-bold text-sm shadow-xs">
                 {profile ? getInitials(profile.full_name) : <UserCircle2 className="w-5 h-5" />}
               </div>
               <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
@@ -273,8 +280,8 @@ export default function Sidebar({
               <p className="text-sm font-bold text-slate-900 truncate">
                 {profile?.full_name ?? 'Utilisateur'}
               </p>
-              <p className="text-[11px] text-teal-700 font-semibold truncate flex items-center gap-1">
-                <Stethoscope className="w-3 h-3 text-teal-600 flex-shrink-0" />
+              <p className="text-[11px] text-[#0B57D0] font-semibold truncate flex items-center gap-1">
+                <Stethoscope className="w-3 h-3 text-[#0B57D0] flex-shrink-0" />
                 {getRoleLabel(profile)}
               </p>
             </div>

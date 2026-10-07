@@ -68,20 +68,20 @@ export const BilanToPrint = forwardRef<HTMLDivElement, BilanToPrintProps>(
         }}
         className="p-8 bg-white text-slate-800 text-xs"
       >
-        {/* 1. EN-TÊTE OFFICIEL DU CABINET */}
-        <div className="border-b-2 border-teal-600 pb-4 mb-4">
+        {/* 1. EN-TÊTE OFFICIEL DU CENTRE */}
+        <div className="border-b-2 border-[#0B57D0] pb-4 mb-4">
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
-                  <Stethoscope className="w-5 h-5" />
+                <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center flex-shrink-0 shadow-xs">
+                  <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
                 </div>
                 <div>
                   <h1 className="text-lg font-black tracking-tight text-slate-900 uppercase">
-                    Cabinet de Kinésithérapie Hassna El-Hmaidi
+                    Centre de Kinésithérapie Nassim Al Massira
                   </h1>
-                  <p className="text-xs font-bold text-teal-700 tracking-wide uppercase">
-                    Kinésithérapeute Diplômée d&apos;État • Rééducation Fonctionnelle
+                  <p className="text-xs font-bold text-[#0B57D0] tracking-wide uppercase">
+                    Hassna El-Hmaidi • Kinésithérapeute Diplômée d&apos;État • Rééducation
                   </p>
                 </div>
               </div>
@@ -89,11 +89,11 @@ export const BilanToPrint = forwardRef<HTMLDivElement, BilanToPrintProps>(
               <div className="pt-1.5 text-[11px] text-slate-600 space-y-0.5">
                 <p className="flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                  <span>45 Boulevard Zerktouni, Résidence Al Manar, 2ème étage, Casablanca</span>
+                  <span>3 BLOC 4 HAY NASSIM BENSOUDA RDC FES, Fez, Morocco, 30000</span>
                 </p>
                 <p className="flex items-center gap-1.5">
                   <Phone className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                  <span>Tél : +212 5 22 40 50 60 / +212 6 61 23 45 67</span>
+                  <span>Tél : +212 5 35 60 70 80 / +212 6 61 23 45 67</span>
                 </p>
                 <p className="text-[10px] text-slate-400 pt-0.5">
                   N° INPE : 108429381 • Patente : 34820194 • IF : 4829104
@@ -103,8 +103,8 @@ export const BilanToPrint = forwardRef<HTMLDivElement, BilanToPrintProps>(
 
             {/* Titre & Date du Document */}
             <div className="text-right flex flex-col items-end">
-              <div className="bg-teal-50 border border-teal-200 px-3.5 py-1.5 rounded-xl text-teal-900 text-right">
-                <span className="text-[9px] font-bold uppercase tracking-wider block text-teal-600">
+              <div className="bg-blue-50 border border-blue-200 px-3.5 py-1.5 rounded-xl text-[#0B57D0] text-right">
+                <span className="text-[9px] font-bold uppercase tracking-wider block text-[#F05A28]">
                   Dossier Médical Confidentiel
                 </span>
                 <span className="text-xs font-black tracking-tight block">
@@ -126,7 +126,7 @@ export const BilanToPrint = forwardRef<HTMLDivElement, BilanToPrintProps>(
           {/* Patient Card */}
           <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60">
             <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-slate-200">
-              <User className="w-3.5 h-3.5 text-teal-600" />
+              <User className="w-3.5 h-3.5 text-[#0B57D0]" />
               <h2 className="font-bold text-xs text-slate-800 uppercase tracking-wider">
                 Identité du Patient
               </h2>
@@ -151,7 +151,7 @@ export const BilanToPrint = forwardRef<HTMLDivElement, BilanToPrintProps>(
               </p>
               <p>
                 <span className="text-slate-500">Couverture : </span>
-                <span className="font-bold text-teal-800 bg-teal-50 border border-teal-200 px-1.5 py-0.5 rounded text-[10px]">
+                <span className="font-bold text-blue-800 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded text-[10px]">
                   {patientAssurance}
                 </span>
               </p>
@@ -161,7 +161,7 @@ export const BilanToPrint = forwardRef<HTMLDivElement, BilanToPrintProps>(
           {/* Prescription Card */}
           <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60">
             <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-slate-200">
-              <FileText className="w-3.5 h-3.5 text-teal-600" />
+              <FileText className="w-3.5 h-3.5 text-[#0B57D0]" />
               <h2 className="font-bold text-xs text-slate-800 uppercase tracking-wider">
                 Prescription & Orientation
               </h2>
@@ -185,7 +185,7 @@ export const BilanToPrint = forwardRef<HTMLDivElement, BilanToPrintProps>(
               )}
               <p>
                 <span className="text-slate-500">Séances : </span>
-                <strong className="text-teal-700">
+                <strong className="text-[#0B57D0]">
                   {effectuees} séance(s) effectuée(s) sur {prescrites} prescrites
                 </strong>
               </p>
@@ -197,14 +197,14 @@ export const BilanToPrint = forwardRef<HTMLDivElement, BilanToPrintProps>(
         <div className="p-3.5 rounded-xl border border-slate-200 bg-white mb-4 space-y-3">
           <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
             <div className="flex items-center gap-2">
-              <Activity className="w-3.5 h-3.5 text-teal-600" />
+              <Activity className="w-3.5 h-3.5 text-[#0B57D0]" />
               <h2 className="font-bold text-xs text-slate-800 uppercase tracking-wider">
                 Évaluation Clinique & Douleur (EVA)
               </h2>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-semibold text-slate-600">Échelle EVA :</span>
-              <span className="font-black text-xs px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800">
+              <span className="font-black text-xs px-2.5 py-0.5 rounded-full bg-blue-100 text-[#0B57D0]">
                 {eva} / 10
               </span>
             </div>
@@ -233,7 +233,7 @@ export const BilanToPrint = forwardRef<HTMLDivElement, BilanToPrintProps>(
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1">
             <div className="flex items-center gap-1.5 pb-1 border-b border-slate-100">
-              <Scale className="w-3.5 h-3.5 text-teal-600" />
+              <Scale className="w-3.5 h-3.5 text-[#0B57D0]" />
               <h3 className="font-bold text-[11px] text-slate-800 uppercase">
                 Bilan Articulaire & Mobilités
               </h3>
@@ -245,7 +245,7 @@ export const BilanToPrint = forwardRef<HTMLDivElement, BilanToPrintProps>(
 
           <div className="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1">
             <div className="flex items-center gap-1.5 pb-1 border-b border-slate-100">
-              <Dumbbell className="w-3.5 h-3.5 text-teal-600" />
+              <Dumbbell className="w-3.5 h-3.5 text-[#0B57D0]" />
               <h3 className="font-bold text-[11px] text-slate-800 uppercase">
                 Bilan Musculaire & Testing
               </h3>
@@ -257,9 +257,9 @@ export const BilanToPrint = forwardRef<HTMLDivElement, BilanToPrintProps>(
         </div>
 
         {/* 5. OBJECTIFS THÉRAPEUTIQUES & RECOMMANDATIONS */}
-        <div className="p-3.5 rounded-xl border border-slate-200 bg-teal-50/30 mb-6 space-y-2">
+        <div className="p-3.5 rounded-xl border border-slate-200 bg-blue-50/40 mb-6 space-y-2">
           <div>
-            <p className="text-[10px] font-bold text-teal-900 uppercase">
+            <p className="text-[10px] font-bold text-[#0B57D0] uppercase">
               Objectifs Thérapeutiques & Protocole de Rééducation :
             </p>
             <p className="text-[11px] text-slate-800 leading-relaxed mt-0.5">
@@ -268,8 +268,8 @@ export const BilanToPrint = forwardRef<HTMLDivElement, BilanToPrintProps>(
           </div>
 
           {medicalRecord.observations && (
-            <div className="pt-1.5 border-t border-teal-100">
-              <p className="text-[10px] font-bold text-teal-900 uppercase">
+            <div className="pt-1.5 border-t border-blue-100">
+              <p className="text-[10px] font-bold text-[#0B57D0] uppercase">
                 Observations & Recommandations Particulières :
               </p>
               <p className="text-[11px] text-slate-700 leading-relaxed mt-0.5">
@@ -282,22 +282,22 @@ export const BilanToPrint = forwardRef<HTMLDivElement, BilanToPrintProps>(
         {/* 6. SIGNATURE, CACHET & MENTIONS LÉGALES */}
         <div className="pt-4 border-t border-slate-200 flex items-end justify-between">
           <div className="text-[10px] text-slate-400 space-y-0.5">
-            <p className="flex items-center gap-1 text-teal-700 font-semibold">
-              <CheckCircle2 className="w-3 h-3" />
+            <p className="flex items-center gap-1 text-[#0B57D0] font-semibold">
+              <CheckCircle2 className="w-3 h-3 text-[#F05A28]" />
               Bilan établi conformément aux règles déontologiques de la kinésithérapie
             </p>
-            <p>Fait à Casablanca, le {dateBilan}</p>
+            <p>Fait à Fès, le {dateBilan}</p>
           </div>
 
-          <div className="w-64 border border-dashed border-teal-300 rounded-xl p-3 bg-teal-50/20 text-center">
-            <span className="text-[10px] font-bold text-teal-800 block uppercase">
+          <div className="w-64 border border-dashed border-blue-300 rounded-xl p-3 bg-blue-50/20 text-center">
+            <span className="text-[10px] font-bold text-[#0B57D0] block uppercase">
               Cachet & Signature de la Praticienne
             </span>
-            <p className="text-[10px] text-slate-600 font-semibold mt-1">
+            <p className="text-[10px] text-slate-700 font-bold mt-1">
               Hassna El-Hmaidi
             </p>
-            <p className="text-[9px] text-slate-400">
-              Kinésithérapeute Diplômée d&apos;État
+            <p className="text-[9px] text-slate-500">
+              Kinésithérapeute Diplômée d&apos;État • Fès
             </p>
             <div className="h-14 mt-1 flex items-center justify-center text-slate-300 text-[10px] italic">
               [Cachet & Signature]

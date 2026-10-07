@@ -164,7 +164,7 @@ export default function AgendaPage() {
 
     const heure = rdv.heure_debut.substring(0, 5);
     const message = encodeURIComponent(
-      `Bonjour ${civilitePrefix} ${patient.nom},\nNous vous rappelons votre séance de kinésithérapie prévue le ${rdv.date} à ${heure} en Salle ${rdv.box}.\nCabinet de Kinésithérapie Hassna El-Hmaidi vous remercie de confirmer votre présence.`
+      `Bonjour ${civilitePrefix} ${patient.nom},\nNous vous rappelons votre séance de kinésithérapie prévue le ${rdv.date} à ${heure} en Salle ${rdv.box}.\nCentre de Kinésithérapie Nassim Al Massira (Hassna El-Hmaidi) vous remercie de confirmer votre présence.`
     );
     window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
   }
@@ -174,8 +174,8 @@ export default function AgendaPage() {
       {/* Header & Date Selector */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Planning & Agenda des Séances</h1>
-          <p className="text-slate-500 text-sm">Gestion des créneaux et des 3 Salles thérapeutiques</p>
+          <h1 className="text-2xl font-bold text-slate-900">Planning & Agenda des Séances</h1>
+          <p className="text-slate-500 text-sm">Centre de Kinésithérapie Nassim Al Massira • Gestion des créneaux & 3 Salles</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -183,7 +183,7 @@ export default function AgendaPage() {
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="border border-slate-200 rounded-xl px-4 py-2 font-medium text-slate-700 bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500"
+            className="border border-slate-200 rounded-xl px-4 py-2 font-medium text-slate-700 bg-slate-50 outline-none focus:ring-2 focus:ring-[#0B57D0]"
           />
         </div>
       </div>
@@ -194,9 +194,9 @@ export default function AgendaPage() {
           {/* Header Row */}
           <div className="grid grid-cols-4 bg-slate-100/70 border-b border-slate-200 text-sm font-semibold text-slate-700">
             <div className="p-4 border-r border-slate-200 text-center">Horaire</div>
-            <div className="p-4 border-r border-slate-200 text-center text-emerald-700">Salle 1</div>
-            <div className="p-4 border-r border-slate-200 text-center text-teal-700">Salle 2</div>
-            <div className="p-4 text-center text-cyan-700">Salle 3</div>
+            <div className="p-4 border-r border-slate-200 text-center text-[#0B57D0] font-bold">Salle 1 (Table & Électrothérapie)</div>
+            <div className="p-4 border-r border-slate-200 text-center text-[#0D47A1] font-bold">Salle 2 (Table & Physiothérapie)</div>
+            <div className="p-4 text-center text-[#F05A28] font-bold">Salle 3 (Plateau Rééducation & Marche)</div>
           </div>
 
           {/* Time Slots Rows */}
@@ -216,22 +216,22 @@ export default function AgendaPage() {
                   return (
                     <div key={boxNum} className="p-2 border-r border-slate-200 last:border-r-0 min-h-[90px] flex flex-col justify-center">
                       {rdv ? (
-                        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex flex-col justify-between h-full">
+                        <div className="bg-blue-50/80 border border-blue-200 rounded-xl p-3 flex flex-col justify-between h-full shadow-2xs">
                           <div>
                             <div className="flex items-center justify-between font-bold text-slate-800">
                               <span>{rdv.patients?.nom} {rdv.patients?.prenom}</span>
-                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium">
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-100 text-[#F05A28] font-bold">
                                 {rdv.statut}
                               </span>
                             </div>
-                            <p className="text-xs text-slate-500 mt-1">{rdv.type_seance}</p>
+                            <p className="text-xs text-slate-600 mt-1">{rdv.type_seance}</p>
                           </div>
 
-                          <div className="flex items-center justify-between mt-3 pt-2 border-t border-emerald-100">
+                          <div className="flex items-center justify-between mt-3 pt-2 border-t border-blue-100">
                             <select
                               value={rdv.statut}
                               onChange={(e) => updateStatus(rdv.id, e.target.value)}
-                              className="text-[11px] bg-white border border-emerald-300 rounded px-1.5 py-0.5 outline-none"
+                              className="text-[11px] bg-white border border-blue-300 rounded px-1.5 py-0.5 outline-none font-medium"
                             >
                               <option value="Planifié">Planifié</option>
                               <option value="En séance">En séance</option>
@@ -242,7 +242,7 @@ export default function AgendaPage() {
                             <button
                               onClick={() => sendWhatsAppReminder(rdv)}
                               title="Envoyer rappel WhatsApp"
-                              className="text-emerald-600 hover:text-emerald-700 bg-white p-1 rounded-md shadow-sm border border-emerald-200"
+                              className="text-[#0B57D0] hover:text-[#0D47A1] bg-white p-1 rounded-md shadow-2xs border border-blue-200"
                             >
                               <MessageCircle className="w-4 h-4" />
                             </button>
@@ -251,7 +251,7 @@ export default function AgendaPage() {
                       ) : (
                         <button
                           onClick={() => handleOpenBooking(heure, boxNum)}
-                          className="w-full h-full border border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-1.5 text-slate-400 hover:text-emerald-600 hover:border-emerald-300 hover:bg-emerald-50/20 transition py-4"
+                          className="w-full h-full border border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-1.5 text-slate-400 hover:text-[#0B57D0] hover:border-[#0B57D0] hover:bg-blue-50/30 transition py-4 cursor-pointer"
                         >
                           <Plus className="w-4 h-4" />
                           <span className="text-xs font-medium">Libre</span>
@@ -302,7 +302,7 @@ export default function AgendaPage() {
                   type="text"
                   value={typeSeance}
                   onChange={(e) => setTypeSeance(e.target.value)}
-                  className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#0B57D0]"
                 />
               </div>
 
@@ -310,13 +310,13 @@ export default function AgendaPage() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-600 text-sm font-medium hover:bg-slate-100"
+                  className="px-4 py-2 rounded-xl text-slate-600 text-sm font-medium hover:bg-slate-100 cursor-pointer"
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition shadow-sm"
+                  className="px-5 py-2 rounded-xl bg-[#0B57D0] hover:bg-[#0D47A1] text-white text-sm font-semibold transition shadow-sm cursor-pointer"
                 >
                   Confirmer le rendez-vous
                 </button>

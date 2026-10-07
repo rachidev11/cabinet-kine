@@ -24,7 +24,7 @@ export default function PaymentReceiptModal({
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: `Recu_Paiement_${payment?.id || 'Cabinet_Hassna'}`,
+    documentTitle: `Recu_Paiement_${payment?.id || 'Centre_Nassim'}`,
     pageStyle: `
       @page {
         size: A4 portrait;
@@ -52,20 +52,20 @@ export default function PaymentReceiptModal({
       {/* Modal Dialog Container */}
       <div className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-auto z-10 animate-in fade-in zoom-in-95 duration-200">
         {/* Modal Action Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-slate-900 via-slate-800 to-teal-950 text-white border-b border-slate-700">
+        <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#0B57D0] via-[#0D47A1] to-[#0A387E] text-white border-b border-blue-900/40">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center justify-center shadow-sm">
-              <Receipt className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-white/15 text-white border border-white/20 flex items-center justify-center shadow-sm">
+              <Receipt className="w-5 h-5 text-[#FF7A45]" />
             </div>
             <div>
               <h2 className="text-base font-bold text-white flex items-center gap-2">
                 Aperçu du Reçu de Paiement
-                <span className="text-[11px] font-normal px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                <span className="text-[11px] font-normal px-2 py-0.5 rounded-full bg-white/20 text-white border border-white/30">
                   Format A4
                 </span>
               </h2>
-              <p className="text-xs text-slate-400">
-                Prêt pour l&apos;impression directe sans page blanche
+              <p className="text-xs text-blue-100/80">
+                Centre Nassim Al Massira • Prêt pour l&apos;impression directe
               </p>
             </div>
           </div>
@@ -73,14 +73,14 @@ export default function PaymentReceiptModal({
           <div className="flex items-center gap-2.5">
             <button
               onClick={() => handlePrint()}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white text-sm font-semibold shadow-md shadow-teal-900/30 hover:shadow-lg transition-all cursor-pointer active:scale-95"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F05A28] hover:bg-[#FF7A45] text-white text-sm font-semibold shadow-md shadow-orange-950/20 hover:shadow-lg transition-all cursor-pointer active:scale-95"
             >
               <Printer className="w-4 h-4" />
               <span>Imprimer le reçu</span>
             </button>
             <button
               onClick={onClose}
-              className="w-9 h-9 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer"
+              className="w-9 h-9 rounded-xl text-blue-200 hover:text-white hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer"
               title="Fermer la prévisualisation"
             >
               <X className="w-5 h-5" />
@@ -98,7 +98,7 @@ export default function PaymentReceiptModal({
         {/* Modal Action Footer */}
         <div className="flex items-center justify-between px-6 py-3.5 bg-slate-50 border-t border-slate-200">
           <p className="text-xs text-slate-500 flex items-center gap-1.5">
-            <Printer className="w-3.5 h-3.5 text-teal-600" />
+            <Printer className="w-3.5 h-3.5 text-[#0B57D0]" />
             Impression cadrée sur 1 page A4 via react-to-print.
           </p>
           <div className="flex items-center gap-3">
@@ -110,7 +110,7 @@ export default function PaymentReceiptModal({
             </button>
             <button
               onClick={() => handlePrint()}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white text-sm font-semibold shadow-sm shadow-teal-600/20 transition-all cursor-pointer active:scale-95"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 text-white text-sm font-semibold shadow-sm shadow-blue-600/20 transition-all cursor-pointer active:scale-95"
             >
               <Printer className="w-4 h-4" />
               <span>Imprimer le reçu</span>

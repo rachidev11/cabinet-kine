@@ -61,7 +61,7 @@ export function generateWhatsAppReminderUrl(
   const message = `Bonjour ${civilitePrefix} ${patient.nom},
 
 Nous vous rappelons votre séance de kinésithérapie prévue le ${dateFormatted} à ${startTime} en ${roomName}.
-Cabinet de Kinésithérapie Hassna El-Hmaidi vous remercie de confirmer votre présence.`;
+Centre de Kinésithérapie Nassim Al Massira (Hassna El-Hmaidi) vous remercie de confirmer votre présence.`;
 
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
 }

@@ -109,7 +109,7 @@ export default function PatientsPage() {
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
               Gestion des Patients
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 text-xs font-bold">
+            <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-[#0B57D0] text-xs font-bold">
               {patients.length} au total
             </span>
           </div>
@@ -122,15 +122,15 @@ export default function PatientsPage() {
           <button
             onClick={() => refreshPatients()}
             disabled={isRefreshing}
-            className="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 hover:text-teal-700 transition-colors shadow-2xs cursor-pointer disabled:opacity-50"
+            className="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 hover:text-[#0B57D0] transition-colors shadow-2xs cursor-pointer disabled:opacity-50"
             title="Synchroniser avec Supabase"
           >
-            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-teal-600' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-[#0B57D0]' : ''}`} />
           </button>
 
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-semibold text-xs sm:text-sm shadow-sm shadow-teal-600/20 flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 text-white font-semibold text-xs sm:text-sm shadow-sm shadow-blue-600/20 flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Nouveau Patient</span>
@@ -149,7 +149,7 @@ export default function PatientsPage() {
               placeholder="Recherche instantanée par Nom, Prénom, Téléphone, ou CIN..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-600 transition-all placeholder:text-slate-400"
+              className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#0B57D0] transition-all placeholder:text-slate-400"
             />
             {searchQuery && (
               <button
@@ -201,7 +201,7 @@ export default function PatientsPage() {
                 onClick={() => setViewMode('table')}
                 className={`p-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   viewMode === 'table'
-                    ? 'bg-white text-teal-700 shadow-2xs font-semibold'
+                    ? 'bg-white text-[#0B57D0] shadow-2xs font-semibold'
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
                 title="Affichage en tableau"
@@ -212,7 +212,7 @@ export default function PatientsPage() {
                 onClick={() => setViewMode('cards')}
                 className={`p-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                   viewMode === 'cards'
-                    ? 'bg-white text-teal-700 shadow-2xs font-semibold'
+                    ? 'bg-white text-[#0B57D0] shadow-2xs font-semibold'
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
                 title="Affichage en cartes"
@@ -243,7 +243,7 @@ export default function PatientsPage() {
                 setSelectedAssurance('Tous');
                 setSelectedStatus('Tous');
               }}
-              className="text-xs text-teal-600 hover:text-teal-800 font-semibold cursor-pointer underline"
+              className="text-xs text-[#0B57D0] hover:text-[#0D47A1] font-semibold cursor-pointer underline"
             >
               Réinitialiser les filtres
             </button>
@@ -255,18 +255,18 @@ export default function PatientsPage() {
       {filteredPatients.length === 0 ? (
         /* Empty State */
         <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center shadow-xs">
-          <div className="w-16 h-16 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-2xl bg-blue-50 text-[#0B57D0] flex items-center justify-center mx-auto mb-4">
             <Users className="w-8 h-8" />
           </div>
           <h3 className="text-base font-bold text-slate-900">Aucun patient trouvé</h3>
           <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto mt-1 mb-6">
             {searchQuery
               ? `Aucun résultat pour "${searchQuery}". Essayez un autre mot-clé ou vérifiez l'orthographe.`
-              : 'Commencez par ajouter le premier patient dans votre cabinet de kinésithérapie.'}
+              : 'Commencez par ajouter le premier patient dans le Centre de Kinésithérapie Nassim Al Massira.'}
           </p>
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs sm:text-sm inline-flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+            className="px-5 py-2.5 rounded-xl bg-[#0B57D0] hover:bg-[#0D47A1] text-white font-semibold text-xs sm:text-sm inline-flex items-center gap-2 shadow-sm transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Ajouter un patient</span>
@@ -298,7 +298,7 @@ export default function PatientsPage() {
                   return (
                     <tr
                       key={patient.id}
-                      className="hover:bg-teal-50/30 transition-colors group cursor-pointer"
+                      className="hover:bg-blue-50/30 transition-colors group cursor-pointer"
                       onClick={() => setSelectedPatient(patient)}
                     >
                       {/* Name + Age + Profession */}
@@ -307,7 +307,7 @@ export default function PatientsPage() {
                           <Link
                             href={`/patients/${patient.id}`}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-500 to-cyan-500 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs hover:scale-105 transition-transform"
+                            className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs hover:scale-105 transition-transform"
                             title="Voir dossier médical"
                           >
                             {patient.prenom[0]}
@@ -323,7 +323,7 @@ export default function PatientsPage() {
                               <Link
                                 href={`/patients/${patient.id}`}
                                 onClick={(e) => e.stopPropagation()}
-                                className="font-bold text-slate-900 hover:text-teal-700 hover:underline transition-colors"
+                                className="font-bold text-slate-900 hover:text-[#0B57D0] hover:underline transition-colors"
                               >
                                 {patient.prenom} {patient.nom}
                               </Link>
@@ -333,7 +333,7 @@ export default function PatientsPage() {
                               {patient.profession && ` • ${patient.profession}`}
                             </p>
                             {patient.motif_consultation && (
-                              <p className="text-[10px] text-teal-700 truncate max-w-xs mt-0.5">
+                              <p className="text-[10px] text-[#0B57D0] truncate max-w-xs mt-0.5">
                                 {patient.motif_consultation}
                               </p>
                             )}
@@ -354,7 +354,7 @@ export default function PatientsPage() {
                           <a
                             href={`tel:${patient.telephone}`}
                             onClick={(e) => e.stopPropagation()}
-                            className="font-medium text-slate-700 hover:text-teal-700 hover:underline flex items-center gap-1"
+                            className="font-medium text-slate-700 hover:text-[#0B57D0] hover:underline flex items-center gap-1"
                           >
                             <Phone className="w-3.5 h-3.5 text-slate-400" />
                             <span>{patient.telephone}</span>
@@ -378,11 +378,11 @@ export default function PatientsPage() {
                           <span>
                             {done} / {total}
                           </span>
-                          <span className="text-[10px] text-teal-700 font-bold">{pct}%</span>
+                          <span className="text-[10px] text-[#0B57D0] font-bold">{pct}%</span>
                         </div>
                         <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full transition-all duration-300"
+                            className="h-full bg-gradient-to-r from-[#0B57D0] to-[#F05A28] rounded-full transition-all duration-300"
                             style={{ width: `${pct}%` }}
                           />
                         </div>
@@ -394,7 +394,7 @@ export default function PatientsPage() {
                           className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                             patient.statut === 'Terminé'
                               ? 'bg-emerald-50 text-emerald-700'
-                              : 'bg-teal-50 text-teal-700'
+                              : 'bg-blue-50 text-[#0B57D0]'
                           }`}
                         >
                           {patient.statut || 'Actif'}
@@ -411,9 +411,9 @@ export default function PatientsPage() {
                           <Link
                             href={`/patients/${patient.id}`}
                             title="Voir le dossier médical complet"
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold text-teal-700 hover:text-teal-900 bg-teal-50 hover:bg-teal-100 rounded-lg transition-colors"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold text-[#0B57D0] hover:text-[#0D47A1] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                           >
-                            <FolderOpen className="w-3.5 h-3.5 text-teal-600" />
+                            <FolderOpen className="w-3.5 h-3.5 text-[#0B57D0]" />
                             <span className="hidden xl:inline">Voir Dossier</span>
                           </Link>
 
@@ -421,7 +421,7 @@ export default function PatientsPage() {
                           <button
                             onClick={() => incrementSeanceCount(patient)}
                             title="Valider une séance effectuée (+1)"
-                            className="p-1.5 text-teal-700 hover:text-teal-900 bg-teal-50 hover:bg-teal-100 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 text-[#0B57D0] hover:text-[#0D47A1] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
                           >
                             <CheckCircle className="w-4 h-4" />
                           </button>
@@ -481,7 +481,7 @@ export default function PatientsPage() {
                     <Link
                       href={`/patients/${patient.id}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="w-11 h-11 rounded-xl bg-gradient-to-tr from-teal-500 to-cyan-500 text-white font-bold text-sm flex items-center justify-center shrink-0 shadow-2xs hover:scale-105 transition-transform"
+                      className="w-11 h-11 rounded-xl bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1] text-white font-bold text-sm flex items-center justify-center shrink-0 shadow-2xs hover:scale-105 transition-transform"
                       title="Voir dossier médical"
                     >
                       {patient.prenom[0]}
@@ -497,7 +497,7 @@ export default function PatientsPage() {
                         <Link
                           href={`/patients/${patient.id}`}
                           onClick={(e) => e.stopPropagation()}
-                          className="font-bold text-slate-900 text-sm hover:text-teal-700 hover:underline transition-colors"
+                          className="font-bold text-slate-900 text-sm hover:text-[#0B57D0] hover:underline transition-colors"
                         >
                           {patient.prenom} {patient.nom}
                         </Link>
@@ -523,13 +523,13 @@ export default function PatientsPage() {
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
                     <span>Séances effectuées</span>
-                    <span className="text-teal-700 font-bold">
+                    <span className="text-[#0B57D0] font-bold">
                       {done}/{total} ({pct}%)
                     </span>
                   </div>
                   <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full"
+                      className="h-full bg-gradient-to-r from-[#0B57D0] to-[#F05A28] rounded-full"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
@@ -542,24 +542,24 @@ export default function PatientsPage() {
                 >
                   <a
                     href={`tel:${patient.telephone}`}
-                    className="text-xs font-semibold text-slate-700 hover:text-teal-700 flex items-center gap-1.5 py-1 px-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors"
+                    className="text-xs font-semibold text-slate-700 hover:text-[#0B57D0] flex items-center gap-1.5 py-1 px-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors"
                   >
-                    <Phone className="w-3.5 h-3.5 text-teal-600" />
+                    <Phone className="w-3.5 h-3.5 text-[#0B57D0]" />
                     <span>{patient.telephone}</span>
                   </a>
 
                   <div className="flex items-center gap-1">
                     <Link
                       href={`/patients/${patient.id}`}
-                      className="px-2 py-1 text-xs font-bold text-teal-700 hover:text-teal-900 bg-teal-50 hover:bg-teal-100 rounded-lg transition-colors inline-flex items-center gap-1"
+                      className="px-2 py-1 text-xs font-bold text-[#0B57D0] hover:text-[#0D47A1] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors inline-flex items-center gap-1"
                       title="Voir dossier médical"
                     >
-                      <FolderOpen className="w-3.5 h-3.5 text-teal-600" />
+                      <FolderOpen className="w-3.5 h-3.5 text-[#0B57D0]" />
                       <span>Dossier</span>
                     </Link>
                     <button
                       onClick={() => incrementSeanceCount(patient)}
-                      className="p-1.5 text-teal-700 hover:bg-teal-50 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-[#0B57D0] hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
                       title="Valider séance (+1)"
                     >
                       <CheckCircle className="w-4 h-4" />
