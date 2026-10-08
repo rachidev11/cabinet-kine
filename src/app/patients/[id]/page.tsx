@@ -62,8 +62,7 @@ import {
 import { INITIAL_PATIENTS } from '@/lib/mockData';
 import PaymentReceiptModal from '@/components/PaymentReceiptModal';
 import WhatsAppReminderModal from '@/components/WhatsAppReminderModal';
-import { BilanToPrint } from '@/components/BilanToPrint';
-import { useReactToPrint } from 'react-to-print';
+import { BilanKineToPrint } from '@/components/BilanKineToPrint';
 import MedicalDocumentsGallery, { MedicalDocument } from '@/components/MedicalDocumentsGallery';
 import EditPatientModal from '@/components/EditPatientModal';
 import EditPaymentModal from '@/components/EditPaymentModal';
@@ -158,24 +157,10 @@ export default function PatientDetailPage() {
   const [receiptPayment, setReceiptPayment] = useState<Payment | null>(null);
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
 
-  // Print Bilan Kiné setup
-  const printBilanRef = useRef<HTMLDivElement>(null);
-  const handlePrintBilan = useReactToPrint({
-    contentRef: printBilanRef,
-    documentTitle: `Bilan_Kine_${patient?.nom || 'Patient'}_${patient?.prenom || ''}`,
-    pageStyle: `
-      @page {
-        size: A4 portrait;
-        margin: 15mm;
-      }
-      @media print {
-        body {
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
-        }
-      }
-    `,
-  });
+  // Déclencheur direct d'impression du Bilan Kiné (window.print() avec mise en page CSS nette)
+  const handlePrintBilan = () => {
+    window.print();
+  };
 
   // 1. Fetch patient details, medical record, appointments, payments
   useEffect(() => {
@@ -520,7 +505,8 @@ export default function PatientDetailPage() {
   const progressPct = Math.min(100, Math.round((doneSessions / prescSessions) * 100));
 
   return (
-    <div className="space-y-6 pb-12 animate-in fade-in duration-300">
+    <>
+      <div className="space-y-6 pb-12 animate-in fade-in duration-300 print:hidden">
       {/* Top Breadcrumb & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -1811,12 +1797,14 @@ export default function PatientDetailPage() {
         />
       )}
 
-      {/* Hidden Official Bilan for Print */}
-      <div className="hidden">
-        <div ref={printBilanRef}>
-          <BilanToPrint patient={patient} medicalRecord={medicalRecord} />
-        </div>
       </div>
-    </div>
+
+      {/* FEUILLE OFFICIELLE D'IMPRESSION DU BILAN KINÉ (Format A4 propre, Nassim Al Massira) */}
+      {!receiptPayment && !isReceiptModalOpen && (
+        <div id="print-bilan-kine" className="hidden print:block">
+          <BilanKineToPrint patient={patient} medicalRecord={medicalRecord} />
+        </div>
+      )}
+    </>
   );
 }

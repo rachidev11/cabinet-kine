@@ -112,9 +112,11 @@ html[dir="rtl"] body {
     visibility: hidden;
   }
 
-  /* Rendre UNIQUEMENT visible le conteneur du reçu */
+  /* Rendre UNIQUEMENT visible le conteneur du reçu OU du bilan kiné */
   #print-receipt,
-  #print-receipt * {
+  #print-receipt *,
+  #print-bilan-kine,
+  #print-bilan-kine * {
     visibility: visible !important;
   }
 
@@ -132,6 +134,23 @@ html[dir="rtl"] body {
     break-inside: avoid !important;
     page-break-after: avoid !important;
     break-after: avoid !important;
+  }
+
+  /* Boîte du Bilan Kiné officiel (A4 propre, sans page blanche) */
+  #print-bilan-kine {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   .no-print,
