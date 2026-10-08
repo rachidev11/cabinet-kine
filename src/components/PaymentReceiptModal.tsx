@@ -72,11 +72,17 @@ export default function PaymentReceiptModal({
 
           <div className="flex items-center gap-2.5">
             <button
-              onClick={() => handlePrint()}
+              onClick={() => {
+                if (handlePrint) {
+                  handlePrint();
+                } else if (typeof window !== 'undefined') {
+                  window.print();
+                }
+              }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F05A28] hover:bg-[#FF7A45] text-white text-sm font-semibold shadow-md shadow-orange-950/20 hover:shadow-lg transition-all cursor-pointer active:scale-95"
             >
               <Printer className="w-4 h-4" />
-              <span>Imprimer le reçu</span>
+              <span>Imprimer Reçu</span>
             </button>
             <button
               onClick={onClose}
@@ -99,7 +105,7 @@ export default function PaymentReceiptModal({
         <div className="flex items-center justify-between px-6 py-3.5 bg-slate-50 border-t border-slate-200">
           <p className="text-xs text-slate-500 flex items-center gap-1.5">
             <Printer className="w-3.5 h-3.5 text-[#0B57D0]" />
-            Impression cadrée sur 1 page A4 via react-to-print.
+            Format A4 compact et professionnel prêt à l&apos;impression.
           </p>
           <div className="flex items-center gap-3">
             <button
@@ -109,11 +115,17 @@ export default function PaymentReceiptModal({
               Fermer
             </button>
             <button
-              onClick={() => handlePrint()}
+              onClick={() => {
+                if (handlePrint) {
+                  handlePrint();
+                } else if (typeof window !== 'undefined') {
+                  window.print();
+                }
+              }}
               className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 text-white text-sm font-semibold shadow-sm shadow-blue-600/20 transition-all cursor-pointer active:scale-95"
             >
               <Printer className="w-4 h-4" />
-              <span>Imprimer le reçu</span>
+              <span>Imprimer Reçu</span>
             </button>
           </div>
         </div>

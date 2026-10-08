@@ -25,12 +25,14 @@ import {
   Table as TableIcon,
   FolderOpen,
   Stethoscope,
+  FileSpreadsheet,
 } from 'lucide-react';
 import { Patient, AssuranceType } from '@/types/patient';
 import PatientDetailsModal from '@/components/PatientDetailsModal';
 import AddPatientModal from '@/components/AddPatientModal';
 import WhatsAppReminderModal from '@/components/WhatsAppReminderModal';
 import { useAuth } from '@/context/AuthContext';
+import { getPaymentsFromSupabase } from '@/lib/supabase';
 
 export default function PatientsPage() {
   const { isAssistante, isKine, isOwner, profile } = useAuth();
@@ -62,6 +64,100 @@ export default function PatientsPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [whatsAppPatient, setWhatsAppPatient] = useState<Patient | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+
+  // Export Excel / CSV des dossiers patients (Réservé au propriétaire / kiné)
+  const handleExportExcel = async () => {
+    try {
+      setIsExporting(true);
+      let paymentsByPatient: Record<string, number> = {};
+      try {
+        const res = await getPaymentsFromSupabase();
+        if (res.data) {
+          paymentsByPatient = res.data.reduce((acc, p) => {
+            const pId = String(p.patient_id);
+            acc[pId] = (acc[pId] || 0) + Number(p.amount || 0);
+            return acc;
+          }, {} as Record<string, number>);
+        }
+      } catch (err) {
+        console.warn('Impossible de récupérer les paiements pour l\'export:', err);
+      }
+
+      // Colonnes requises : Nom, Prénom, Téléphone, Genre, Date de création, Nombre de séances et Reste à payer
+      const headers = [
+        'Nom',
+        'Prénom',
+        'Téléphone',
+        'Genre',
+        'Date de création',
+        'Nombre de séances',
+        'Reste à payer (DH)',
+        'Total payé (DH)',
+        'CIN',
+        'Assurance',
+        'Statut',
+      ];
+
+      const escapeCsv = (val: unknown) => {
+        if (val === null || val === undefined) return '""';
+        const str = String(val).replace(/"/g, '""');
+        return `"${str}"`;
+      };
+
+      const rows = patients.map((patient) => {
+        const seances = Number(patient.nombre_seances_effectuees || 0);
+        const montantDu = seances * 150;
+        const totalPaye = paymentsByPatient[String(patient.id)] || 0;
+        const resteAPayer = Math.max(0, montantDu - totalPaye);
+
+        const genreLabel =
+          patient.gender === 'M'
+            ? 'Homme'
+            : patient.gender === 'F'
+            ? 'Femme'
+            : patient.civilite || 'Non précisé';
+
+        const dateCreation = patient.created_at
+          ? new Date(patient.created_at).toLocaleDateString('fr-FR')
+          : '-';
+
+        return [
+          escapeCsv(patient.nom),
+          escapeCsv(patient.prenom),
+          escapeCsv(patient.telephone || 'Non renseigné'),
+          escapeCsv(genreLabel),
+          escapeCsv(dateCreation),
+          escapeCsv(seances),
+          escapeCsv(resteAPayer),
+          escapeCsv(totalPaye),
+          escapeCsv(patient.cin || '-'),
+          escapeCsv(patient.assurance || 'Aucune'),
+          escapeCsv(patient.statut || 'Actif'),
+        ].join(';');
+      });
+
+      // Ajout du BOM UTF-8 (\uFEFF) pour compatibilité Excel Windows (accents et arabe)
+      const csvContent = '\uFEFF' + [headers.map(escapeCsv).join(';'), ...rows].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute(
+        'download',
+        `Patients_Centre_Nassim_${new Date().toISOString().slice(0, 10)}.csv`
+      );
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Erreur lors de l\'exportation Excel / CSV:', err);
+      alert('Une erreur est survenue lors de la génération du fichier Excel.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   // Filter patients based on search and dropdowns
   const filteredPatients = useMemo(() => {
@@ -138,6 +234,19 @@ export default function PatientsPage() {
           >
             <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-[#0B57D0]' : ''}`} />
           </button>
+
+          {isHassnaOrKine && (
+            <button
+              onClick={handleExportExcel}
+              disabled={isExporting}
+              className="px-3.5 py-2.5 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold text-xs sm:text-sm shadow-2xs flex items-center gap-2 transition-all active:scale-95 cursor-pointer disabled:opacity-50"
+              title="Exporter les dossiers patients en Excel / CSV (Réservé à Hassna El-Hmaidi)"
+            >
+              <FileSpreadsheet className={`w-4 h-4 text-emerald-600 ${isExporting ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">Exporter Excel (Sauvegarde)</span>
+              <span className="sm:hidden">Excel</span>
+            </button>
+          )}
 
           <button
             onClick={() => setIsAddModalOpen(true)}

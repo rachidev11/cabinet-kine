@@ -176,6 +176,16 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
 
     const amountInWords = numberToFrenchWords(amountDH);
 
+    // Calcul / extraction du reste à payer
+    let resteAPayerText = '0.00 DH (Soldé)';
+    if (payment.notes) {
+      const matchReste = payment.notes.match(/Reste\s*(?:dû|à payer)\s*:\s*([\d.]+)\s*DH/i);
+      if (matchReste) {
+        const val = parseFloat(matchReste[1]);
+        resteAPayerText = val > 0 ? `${matchReste[1]} DH` : '0.00 DH (Soldé)';
+      }
+    }
+
     return (
       <div
         ref={ref}
@@ -214,7 +224,7 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
               <div className="pt-1 text-[11px] text-slate-600 space-y-0.5">
                 <p className="flex items-center gap-1.5 leading-tight">
                   <MapPin className="w-3 h-3 text-slate-400 flex-shrink-0" />
-                  <span>3 BLOC 4 HAY NASSIM BENSOUDA RDC FES, Fez, Morocco, 30000</span>
+                  <span>3 BLOC 4 HAY NASSIM BENSOUDA RDC FES</span>
                 </p>
                 <p className="flex items-center gap-1.5 leading-tight">
                   <Phone className="w-3 h-3 text-slate-400 flex-shrink-0" />
@@ -347,7 +357,7 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
               <tr className="bg-white">
                 <td className="px-3 py-1.5">
                   <p className="font-bold text-slate-900 text-xs leading-tight">
-                    Séance(s) de rééducation kinésithérapique
+                    Séances de rééducation fonctionnelle / kinésithérapie
                   </p>
                   <p className="text-[10px] text-slate-500 leading-tight">
                     Soins et réadaptation fonctionnelle selon prescription médicale
@@ -372,11 +382,21 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
             <tfoot>
               <tr className="bg-slate-50 border-t-2 border-slate-300">
                 <td colSpan={3} className="px-3 py-1.5 text-right font-bold text-slate-700 uppercase tracking-wider text-[11px]">
-                  Montant Total Réglé :
+                  Montant payé :
                 </td>
                 <td className="px-3 py-1.5 text-right">
                   <span className="text-sm font-black text-[#0B57D0]">
                     {formattedAmount} DH
+                  </span>
+                </td>
+              </tr>
+              <tr className="bg-slate-50 border-t border-slate-200">
+                <td colSpan={3} className="px-3 py-1.5 text-right font-bold text-slate-700 uppercase tracking-wider text-[11px]">
+                  Reste à payer :
+                </td>
+                <td className="px-3 py-1.5 text-right">
+                  <span className={`text-xs font-black ${resteAPayerText.includes('Soldé') ? 'text-emerald-700' : 'text-amber-700'}`}>
+                    {resteAPayerText}
                   </span>
                 </td>
               </tr>
@@ -397,14 +417,15 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
         <div className="mt-2.5 pt-2 border-t border-slate-200">
           <div className="grid grid-cols-2 gap-3 items-end">
             {/* Attestation légale */}
-            <div className="space-y-1 text-[10px] text-slate-500 leading-tight">
-              <p className="font-semibold text-slate-700">
+            <div className="space-y-1 text-[10px] text-slate-600 leading-tight">
+              <p className="font-bold text-slate-800">
                 Attestation de paiement d&apos;honoraires :
               </p>
-              <p>
-                Reçu certifié sincère et conforme, délivré à l&apos;assuré(e) pour servir et valoir ce que de droit,
-                notamment auprès des organismes d&apos;assurance maladie et de prévoyance
-                (CNSS, AMO, CNOPS, Assurances privées).
+              <p className="font-semibold text-slate-700">
+                Document délivré pour faire valoir ce que de droit.
+              </p>
+              <p className="text-slate-500">
+                Reçu certifié sincère et conforme pour les organismes d&apos;assurance maladie (CNSS, AMO, CNOPS, Assurances).
               </p>
               <p className="text-[9px] text-slate-400 pt-0.5">
                 Fait à Fès, le {formattedDate}
@@ -414,14 +435,14 @@ export const ReceiptToPrint = forwardRef<HTMLDivElement, ReceiptToPrintProps>(
             {/* Espace Signature & Cachet */}
             <div className="text-right flex flex-col items-end">
               <p className="text-[10px] font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Signature & Cachet du Praticien
+                Cachet et Signature
               </p>
               <div className="w-48 h-20 border border-dashed border-slate-300 rounded-lg bg-slate-50/50 flex flex-col items-center justify-center p-2 relative">
                 <span className="text-[10px] text-slate-400 font-medium">
-                  Cadre réservé au cachet
+                  Cachet & Signature
                 </span>
                 <span className="text-[9px] text-slate-400 italic">
-                  et à la signature
+                  du praticien
                 </span>
                 <div className="absolute bottom-1 right-2 text-[8px] text-slate-400 font-mono">
                   Hassna El-Hmaidi • Fès

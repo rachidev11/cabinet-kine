@@ -421,10 +421,10 @@ export default function FacturationPage() {
                             type="button"
                             onClick={() => setReceiptPayment(payment)}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#0B57D0] hover:text-[#0D47A1] text-xs font-semibold border border-blue-200/80 hover:border-blue-300 transition-all cursor-pointer shadow-2xs active:scale-95 group"
-                            title="Imprimer le reçu de paiement"
+                            title="Imprimer le reçu officiel de paiement"
                           >
                             <Printer className="w-3.5 h-3.5 text-[#0B57D0] group-hover:text-[#0D47A1] transition-colors" />
-                            <span>Imprimer</span>
+                            <span>Imprimer Reçu</span>
                           </button>
 
                           {/* Bouton Rectifier réservé exclusivement à Hassna */}

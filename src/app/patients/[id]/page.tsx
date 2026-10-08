@@ -1701,7 +1701,7 @@ export default function PatientDetailPage() {
                               title="Imprimer le reçu officiel"
                             >
                               <Printer className="w-3.5 h-3.5" />
-                              <span>Imprimer</span>
+                              <span>Imprimer Reçu</span>
                             </button>
 
                             {/* Rectification de paiement réservée exclusivement à Hassna */}
