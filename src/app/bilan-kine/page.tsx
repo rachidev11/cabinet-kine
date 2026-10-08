@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Stethoscope,
   Search,
@@ -18,16 +19,50 @@ import {
   FolderOpen,
   Phone,
   Image as ImageIcon,
+  Lock,
 } from 'lucide-react';
 import { usePatients } from '@/context/PatientContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useAuth } from '@/context/AuthContext';
 import AddPatientModal from '@/components/AddPatientModal';
 
 export default function BilanKinePage() {
+  const router = useRouter();
+  const { isKine, isOwner, profile, isAssistante } = useAuth();
+
+  const isHassnaOrKine = Boolean(
+    !isAssistante &&
+    (isKine ||
+      isOwner ||
+      profile?.role === 'kine' ||
+      profile?.isOwner === true ||
+      profile?.name?.includes('Hassna'))
+  );
+
+  useEffect(() => {
+    if (profile && !isHassnaOrKine) {
+      router.replace('/');
+    }
+  }, [isHassnaOrKine, profile, router]);
+
   const { patients, loading, createPatient } = usePatients();
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddPatientOpen, setIsAddPatientOpen] = useState(false);
+
+  if (!isHassnaOrKine) {
+    return (
+      <div className="min-h-[50vh] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl border border-slate-200">
+        <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3">
+          <Lock className="w-6 h-6" />
+        </div>
+        <h2 className="text-lg font-bold text-slate-800">Accès Réservé au Praticien</h2>
+        <p className="text-sm text-slate-500 mt-1 max-w-md">
+          Cette section clinique est strictement réservée à Mme Hassna El-Hmaidi. Redirection vers le tableau de bord...
+        </p>
+      </div>
+    );
+  }
 
   // Filtered patients
   const filteredPatients = useMemo(() => {

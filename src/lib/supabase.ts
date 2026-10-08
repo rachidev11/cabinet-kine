@@ -377,6 +377,78 @@ export async function addPaymentToSupabase(payment: NewPaymentInput): Promise<Su
 }
 
 /**
+ * Update an existing payment in Supabase (rectification reserved for owner).
+ */
+export async function updatePaymentInSupabase(
+  id: string | number,
+  updates: Partial<Payment>
+): Promise<SupabaseResponse<Payment>> {
+  try {
+    const payload: Record<string, unknown> = {};
+    if (updates.amount !== undefined) payload.amount = updates.amount;
+    if (updates.method !== undefined) payload.method = updates.method;
+    if (updates.payment_type !== undefined) payload.payment_type = updates.payment_type;
+    if (updates.notes !== undefined) payload.notes = updates.notes;
+    if (updates.created_at !== undefined) payload.created_at = updates.created_at;
+
+    const { data, error } = await supabase
+      .from('payments')
+      .update(payload)
+      .eq('id', id)
+      .select('*, patient:patients(*)')
+      .single();
+
+    if (error) {
+      console.warn('Erreur Supabase lors de la modification du paiement:', error);
+      return {
+        data: null,
+        error: {
+          message: error.message,
+          code: error.code,
+          isRlsError: error.code === '42501',
+        },
+      };
+    }
+
+    return { data: data as Payment, error: null };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Erreur réseau inconnue';
+    return { data: null, error: { message } };
+  }
+}
+
+/**
+ * Delete a payment from Supabase (reserved for owner).
+ */
+export async function deletePaymentFromSupabase(
+  id: string | number
+): Promise<SupabaseResponse<boolean>> {
+  try {
+    const { error } = await supabase
+      .from('payments')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.warn('Erreur Supabase lors de la suppression du paiement:', error);
+      return {
+        data: null,
+        error: {
+          message: error.message,
+          code: error.code,
+          isRlsError: error.code === '42501',
+        },
+      };
+    }
+
+    return { data: true, error: null };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Erreur réseau inconnue';
+    return { data: null, error: { message } };
+  }
+}
+
+/**
  * Get payment KPI data: monthly total, daily total, total sessions paid.
  */
 export async function getPaymentKpis(): Promise<{

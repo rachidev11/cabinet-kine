@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Menu, Plus, Database, RefreshCw, LogOut, UserCircle2, Stethoscope, UserCheck, Globe } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -65,8 +66,12 @@ export default function Navbar({
           <Menu className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/90 p-1 flex items-center justify-center shadow-xs flex-shrink-0">
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 hover:opacity-90 transition-opacity cursor-pointer group"
+          title="Retour au tableau de bord"
+        >
+          <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/90 p-1 flex items-center justify-center shadow-xs flex-shrink-0 group-hover:scale-105 transition-transform">
             <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
           </div>
           <div>
@@ -78,7 +83,7 @@ export default function Navbar({
             </h1>
             <p className="text-xs text-slate-500 hidden sm:block">{dateCapitalized}</p>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Right: Language Switcher, Status Pill, User info & Actions */}

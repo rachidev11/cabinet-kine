@@ -17,6 +17,7 @@ import {
   Receipt,
   Save,
   AlertCircle,
+  Pencil,
   FileText,
   Stethoscope,
   ClipboardList,
@@ -64,6 +65,9 @@ import WhatsAppReminderModal from '@/components/WhatsAppReminderModal';
 import { BilanToPrint } from '@/components/BilanToPrint';
 import { useReactToPrint } from 'react-to-print';
 import MedicalDocumentsGallery, { MedicalDocument } from '@/components/MedicalDocumentsGallery';
+import EditPatientModal from '@/components/EditPatientModal';
+import EditPaymentModal from '@/components/EditPaymentModal';
+import NewPaymentModal from '@/components/NewPaymentModal';
 
 export default function PatientDetailPage() {
   const params = useParams();
@@ -73,26 +77,53 @@ export default function PatientDetailPage() {
   const { patients: contextPatients, incrementSeanceCount, removePatient } = usePatients();
   const { isAssistante, isKine, profile, isOwner } = useAuth();
 
-  // Condition directe et infaillible pour Hassna El-Hmaidi
+  // Condition stricte pour Hassna El-Hmaidi (Propriétaire / Kiné)
+  // Strictement fausse si l'Assistante est connectée
   const isHassnaOrKine = Boolean(
-    isKine ||
-    isOwner ||
-    profile?.role === 'kine' ||
-    profile?.isOwner === true ||
-    (profile?.name && profile.name.includes('Hassna')) ||
-    (typeof window !== 'undefined' && (
-      localStorage.getItem('currentUser')?.includes('kine') ||
-      localStorage.getItem('currentUser')?.includes('Hassna') ||
-      localStorage.getItem('cabinet_auth_profile')?.includes('kine') ||
-      localStorage.getItem('cabinet_auth_profile')?.includes('Hassna')
-    ))
+    !isAssistante &&
+    (isKine ||
+      isOwner ||
+      profile?.role === 'kine' ||
+      profile?.isOwner === true ||
+      profile?.name?.includes('Hassna'))
   );
 
   // Loading & patient data
   const [loading, setLoading] = useState(true);
   const [patient, setPatient] = useState<Patient | null>(null);
-  const [activeTab, setActiveTab] = useState<'infos' | 'bilan' | 'seances' | 'paiements' | 'radios'>('bilan');
+  const [activeTab, setActiveTab] = useState<'infos' | 'bilan' | 'seances' | 'paiements' | 'radios'>('infos');
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
+  const [isEditPatientOpen, setIsEditPatientOpen] = useState(false);
+  const [isNewPaymentOpen, setIsNewPaymentOpen] = useState(false);
+  const [paymentToEdit, setPaymentToEdit] = useState<Payment | null>(null);
+
+  // Initialisation dynamique de l'onglet selon le rôle
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab');
+      if (tabParam === 'bilan' && isHassnaOrKine) {
+        setActiveTab('bilan');
+        return;
+      }
+      if (tabParam && ['infos', 'seances', 'paiements', 'radios'].includes(tabParam)) {
+        setActiveTab(tabParam as 'infos' | 'seances' | 'paiements' | 'radios');
+        return;
+      }
+    }
+    if (isHassnaOrKine) {
+      setActiveTab('bilan');
+    } else {
+      setActiveTab('infos');
+    }
+  }, [isHassnaOrKine]);
+
+  // Si l'assistante tente d'accéder au bilan, basculer sur infos
+  useEffect(() => {
+    if (!isHassnaOrKine && activeTab === 'bilan') {
+      setActiveTab('infos');
+    }
+  }, [isHassnaOrKine, activeTab]);
 
   // Galerie des Radios & Documents Médicaux State
   const [medicalDocs, setMedicalDocs] = useState<MedicalDocument[]>([]);
@@ -602,6 +633,18 @@ export default function PatientDetailPage() {
             <span>Appeler</span>
           </a>
 
+          {/* Bouton distinct "Modifier le patient" - Réservé UNIQUEMENT à Hassna El-Hmaidi */}
+          {isHassnaOrKine && (
+            <button
+              onClick={() => setIsEditPatientOpen(true)}
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+              title="Modifier les données du patient (Privilège Propriétaire)"
+            >
+              <Pencil className="w-3.5 h-3.5 text-white" />
+              <span>Modifier le patient</span>
+            </button>
+          )}
+
           {/* Quick Session Increment */}
           <button
             onClick={handleIncrementSession}
@@ -612,24 +655,26 @@ export default function PatientDetailPage() {
             <span>+1 Séance</span>
           </button>
 
-          {/* Supprimer / Archiver le dossier */}
-          <button
-            onClick={() => {
-              if (
-                confirm(
-                  `Confirmez-vous l'archivage ou la suppression du dossier de ${patient.prenom} ${patient.nom} ?`
-                )
-              ) {
-                removePatient(patient.id);
-                router.push('/patients');
-              }
-            }}
-            className="px-3.5 py-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
-            title="Supprimer ou archiver ce dossier patient"
-          >
-            <Trash2 className="w-4 h-4 text-rose-600" />
-            <span>Supprimer / Archiver</span>
-          </button>
+          {/* Supprimer / Archiver le dossier - Réservé UNIQUEMENT à Hassna */}
+          {isHassnaOrKine && (
+            <button
+              onClick={() => {
+                if (
+                  confirm(
+                    `Confirmez-vous l'archivage ou la suppression du dossier de ${patient.prenom} ${patient.nom} ?`
+                  )
+                ) {
+                  removePatient(patient.id);
+                  router.push('/patients');
+                }
+              }}
+              className="px-3.5 py-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+              title="Supprimer ou archiver ce dossier patient"
+            >
+              <Trash2 className="w-4 h-4 text-rose-600" />
+              <span>Supprimer / Archiver</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -748,21 +793,23 @@ export default function PatientDetailPage() {
           <span>Infos Patient</span>
         </button>
 
-        {/* ONGLET 2: BILAN KINÉ */}
-        <button
-          onClick={() => setActiveTab('bilan')}
-          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
-            activeTab === 'bilan'
-              ? 'border-[#0B57D0] text-[#0B57D0] bg-blue-50/50 rounded-t-xl'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <Stethoscope className="w-4 h-4 text-[#0B57D0]" />
-          <span>Bilan Kiné</span>
-          <span className="px-2 py-0.5 rounded-full bg-blue-100 text-[#0B57D0] text-[10px] font-extrabold uppercase tracking-wide">
-            Direct
-          </span>
-        </button>
+        {/* ONGLET 2: BILAN KINÉ - Réservé STRICTEMENT à Hassna El-Hmaidi */}
+        {isHassnaOrKine && (
+          <button
+            onClick={() => setActiveTab('bilan')}
+            className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'bilan'
+                ? 'border-[#0B57D0] text-[#0B57D0] bg-blue-50/50 rounded-t-xl'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <Stethoscope className="w-4 h-4 text-[#0B57D0]" />
+            <span>Bilan Kiné</span>
+            <span className="px-2 py-0.5 rounded-full bg-blue-100 text-[#0B57D0] text-[10px] font-extrabold uppercase tracking-wide">
+              Direct
+            </span>
+          </button>
+        )}
 
         {/* ONGLET 3: SÉANCES */}
         <button
@@ -828,20 +875,22 @@ export default function PatientDetailPage() {
                 </p>
               </div>
 
-              {/* Raccourci Bilan Kiné depuis l'onglet infos */}
-              <button
-                onClick={() => {
-                  setActiveTab('bilan');
-                  setTimeout(() => {
-                    const el = document.getElementById('bilan-section');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }, 50);
-                }}
-                className="px-4 py-2.5 bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] text-white text-xs font-bold rounded-xl shadow-xs hover:shadow-md transition-all flex items-center gap-2 cursor-pointer"
-              >
-                <Stethoscope className="w-4 h-4 text-sky-200" />
-                <span>Accéder au Bilan Kiné</span>
-              </button>
+              {/* Raccourci Bilan Kiné depuis l'onglet infos - Réservé à Hassna */}
+              {isHassnaOrKine && (
+                <button
+                  onClick={() => {
+                    setActiveTab('bilan');
+                    setTimeout(() => {
+                      const el = document.getElementById('bilan-section');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }, 50);
+                  }}
+                  className="px-4 py-2.5 bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] text-white text-xs font-bold rounded-xl shadow-xs hover:shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <Stethoscope className="w-4 h-4 text-sky-200" />
+                  <span>Accéder au Bilan Kiné</span>
+                </button>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
@@ -919,8 +968,8 @@ export default function PatientDetailPage() {
         </div>
       )}
 
-      {/* TAB 2: BILAN KINÉ FORM (ACCÈS DIRECT TOTAL) */}
-      {activeTab === 'bilan' && (
+      {/* TAB 2: BILAN KINÉ FORM (STRICTEMENT RÉSERVÉ À HASSNA EL-HMAIDI) */}
+      {activeTab === 'bilan' && isHassnaOrKine && (
         <form id="bilan-section" onSubmit={handleSaveMedicalRecord} className="space-y-6">
           {/* Permanent Action Toolbar for Bilan Kiné */}
           <div className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
@@ -935,35 +984,26 @@ export default function PatientDetailPage() {
             </div>
 
             <div className="flex items-center flex-wrap gap-2">
-              {!isHassnaOrKine && (
-                <span className="px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 text-xs font-semibold inline-flex items-center gap-1.5 shadow-2xs">
-                  <Lock className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Consultation seule (Édition réservée au kinésithérapeute)</span>
-                </span>
-              )}
-
-              {isHassnaOrKine && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMedicalRecord({
-                        patient_id: id,
-                        diagnostic: '',
-                        pathologie: '',
-                        medecin_prescripteur: patient.medecin_traitant || '',
-                        seances_prescrites: patient.nombre_seances_prescrites || 10,
-                        seances_effectuees: patient.nombre_seances_effectuees || 0,
-                        objectifs_reeducation: '',
-                        bilan_initial: '',
-                        bilan_articulaire: '',
-                        bilan_musculaire: '',
-                        eva_douleur: 5,
-                        antecedents: patient.antecedents || '',
-                        observations: '',
-                        date_bilan: new Date().toISOString().split('T')[0],
-                      });
-                    }}
+              <button
+                type="button"
+                onClick={() => {
+                  setMedicalRecord({
+                    patient_id: id,
+                    diagnostic: '',
+                    pathologie: '',
+                    medecin_prescripteur: patient.medecin_traitant || '',
+                    seances_prescrites: patient.nombre_seances_prescrites || 10,
+                    seances_effectuees: patient.nombre_seances_effectuees || 0,
+                    objectifs_reeducation: '',
+                    bilan_initial: '',
+                    bilan_articulaire: '',
+                    bilan_musculaire: '',
+                    eva_douleur: 5,
+                    antecedents: patient.antecedents || '',
+                    observations: '',
+                    date_bilan: new Date().toISOString().split('T')[0],
+                  });
+                }}
                     className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                     title="Créer un nouveau bilan kiné vierge"
                   >
@@ -980,8 +1020,6 @@ export default function PatientDetailPage() {
                     <Save className="w-3.5 h-3.5" />
                     <span>Modifier / Enregistrer</span>
                   </button>
-                </>
-              )}
 
               <button
                 type="button"
@@ -1023,7 +1061,6 @@ export default function PatientDetailPage() {
             </div>
           )}
 
-          <fieldset disabled={!isHassnaOrKine} className="contents">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left 2 Cols: Clinical Form */}
             <div className="lg:col-span-2 space-y-6">
@@ -1349,7 +1386,6 @@ export default function PatientDetailPage() {
                   Enregistre le bilan initial et les objectifs thérapeutiques dans la table
                   médicale du patient.
                 </p>
-                {isHassnaOrKine ? (
                   <button
                     type="submit"
                     disabled={isSavingRecord}
@@ -1367,12 +1403,6 @@ export default function PatientDetailPage() {
                       </>
                     )}
                   </button>
-                ) : (
-                  <div className="w-full py-3 px-3 rounded-xl bg-white/10 border border-white/20 text-blue-100 text-xs font-semibold text-center flex items-center justify-center gap-2">
-                    <Lock className="w-4 h-4 text-amber-300" />
-                    <span>Consultation seule (Réservé au Kiné)</span>
-                  </div>
-                )}
 
                 <button
                   type="button"
@@ -1385,7 +1415,6 @@ export default function PatientDetailPage() {
               </div>
             </div>
           </div>
-          </fieldset>
         </form>
       )}
 
@@ -1511,46 +1540,93 @@ export default function PatientDetailPage() {
         </div>
       )}
 
-      {/* TAB 3: HISTORIQUE DES RÈGLEMENTS (PAYMENTS) */}
+      {/* TAB 3: HISTORIQUE DES RÈGLEMENTS (PAYMENTS) & RESTE À PAYER */}
       {activeTab === 'paiements' && (
         <div className="space-y-6">
-          {/* KPI Bar */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
-              <span className="text-xs font-semibold text-slate-400 block uppercase">
-                Total Encaissé
-              </span>
-              <span className="text-2xl font-black text-[#0B57D0] mt-1 block">
-                {totalPaid.toLocaleString()} DH
-              </span>
-              <span className="text-[11px] text-slate-500 mt-1 block">
-                Cumul des règlements enregistrés
-              </span>
+          {/* Calcul dynamique du Reste à Payer individuel */}
+          {(() => {
+            const tarifParSeance = 150;
+            const montantTotalDu = doneSessions * tarifParSeance;
+            const resteDuPatient = Math.max(0, montantTotalDu - totalPaid);
+
+            return (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
+                  <span className="text-xs font-semibold text-slate-400 block uppercase">
+                    Total Encaissé
+                  </span>
+                  <span className="text-2xl font-black text-[#0B57D0] mt-1 block">
+                    {totalPaid.toLocaleString()} DH
+                  </span>
+                  <span className="text-[11px] text-slate-500 mt-1 block">
+                    {payments.length} règlement(s) enregistré(s)
+                  </span>
+                </div>
+
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
+                  <span className="text-xs font-semibold text-slate-400 block uppercase">
+                    Séances Effectuées
+                  </span>
+                  <span className="text-2xl font-black text-slate-900 mt-1 block">
+                    {doneSessions} / {prescSessions}
+                  </span>
+                  <span className="text-[11px] text-slate-500 mt-1 block">
+                    Tarif standard : {tarifParSeance} DH / séance
+                  </span>
+                </div>
+
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
+                  <span className="text-xs font-semibold text-slate-400 block uppercase">
+                    Montant Dû (Séances faites)
+                  </span>
+                  <span className="text-2xl font-black text-slate-900 mt-1 block">
+                    {montantTotalDu.toLocaleString()} DH
+                  </span>
+                  <span className="text-[11px] text-slate-500 mt-1 block">
+                    {doneSessions} séances × {tarifParSeance} DH
+                  </span>
+                </div>
+
+                <div
+                  className={`p-5 rounded-2xl border shadow-xs ${
+                    resteDuPatient === 0
+                      ? 'bg-emerald-50/80 border-emerald-200 text-emerald-950'
+                      : 'bg-amber-50/80 border-amber-200 text-amber-950'
+                  }`}
+                >
+                  <span className="text-xs font-bold uppercase block tracking-wider opacity-75">
+                    Reste à Payer (Solde Dû)
+                  </span>
+                  <span className="text-2xl font-black mt-1 block">
+                    {resteDuPatient.toLocaleString()} DH
+                  </span>
+                  <span className="text-[11px] font-semibold mt-1 block">
+                    {resteDuPatient === 0 ? '✓ Dossier soldé • Aucun impayé' : '⚠ Solde restant à régler'}
+                  </span>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Action Toolbar : Encaisser une séance & Saisir règlement */}
+          <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <Receipt className="w-4 h-4 text-[#0B57D0]" />
+                Historique des Encaissements & Reçus
+              </h4>
+              <p className="text-xs text-slate-500">
+                Saisissez le tarif du jour, encaissez le montant et imprimez le reçu du patient.
+              </p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
-              <span className="text-xs font-semibold text-slate-400 block uppercase">
-                Nombre de Règlements
-              </span>
-              <span className="text-2xl font-black text-slate-900 mt-1 block">
-                {payments.length} reçus
-              </span>
-              <span className="text-[11px] text-slate-500 mt-1 block">
-                Paiements par chèque, espèces ou virement
-              </span>
-            </div>
-
-            <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs">
-              <span className="text-xs font-semibold text-slate-400 block uppercase">
-                Tarification Séances
-              </span>
-              <span className="text-2xl font-black text-emerald-700 mt-1 block">
-                {doneSessions} séances
-              </span>
-              <span className="text-[11px] text-slate-500 mt-1 block">
-                Validées sur {prescSessions} prescrites
-              </span>
-            </div>
+            <button
+              onClick={() => setIsNewPaymentOpen(true)}
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 text-white text-xs font-bold inline-flex items-center gap-2 shadow-sm transition-all cursor-pointer active:scale-95"
+            >
+              <Plus className="w-4 h-4 text-[#FF7A45]" />
+              <span>Encaisser la Séance du Jour</span>
+            </button>
           </div>
 
           {/* Payments List */}
@@ -1561,13 +1637,13 @@ export default function PatientDetailPage() {
               <p className="text-xs text-slate-400 mt-1 mb-4">
                 Aucun règlement n&apos;a encore été saisi pour ce patient.
               </p>
-              <Link
-                href="/facturation"
-                className="px-4 py-2 rounded-xl bg-[#0B57D0] hover:bg-[#0D47A1] text-white text-xs font-bold inline-flex items-center gap-1.5"
+              <button
+                onClick={() => setIsNewPaymentOpen(true)}
+                className="px-4 py-2 rounded-xl bg-[#0B57D0] hover:bg-[#0D47A1] text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Enregistrer un encaissement</span>
-              </Link>
+              </button>
             </div>
           ) : (
             <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
@@ -1580,7 +1656,7 @@ export default function PatientDetailPage() {
                       <th className="py-3.5 px-4">Mode de Règlement</th>
                       <th className="py-3.5 px-4">Prestation</th>
                       <th className="py-3.5 px-4 text-right">Montant (DH)</th>
-                      <th className="py-3.5 px-4 text-right">Action Reçu</th>
+                      <th className="py-3.5 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -1613,19 +1689,33 @@ export default function PatientDetailPage() {
                           {Number(p.amount).toLocaleString()} DH
                         </td>
 
-                        {/* Action Imprimer */}
+                        {/* Action Imprimer & Rectifier */}
                         <td className="py-4 px-4 text-right">
-                          <button
-                            onClick={() => {
-                              setReceiptPayment({ ...p, patient });
-                              setIsReceiptModalOpen(true);
-                            }}
-                            className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#0B57D0] text-xs font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
-                            title="Imprimer le reçu officiel"
-                          >
-                            <Printer className="w-3.5 h-3.5" />
-                            <span>Imprimer Reçu</span>
-                          </button>
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => {
+                                setReceiptPayment({ ...p, patient });
+                                setIsReceiptModalOpen(true);
+                              }}
+                              className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#0B57D0] text-xs font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                              title="Imprimer le reçu officiel"
+                            >
+                              <Printer className="w-3.5 h-3.5" />
+                              <span>Imprimer</span>
+                            </button>
+
+                            {/* Rectification de paiement réservée exclusivement à Hassna */}
+                            {isHassnaOrKine && (
+                              <button
+                                onClick={() => setPaymentToEdit(p)}
+                                className="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold inline-flex items-center gap-1 transition-colors cursor-pointer"
+                                title="Rectifier ce règlement (Privilège Propriétaire)"
+                              >
+                                <Pencil className="w-3 h-3 text-slate-500" />
+                                <span>Rectifier</span>
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -1668,6 +1758,58 @@ export default function PatientDetailPage() {
         isOpen={isWhatsAppModalOpen}
         onClose={() => setIsWhatsAppModalOpen(false)}
       />
+
+      {/* Modal Nouveau Paiement / Encaissement de Séance */}
+      {isNewPaymentOpen && (
+        <NewPaymentModal
+          isOpen={isNewPaymentOpen}
+          onClose={() => setIsNewPaymentOpen(false)}
+          patients={[patient]}
+          initialPatientId={String(patient.id)}
+          onPaymentAdded={(createdPayment) => {
+            if (createdPayment) {
+              setPayments((prev) => [createdPayment, ...prev]);
+            }
+            // Recharger les paiements de la base
+            getPaymentsByPatientId(id).then(({ data }) => {
+              if (data && data.length > 0) setPayments(data);
+            });
+          }}
+          onPrintRequested={(p) => {
+            setReceiptPayment({ ...p, patient });
+            setIsReceiptModalOpen(true);
+          }}
+        />
+      )}
+
+      {/* Modal Modification du Patient (Réservée exclusivement à Hassna) */}
+      {isEditPatientOpen && isHassnaOrKine && (
+        <EditPatientModal
+          isOpen={isEditPatientOpen}
+          onClose={() => setIsEditPatientOpen(false)}
+          patient={patient}
+          onPatientUpdated={(updated) => {
+            setPatient(updated);
+          }}
+        />
+      )}
+
+      {/* Modal Rectification de Paiement (Réservée exclusivement à Hassna) */}
+      {paymentToEdit && isHassnaOrKine && (
+        <EditPaymentModal
+          isOpen={Boolean(paymentToEdit)}
+          onClose={() => setPaymentToEdit(null)}
+          payment={paymentToEdit}
+          onPaymentUpdated={(updated) => {
+            setPayments((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+            setPaymentToEdit(null);
+          }}
+          onPaymentDeleted={(delId) => {
+            setPayments((prev) => prev.filter((p) => p.id !== delId));
+            setPaymentToEdit(null);
+          }}
+        />
+      )}
 
       {/* Hidden Official Bilan for Print */}
       <div className="hidden">

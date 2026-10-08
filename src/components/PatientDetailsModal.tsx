@@ -39,8 +39,18 @@ export default function PatientDetailsModal({
   onDelete,
   onIncrementSeance,
 }: PatientDetailsModalProps) {
-  const { isKine } = useAuth();
+  const { isAssistante, isKine, isOwner, profile } = useAuth();
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
+
+  // Exclusivité Hassna El-Hmaidi
+  const isHassnaOrKine = Boolean(
+    !isAssistante &&
+    (isKine ||
+      isOwner ||
+      profile?.role === 'kine' ||
+      profile?.isOwner === true ||
+      profile?.name?.includes('Hassna'))
+  );
 
   if (!isOpen || !patient) return null;
 
@@ -217,11 +227,11 @@ export default function PatientDetailsModal({
               <p className="text-slate-700">{patient.adresse || 'Fès'}</p>
             </div>
 
-            {/* Observations & Bilan Kinésithérapique - Toujours visible */}
+            {/* Observations & Notes Complémentaires */}
             {patient.notes && (
               <div className="sm:col-span-2 p-3 rounded-xl bg-blue-50/60 border border-blue-100">
                 <span className="text-[11px] font-semibold text-[#0B57D0] block mb-1">
-                  Observations & Bilan Kinésithérapique
+                  {isHassnaOrKine ? 'Observations & Bilan Kinésithérapique' : 'Observations & Notes'}
                 </span>
                 <p className="text-slate-700">{patient.notes}</p>
               </div>
@@ -231,16 +241,27 @@ export default function PatientDetailsModal({
           {/* Footer Actions */}
           <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <Link
-                href={`/patients/${patient.id}?tab=bilan`}
-                onClick={onClose}
-                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] text-white hover:brightness-110 text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
-              >
-                <Stethoscope className="w-3.5 h-3.5 text-sky-200" />
-                <span>Ouvrir Bilan Kiné</span>
-              </Link>
+              {isHassnaOrKine ? (
+                <Link
+                  href={`/patients/${patient.id}?tab=bilan`}
+                  onClick={onClose}
+                  className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] text-white hover:brightness-110 text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                >
+                  <Stethoscope className="w-3.5 h-3.5 text-sky-200" />
+                  <span>Ouvrir Bilan Kiné</span>
+                </Link>
+              ) : (
+                <Link
+                  href={`/patients/${patient.id}?tab=infos`}
+                  onClick={onClose}
+                  className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] text-white hover:brightness-110 text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                >
+                  <User className="w-3.5 h-3.5 text-sky-200" />
+                  <span>Voir le dossier</span>
+                </Link>
+              )}
 
-              {onDelete && (
+              {isHassnaOrKine && onDelete && (
                 <button
                   onClick={() => {
                     if (confirm(`Êtes-vous sûr de vouloir supprimer le dossier de ${patient.prenom} ${patient.nom} ?`)) {

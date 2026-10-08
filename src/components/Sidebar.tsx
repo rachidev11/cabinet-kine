@@ -64,25 +64,19 @@ export default function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { signOut, isKine, isOwner } = useAuth();
+  const { signOut, isKine, isOwner, isAssistante } = useAuth();
   const { t } = useLanguage();
 
-  // Robust check for Hassna El-Hmaidi / Kiné (code 239021, role 'kine', isOwner, etc.)
+  // Strict check for Hassna El-Hmaidi / Kiné (code 239021, role 'kine', isOwner, etc.)
+  // Never true for Assistante
   const isHassnaOrKine = Boolean(
-    isKine ||
-    isOwner ||
-    profile?.role === 'kine' ||
-    profile?.isOwner === true ||
-    (profile?.name && profile.name.includes('Hassna')) ||
-    (profile?.full_name && profile.full_name.includes('Hassna')) ||
-    (typeof window !== 'undefined' && (
-      localStorage.getItem('currentUser')?.includes('kine') ||
-      localStorage.getItem('currentUser')?.includes('Hassna') ||
-      localStorage.getItem('currentUser')?.includes('239021') ||
-      localStorage.getItem('cabinet_auth_profile')?.includes('kine') ||
-      localStorage.getItem('cabinet_auth_profile')?.includes('Hassna') ||
-      localStorage.getItem('cabinet_auth_profile')?.includes('239021')
-    ))
+    !isAssistante &&
+    (isKine ||
+      isOwner ||
+      profile?.role === 'kine' ||
+      profile?.isOwner === true ||
+      (profile?.name && profile.name.includes('Hassna')) ||
+      (profile?.full_name && profile.full_name.includes('Hassna')))
   );
 
   // Navigation items conforming to user roles
@@ -105,12 +99,16 @@ export default function Sidebar({
       icon: Users,
       badge: patientCount > 0 ? patientCount.toString() : null,
     },
-    {
-      name: 'Bilan Kiné',
-      href: '/bilan-kine',
-      icon: Stethoscope,
-      badge: 'Direct',
-    },
+    ...(isHassnaOrKine
+      ? [
+          {
+            name: 'Bilan Kiné',
+            href: '/bilan-kine',
+            icon: Stethoscope,
+            badge: 'Direct',
+          },
+        ]
+      : []),
     {
       name: 'Facturation & Reçus',
       href: '/facturation',
@@ -160,8 +158,13 @@ export default function Sidebar({
       >
         {/* Clinic Brand Header */}
         <div className="h-20 px-4 border-b border-blue-900/20 flex items-center justify-between bg-gradient-to-r from-[#0B57D0] via-[#0D47A1] to-[#0A387E] text-white shadow-sm flex-shrink-0">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-12 h-12 rounded-xl bg-white p-1 flex items-center justify-center border border-white/40 shadow-md flex-shrink-0">
+          <Link
+            href="/"
+            onClick={onClose}
+            className="flex items-center gap-3 min-w-0 hover:opacity-90 transition-opacity cursor-pointer group"
+            title="Retour au tableau de bord"
+          >
+            <div className="w-12 h-12 rounded-xl bg-white p-1 flex items-center justify-center border border-white/40 shadow-md flex-shrink-0 group-hover:scale-105 transition-transform">
               <img
                 src="/logo.png"
                 alt="Logo"
@@ -179,26 +182,28 @@ export default function Sidebar({
                 {t('kineName')}
               </p>
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Quick Direct Actions : Bilan Kiné 1-Clic & Ajouter Patient */}
         <div className="p-3 border-b border-slate-100 bg-slate-50/80 flex-shrink-0 space-y-2">
-          {/* Bouton bien visible "Bilan Kiné" pour accès direct en 1 clic */}
-          <Link
-            href="/bilan-kine"
-            onClick={onClose}
-            className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#0B57D0] via-[#0D47A1] to-[#0A387E] hover:brightness-110 text-white font-bold text-sm flex items-center justify-between shadow-sm shadow-blue-700/25 transition-all hover:shadow-md cursor-pointer active:scale-[0.99] border border-blue-400/40"
-            title="Accéder directement aux Bilans Kiné"
-          >
-            <div className="flex items-center gap-2">
-              <Stethoscope className="w-4 h-4 text-sky-200" />
-              <span>Bilan Kiné</span>
-            </div>
-            <span className="text-[10px] bg-white/20 text-white font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
-              1-Clic
-            </span>
-          </Link>
+          {/* Bouton bien visible "Bilan Kiné" pour accès direct en 1 clic réservé à Hassna */}
+          {isHassnaOrKine && (
+            <Link
+              href="/bilan-kine"
+              onClick={onClose}
+              className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#0B57D0] via-[#0D47A1] to-[#0A387E] hover:brightness-110 text-white font-bold text-sm flex items-center justify-between shadow-sm shadow-blue-700/25 transition-all hover:shadow-md cursor-pointer active:scale-[0.99] border border-blue-400/40"
+              title="Accéder directement aux Bilans Kiné"
+            >
+              <div className="flex items-center gap-2">
+                <Stethoscope className="w-4 h-4 text-sky-200" />
+                <span>Bilan Kiné</span>
+              </div>
+              <span className="text-[10px] bg-white/20 text-white font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                1-Clic
+              </span>
+            </Link>
+          )}
 
           {/* Quick Add Patient Button */}
           <button
@@ -287,23 +292,27 @@ export default function Sidebar({
             );
           })}
 
-          {/* Clinical Space section - Always visible */}
-          <div className="pt-5 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-            {t('clinicalSpace')}
-          </div>
-          <Link
-            href="/bilan-kine"
-            onClick={onClose}
-            className="group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 bg-blue-50/70 hover:bg-blue-100/80 border border-blue-200/80 transition-all cursor-pointer shadow-2xs"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#0B57D0] flex items-center justify-center text-white shadow-2xs">
-                <ClipboardList className="w-4 h-4" />
+          {/* Clinical Space section - Strictement réservé à Hassna */}
+          {isHassnaOrKine && (
+            <>
+              <div className="pt-5 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                {t('clinicalSpace')}
               </div>
-              <span className="text-[#0D47A1] font-bold">{t('medicalRecord')}</span>
-            </div>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#0B57D0]/10 text-[#0B57D0] font-bold">Accès Total</span>
-          </Link>
+              <Link
+                href="/bilan-kine"
+                onClick={onClose}
+                className="group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 bg-blue-50/70 hover:bg-blue-100/80 border border-blue-200/80 transition-all cursor-pointer shadow-2xs"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#0B57D0] flex items-center justify-center text-white shadow-2xs">
+                    <ClipboardList className="w-4 h-4" />
+                  </div>
+                  <span className="text-[#0D47A1] font-bold">{t('medicalRecord')}</span>
+                </div>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#0B57D0]/10 text-[#0B57D0] font-bold">Accès Total</span>
+              </Link>
+            </>
+          )}
 
           {/* Supabase & Paramètres SQL - Always visible */}
           <div className="pt-4 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">

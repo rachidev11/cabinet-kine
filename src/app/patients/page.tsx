@@ -33,7 +33,15 @@ import WhatsAppReminderModal from '@/components/WhatsAppReminderModal';
 import { useAuth } from '@/context/AuthContext';
 
 export default function PatientsPage() {
-  const { isKine } = useAuth();
+  const { isAssistante, isKine, isOwner, profile } = useAuth();
+  const isHassnaOrKine = Boolean(
+    !isAssistante &&
+    (isKine ||
+      isOwner ||
+      profile?.role === 'kine' ||
+      profile?.isOwner === true ||
+      (profile?.name && profile.name.includes('Hassna')))
+  );
   const {
     patients,
     loading,
@@ -434,14 +442,16 @@ export default function PatientsPage() {
                             <span className="hidden xl:inline">Voir Dossier</span>
                           </Link>
 
-                          {/* Direct Bilan Kiné Link */}
-                          <Link
-                            href={`/patients/${patient.id}?tab=bilan`}
-                            title="Ouvrir le Bilan Kiné"
-                            className="p-1.5 text-[#0B57D0] hover:text-[#0D47A1] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
-                          >
-                            <Stethoscope className="w-4 h-4" />
-                          </Link>
+                          {/* Direct Bilan Kiné Link (Exclusivité Hassna El-Hmaidi) */}
+                          {isHassnaOrKine && (
+                            <Link
+                              href={`/patients/${patient.id}?tab=bilan`}
+                              title="Ouvrir le Bilan Kiné"
+                              className="p-1.5 text-[#0B57D0] hover:text-[#0D47A1] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
+                            >
+                              <Stethoscope className="w-4 h-4" />
+                            </Link>
+                          )}
 
                           {/* Rappel WhatsApp (AR/FR) */}
                           <button
@@ -470,22 +480,24 @@ export default function PatientsPage() {
                             <Eye className="w-4 h-4" />
                           </button>
 
-                          {/* Delete */}
-                          <button
-                            onClick={() => {
-                              if (
-                                confirm(
-                                  `Supprimer le dossier de ${patient.prenom} ${patient.nom} ?`
-                                )
-                              ) {
-                                removePatient(patient.id);
-                              }
-                            }}
-                            title="Supprimer le dossier"
-                            className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          {/* Delete (Réservé exclusivement à Hassna) */}
+                          {isHassnaOrKine && (
+                            <button
+                              onClick={() => {
+                                if (
+                                  confirm(
+                                    `Supprimer le dossier de ${patient.prenom} ${patient.nom} ?`
+                                  )
+                                ) {
+                                  removePatient(patient.id);
+                                }
+                              }}
+                              title="Supprimer le dossier"
+                              className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -596,14 +608,17 @@ export default function PatientsPage() {
                   </a>
 
                   <div className="flex items-center gap-1">
-                    <Link
-                      href={`/patients/${patient.id}?tab=bilan`}
-                      className="px-2 py-1 text-xs font-bold text-white bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 rounded-lg transition-all inline-flex items-center gap-1 shadow-2xs"
-                      title="Ouvrir directement le Bilan Kiné"
-                    >
-                      <Stethoscope className="w-3.5 h-3.5 text-sky-200" />
-                      <span>Bilan</span>
-                    </Link>
+                    {/* Bilan Kiné réservé à Hassna */}
+                    {isHassnaOrKine && (
+                      <Link
+                        href={`/patients/${patient.id}?tab=bilan`}
+                        className="px-2 py-1 text-xs font-bold text-white bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 rounded-lg transition-all inline-flex items-center gap-1 shadow-2xs"
+                        title="Ouvrir directement le Bilan Kiné"
+                      >
+                        <Stethoscope className="w-3.5 h-3.5 text-sky-200" />
+                        <span>Bilan</span>
+                      </Link>
+                    )}
                     <Link
                       href={`/patients/${patient.id}`}
                       className="px-2 py-1 text-xs font-bold text-slate-700 hover:text-[#0B57D0] bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors inline-flex items-center gap-1"
@@ -633,21 +648,24 @@ export default function PatientsPage() {
                     >
                       <Eye className="w-4 h-4" />
                     </button>
-                    <button
-                      onClick={() => {
-                        if (
-                          confirm(
-                            `Supprimer le dossier de ${patient.prenom} ${patient.nom} ?`
-                          )
-                        ) {
-                          removePatient(patient.id);
-                        }
-                      }}
-                      title="Supprimer le dossier"
-                      className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    {/* Delete réservé à Hassna */}
+                    {isHassnaOrKine && (
+                      <button
+                        onClick={() => {
+                          if (
+                            confirm(
+                              `Supprimer le dossier de ${patient.prenom} ${patient.nom} ?`
+                            )
+                          ) {
+                            removePatient(patient.id);
+                          }
+                        }}
+                        title="Supprimer le dossier"
+                        className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -662,7 +680,7 @@ export default function PatientsPage() {
         isOpen={Boolean(selectedPatient)}
         onClose={() => setSelectedPatient(null)}
         onIncrementSeance={incrementSeanceCount}
-        onDelete={removePatient}
+        onDelete={isHassnaOrKine ? removePatient : undefined}
       />
 
       {/* WhatsApp Reminder Modal (Bilingue AR / FR) */}

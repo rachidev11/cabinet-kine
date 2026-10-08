@@ -57,7 +57,17 @@ interface AssuranceStat {
 
 export default function DashboardPage() {
   const { createPatient, removePatient, incrementSeanceCount, refreshPatients } = usePatients();
-  const { profile, isKine } = useAuth();
+  const { profile, isKine, isOwner, isAssistante } = useAuth();
+
+  // Exclusivité Hassna El-Hmaidi
+  const isHassnaOrKine = Boolean(
+    !isAssistante &&
+    (isKine ||
+      isOwner ||
+      profile?.role === 'kine' ||
+      profile?.isOwner === true ||
+      (profile?.name && profile.name.includes('Hassna')))
+  );
 
   // Selected patient for modal details
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
@@ -779,11 +789,15 @@ export default function DashboardPage() {
           await incrementSeanceCount(p);
           await fetchDashboardData(true);
         }}
-        onDelete={async (id) => {
-          await removePatient(id);
-          setSelectedPatient(null);
-          await fetchDashboardData(true);
-        }}
+        onDelete={
+          isHassnaOrKine
+            ? async (id) => {
+                await removePatient(id);
+                setSelectedPatient(null);
+                await fetchDashboardData(true);
+              }
+            : undefined
+        }
       />
 
       {/* Add Patient Modal */}
