@@ -337,6 +337,7 @@ export async function getPaymentsFromSupabase(): Promise<SupabaseResponse<Paymen
 
 /**
  * Insert a new payment into Supabase 'payments' table.
+ * Gère automatiquement le cas où la colonne 'notes' ou 'payment_type' n'existe pas encore dans la base.
  */
 export async function addPaymentToSupabase(payment: NewPaymentInput): Promise<SupabaseResponse<Payment>> {
   try {
@@ -350,11 +351,48 @@ export async function addPaymentToSupabase(payment: NewPaymentInput): Promise<Su
     if (payment.payment_type) payload.payment_type = payment.payment_type;
     if (payment.notes) payload.notes = payment.notes;
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('payments')
       .insert([payload])
       .select('*, patient:patients(*)')
       .single();
+
+    // Détection automatique : Si la colonne 'notes' est absente du schéma Supabase
+    if (
+      error &&
+      (error.message?.includes("'notes'") ||
+        error.details?.includes("'notes'") ||
+        error.message?.toLowerCase().includes('notes'))
+    ) {
+      console.warn("Colonne 'notes' absente dans la table 'payments' de Supabase. Réessai automatique sans ce champ.");
+      delete payload.notes;
+      const retry = await supabase
+        .from('payments')
+        .insert([payload])
+        .select('*, patient:patients(*)')
+        .single();
+      data = retry.data;
+      error = retry.error;
+    }
+
+    // Détection automatique : Si la colonne 'payment_type' est également absente
+    if (
+      error &&
+      (error.message?.includes("'payment_type'") ||
+        error.details?.includes("'payment_type'") ||
+        error.message?.toLowerCase().includes('payment_type'))
+    ) {
+      console.warn("Colonne 'payment_type' absente dans la table 'payments' de Supabase. Réessai minimal.");
+      delete payload.payment_type;
+      delete payload.notes;
+      const retry2 = await supabase
+        .from('payments')
+        .insert([payload])
+        .select('*, patient:patients(*)')
+        .single();
+      data = retry2.data;
+      error = retry2.error;
+    }
 
     if (error) {
       console.warn('Erreur Supabase lors de l\'ajout du paiement:', error);
@@ -369,7 +407,22 @@ export async function addPaymentToSupabase(payment: NewPaymentInput): Promise<Su
       };
     }
 
-    return { data: data as Payment, error: null };
+    const createdPayment = (data as Payment) || {
+      id: String(Date.now()),
+      patient_id: payment.patient_id,
+      amount: payment.amount,
+      method: payment.method,
+    };
+
+    // Conserver en mémoire les notes et le type pour l'impression immédiate du reçu
+    if (payment.notes && !createdPayment.notes) {
+      createdPayment.notes = payment.notes;
+    }
+    if (payment.payment_type && !createdPayment.payment_type) {
+      createdPayment.payment_type = payment.payment_type;
+    }
+
+    return { data: createdPayment, error: null };
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Erreur réseau inconnue';
     return { data: null, error: { message } };
@@ -391,12 +444,31 @@ export async function updatePaymentInSupabase(
     if (updates.notes !== undefined) payload.notes = updates.notes;
     if (updates.created_at !== undefined) payload.created_at = updates.created_at;
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('payments')
       .update(payload)
       .eq('id', id)
       .select('*, patient:patients(*)')
       .single();
+
+    // Fallback si la colonne 'notes' est absente lors de l'update
+    if (
+      error &&
+      (error.message?.includes("'notes'") ||
+        error.details?.includes("'notes'") ||
+        error.message?.toLowerCase().includes('notes'))
+    ) {
+      console.warn("Colonne 'notes' absente lors de la modification. Réessai sans 'notes'.");
+      delete payload.notes;
+      const retry = await supabase
+        .from('payments')
+        .update(payload)
+        .eq('id', id)
+        .select('*, patient:patients(*)')
+        .single();
+      data = retry.data;
+      error = retry.error;
+    }
 
     if (error) {
       console.warn('Erreur Supabase lors de la modification du paiement:', error);
