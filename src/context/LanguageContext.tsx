@@ -70,7 +70,7 @@ export const DICTIONARY: Record<Language, Translations> = {
     mainNav: 'Navigation Principale',
     clinicalSpace: 'Espace Clinique & Soins',
 
-    clinicName: 'Centre Nassim Al Massira',
+    clinicName: 'Centre de Kinésithérapie Nassim Al Massira',
     clinicSub: 'Kinésithérapie • Fès',
     kineName: 'Hassna El-Hmaidi',
     kineRole: 'Kinésithérapeute (Propriétaire)',

@@ -60,34 +60,66 @@ export default function LoginPage() {
       return;
     }
 
-    // Force direct immediate authentication for Hassna El-Hmaidi
-    if (pin === '239021') {
-      const user = {
-        id: 'hassna-kine',
-        name: 'Hassna El-Hmaidi',
-        role: 'kine',
-        isOwner: true,
-        permissions: ['all'],
-      };
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      localStorage.setItem('cabinet_auth_profile', JSON.stringify({
-        ...user,
-        full_name: user.name,
-        email: 'hassna.elhmaidi@cabinet-kine.ma',
-      }));
-      window.location.href = '/';
-      return;
+    if (selectedRole === 'kine') {
+      if (pin === '239021') {
+        const user = {
+          role: 'kine',
+          name: 'Hassna El-Hmaidi',
+          isOwner: true,
+        };
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem(
+          'cabinet_auth_profile',
+          JSON.stringify({
+            id: 'hassna-kine',
+            name: 'Hassna El-Hmaidi',
+            full_name: 'Hassna El-Hmaidi',
+            role: 'kine',
+            isOwner: true,
+            email: 'hassna.elhmaidi@cabinet-kine.ma',
+            permissions: ['all'],
+          })
+        );
+        setIsSuccess(true);
+        window.location.href = '/';
+        return;
+      } else {
+        setError('Code PIN incorrect pour Hassna El-Hmaidi (PIN requis : 239021).');
+        setPin('');
+        if (inputRef.current) inputRef.current.focus();
+        return;
+      }
     }
 
-    const res = loginWithPin(selectedRole, pin);
-    if (!res.success) {
-      setError(res.error || 'Code PIN incorrect.');
-      setPin('');
-      if (inputRef.current) inputRef.current.focus();
-    } else {
-      setError(null);
-      setIsSuccess(true);
-      window.location.href = '/';
+    if (selectedRole === 'assistante') {
+      if (pin === '000000') {
+        const user = {
+          role: 'assistante',
+          name: 'Assistante',
+          isOwner: false,
+        };
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem(
+          'cabinet_auth_profile',
+          JSON.stringify({
+            id: 'assistante-cabinet',
+            name: 'Assistante',
+            full_name: 'Assistante',
+            role: 'assistante',
+            isOwner: false,
+            email: 'assistante@cabinet-kine.ma',
+            permissions: ['reception'],
+          })
+        );
+        setIsSuccess(true);
+        window.location.href = '/';
+        return;
+      } else {
+        setError("Code PIN incorrect pour l'Assistante (PIN requis : 000000).");
+        setPin('');
+        if (inputRef.current) inputRef.current.focus();
+        return;
+      }
     }
   };
 
@@ -99,33 +131,66 @@ export default function LoginPage() {
 
     // Auto submit on 6th digit
     if (cleaned.length === 6 && selectedRole) {
-      if (cleaned === '239021') {
-        const user = {
-          id: 'hassna-kine',
-          name: 'Hassna El-Hmaidi',
-          role: 'kine',
-          isOwner: true,
-          permissions: ['all'],
-        };
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        localStorage.setItem('cabinet_auth_profile', JSON.stringify({
-          ...user,
-          full_name: user.name,
-          email: 'hassna.elhmaidi@cabinet-kine.ma',
-        }));
-        window.location.href = '/';
-        return;
+      if (selectedRole === 'kine') {
+        if (cleaned === '239021') {
+          const user = {
+            role: 'kine',
+            name: 'Hassna El-Hmaidi',
+            isOwner: true,
+          };
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          localStorage.setItem(
+            'cabinet_auth_profile',
+            JSON.stringify({
+              id: 'hassna-kine',
+              name: 'Hassna El-Hmaidi',
+              full_name: 'Hassna El-Hmaidi',
+              role: 'kine',
+              isOwner: true,
+              email: 'hassna.elhmaidi@cabinet-kine.ma',
+              permissions: ['all'],
+            })
+          );
+          setIsSuccess(true);
+          window.location.href = '/';
+          return;
+        } else {
+          setError('Code PIN incorrect pour Hassna El-Hmaidi (PIN requis : 239021).');
+          setPin('');
+          if (inputRef.current) inputRef.current.focus();
+          return;
+        }
       }
 
-      const res = loginWithPin(selectedRole, cleaned);
-      if (!res.success) {
-        setError(res.error || 'Code PIN incorrect.');
-        setPin('');
-        if (inputRef.current) inputRef.current.focus();
-      } else {
-        setError(null);
-        setIsSuccess(true);
-        window.location.href = '/';
+      if (selectedRole === 'assistante') {
+        if (cleaned === '000000') {
+          const user = {
+            role: 'assistante',
+            name: 'Assistante',
+            isOwner: false,
+          };
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          localStorage.setItem(
+            'cabinet_auth_profile',
+            JSON.stringify({
+              id: 'assistante-cabinet',
+              name: 'Assistante',
+              full_name: 'Assistante',
+              role: 'assistante',
+              isOwner: false,
+              email: 'assistante@cabinet-kine.ma',
+              permissions: ['reception'],
+            })
+          );
+          setIsSuccess(true);
+          window.location.href = '/';
+          return;
+        } else {
+          setError("Code PIN incorrect pour l'Assistante (PIN requis : 000000).");
+          setPin('');
+          if (inputRef.current) inputRef.current.focus();
+          return;
+        }
       }
     }
   };
@@ -236,14 +301,14 @@ export default function LoginPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h2 className="text-lg font-bold text-white group-hover:text-orange-200 transition-colors">
-                      Assistante Médicale
+                      Assistante
                     </h2>
                     <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-500/25 text-blue-200 border border-blue-400/40">
                       Secrétariat & Accueil
                     </span>
                   </div>
                   <p className="text-xs text-slate-200 mt-1 leading-relaxed">
-                    Accès réception : Agenda 3 salles, fiches patients, encaissement du jour (Bilan clinique et statistiques masqués).
+                    Accès réception : Agenda (3 salles), liste des patients, encaissement (Bilan clinique et statistiques masqués).
                   </p>
                 </div>
                 <ChevronRight className="w-5 h-5 text-orange-300/70 group-hover:text-white group-hover:translate-x-1 transition-all flex-shrink-0" />

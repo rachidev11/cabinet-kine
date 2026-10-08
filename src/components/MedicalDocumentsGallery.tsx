@@ -226,15 +226,13 @@ export default function MedicalDocumentsGallery({
           </p>
         </div>
 
-        {isKine && (
-          <button
-            onClick={() => setIsUploadModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 text-white font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer shrink-0"
-          >
-            <UploadCloud className="w-4 h-4 text-[#FF7A45]" />
-            <span>Ajouter Radio / Document</span>
-          </button>
-        )}
+        <button
+          onClick={() => setIsUploadModalOpen(true)}
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 text-white font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer shrink-0"
+        >
+          <UploadCloud className="w-4 h-4 text-[#FF7A45]" />
+          <span>Ajouter Radio / Document</span>
+        </button>
       </div>
 
       {/* Compression Feature Badge */}
@@ -293,15 +291,13 @@ export default function MedicalDocumentsGallery({
               ? 'Aucune radiographie ou ordonnance enregistrée pour ce patient.'
               : `Aucun document dans la catégorie "${selectedCategory}".`}
           </p>
-          {isKine && (
-            <button
-              onClick={() => setIsUploadModalOpen(true)}
-              className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 bg-[#0B57D0] hover:bg-[#0D47A1] text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Téléverser le premier document</span>
-            </button>
-          )}
+          <button
+            onClick={() => setIsUploadModalOpen(true)}
+            className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 bg-[#0B57D0] hover:bg-[#0D47A1] text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Téléverser le premier document</span>
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -388,15 +384,13 @@ export default function MedicalDocumentsGallery({
                         <Download className="w-3.5 h-3.5" />
                       </button>
 
-                      {isKine && (
-                        <button
-                          onClick={() => onDeleteDocument(doc.id)}
-                          className="p-2 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 transition-colors cursor-pointer"
-                          title="Supprimer le document"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      )}
+                      <button
+                        onClick={() => onDeleteDocument(doc.id)}
+                        className="p-2 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 transition-colors cursor-pointer"
+                        title="Supprimer le document"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
                 </div>

@@ -135,31 +135,24 @@ export default function Navbar({
           </button>
         )}
 
-        {/* Logged-in user display with exact role badges */}
-        {profile && (
-          <div className="hidden sm:flex items-center gap-2 px-2 border-x border-slate-200">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-xs flex-shrink-0 ${
-              profile.role === 'kine'
-                ? 'bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1]'
-                : 'bg-gradient-to-tr from-[#F05A28] to-[#FF7A45]'
-            }`}>
-              {profile.role === 'kine' ? <Stethoscope className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
-            </div>
-            <div className="hidden md:block">
-              {profile.role === 'kine' ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-[#0B57D0] border border-blue-200 shadow-2xs">
-                  <span className="w-2 h-2 rounded-full bg-[#0B57D0] animate-pulse" />
-                  {t('kineName')} — {t('kineRole')}
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-[#F05A28] border border-orange-200 shadow-2xs">
-                  <span className="w-2 h-2 rounded-full bg-[#F05A28] animate-pulse" />
-                  {t('assistantRole')}
-                </span>
-              )}
-            </div>
+        {/* Indicateur visuel de profil : Connecté en tant que : Hassna El-Hmaidi (Kinésithérapeute - Accès Total) */}
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/90 shadow-2xs">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1] text-white flex items-center justify-center font-bold shadow-xs shrink-0">
+            <Stethoscope className="w-4 h-4 text-white" />
           </div>
-        )}
+          <div className="flex flex-col text-left rtl:text-right">
+            <span className="text-[10px] text-slate-500 font-medium leading-none">
+              Connecté en tant que :
+            </span>
+            <span className="text-xs font-extrabold text-[#0B57D0] flex items-center gap-1.5 mt-0.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+              <span>Hassna El-Hmaidi</span>
+              <span className="text-[11px] font-semibold text-slate-700 hidden sm:inline">
+                (Kinésithérapeute - Accès Total)
+              </span>
+            </span>
+          </div>
+        </div>
 
         {/* Primary Add Patient Button */}
         <button

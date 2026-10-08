@@ -41,6 +41,8 @@ import {
   FileCheck,
   ZoomIn,
   FileDown,
+  UserCircle2,
+  ChevronRight,
 } from 'lucide-react';
 import { Patient, AssuranceType } from '@/types/patient';
 import { MedicalRecord } from '@/types/medicalRecord';
@@ -89,15 +91,8 @@ export default function PatientDetailPage() {
   // Loading & patient data
   const [loading, setLoading] = useState(true);
   const [patient, setPatient] = useState<Patient | null>(null);
-  const [activeTab, setActiveTab] = useState<'bilan' | 'seances' | 'paiements' | 'radios'>('bilan');
+  const [activeTab, setActiveTab] = useState<'infos' | 'bilan' | 'seances' | 'paiements' | 'radios'>('bilan');
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
-
-  // Ne jamais bloquer si Hassna / Kiné
-  useEffect(() => {
-    if (!isHassnaOrKine && isAssistante && (activeTab === 'bilan' || activeTab === 'radios')) {
-      setActiveTab('seances');
-    }
-  }, [isHassnaOrKine, isAssistante, activeTab]);
 
   // Galerie des Radios & Documents Médicaux State
   const [medicalDocs, setMedicalDocs] = useState<MedicalDocument[]>([]);
@@ -519,8 +514,76 @@ export default function PatientDetailPage() {
           </div>
         </div>
 
-        {/* Quick Communication Buttons */}
-        <div className="flex items-center gap-2.5">
+        {/* Quick Communication & Direct Bilan Kiné Buttons */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* GROS BOUTON BLEU : Accéder au Bilan Kiné de ce patient */}
+          <button
+            onClick={() => {
+              setActiveTab('bilan');
+              setTimeout(() => {
+                const el = document.getElementById('bilan-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }, 50);
+            }}
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0B57D0] via-[#0D47A1] to-[#0A387E] hover:brightness-110 text-white font-extrabold text-xs sm:text-sm inline-flex items-center gap-2 shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95 border border-blue-400/40"
+            title="Accéder immédiatement au Bilan Kiné de ce patient"
+          >
+            <Stethoscope className="w-4 h-4 text-sky-200 animate-pulse" />
+            <span>Accéder au Bilan Kiné de ce patient</span>
+            <ChevronRight className="w-4 h-4 text-sky-300 rtl:rotate-180" />
+          </button>
+
+          {/* Nouveau Bilan (Kiné uniquement) */}
+          {isHassnaOrKine && (
+            <button
+              onClick={() => {
+                setActiveTab('bilan');
+                setMedicalRecord({
+                  patient_id: id,
+                  diagnostic: '',
+                  pathologie: '',
+                  medecin_prescripteur: patient.medecin_traitant || '',
+                  seances_prescrites: patient.nombre_seances_prescrites || 10,
+                  seances_effectuees: patient.nombre_seances_effectuees || 0,
+                  objectifs_reeducation: '',
+                  bilan_initial: '',
+                  bilan_articulaire: '',
+                  bilan_musculaire: '',
+                  eva_douleur: 5,
+                  antecedents: patient.antecedents || '',
+                  observations: '',
+                  date_bilan: new Date().toISOString().split('T')[0],
+                });
+              }}
+              className="px-3 py-2 rounded-xl bg-blue-50 text-[#0B57D0] border border-blue-200 hover:bg-blue-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+              title="Créer un nouveau bilan kiné"
+            >
+              <Plus className="w-3.5 h-3.5 text-[#0B57D0]" />
+              <span>Nouveau Bilan</span>
+            </button>
+          )}
+
+          {/* Imprimer Bilan */}
+          <button
+            onClick={() => handlePrintBilan()}
+            type="button"
+            className="px-3 py-2 rounded-xl bg-blue-50 text-[#0B57D0] border border-blue-200 hover:bg-blue-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+            title="Imprimer le compte-rendu officiel du bilan"
+          >
+            <Printer className="w-4 h-4 text-[#0B57D0]" />
+            <span>Imprimer Bilan</span>
+          </button>
+
+          {/* Radios & Docs */}
+          <button
+            onClick={() => setActiveTab('radios')}
+            className="px-3 py-2 rounded-xl bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+            title="Voir la galerie des radios et documents"
+          >
+            <ImageIcon className="w-3.5 h-3.5 text-sky-600" />
+            <span>Radios & Docs ({medicalDocs.length})</span>
+          </button>
+
           {/* WhatsApp Reminder */}
           <button
             onClick={() => setIsWhatsAppModalOpen(true)}
@@ -539,57 +602,6 @@ export default function PatientDetailPage() {
             <span>Appeler</span>
           </a>
 
-          {/* Permanent Action Buttons for Hassna / Kiné */}
-          {isHassnaOrKine && (
-            <>
-              <button
-                onClick={() => {
-                  setActiveTab('bilan');
-                  setMedicalRecord({
-                    patient_id: id,
-                    diagnostic: '',
-                    pathologie: '',
-                    medecin_prescripteur: patient.medecin_traitant || '',
-                    seances_prescrites: patient.nombre_seances_prescrites || 10,
-                    seances_effectuees: patient.nombre_seances_effectuees || 0,
-                    objectifs_reeducation: '',
-                    bilan_initial: '',
-                    bilan_articulaire: '',
-                    bilan_musculaire: '',
-                    eva_douleur: 5,
-                    antecedents: patient.antecedents || '',
-                    observations: '',
-                    date_bilan: new Date().toISOString().split('T')[0],
-                  });
-                }}
-                className="px-3 py-2 rounded-xl bg-blue-50 text-[#0B57D0] border border-blue-200 hover:bg-blue-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
-                title="Créer un nouveau bilan kiné"
-              >
-                <Plus className="w-3.5 h-3.5 text-[#0B57D0]" />
-                <span>Nouveau Bilan</span>
-              </button>
-
-              <button
-                onClick={() => handlePrintBilan()}
-                type="button"
-                className="px-3 py-2 rounded-xl bg-blue-50 text-[#0B57D0] border border-blue-200 hover:bg-blue-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
-                title="Imprimer le compte-rendu officiel du bilan"
-              >
-                <Printer className="w-4 h-4 text-[#0B57D0]" />
-                <span>Imprimer Bilan</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab('radios')}
-                className="px-3 py-2 rounded-xl bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
-                title="Voir la galerie des radios et documents"
-              >
-                <ImageIcon className="w-3.5 h-3.5 text-sky-600" />
-                <span>Radios & Docs ({medicalDocs.length})</span>
-              </button>
-            </>
-          )}
-
           {/* Quick Session Increment */}
           <button
             onClick={handleIncrementSession}
@@ -600,26 +612,24 @@ export default function PatientDetailPage() {
             <span>+1 Séance</span>
           </button>
 
-          {/* Supprimer / Archiver le dossier (Réservé au kinésithérapeute / Propriétaire) */}
-          {isHassnaOrKine && (
-            <button
-              onClick={() => {
-                if (
-                  confirm(
-                    `Confirmez-vous l'archivage ou la suppression du dossier de ${patient.prenom} ${patient.nom} ?`
-                  )
-                ) {
-                  removePatient(patient.id);
-                  router.push('/patients');
-                }
-              }}
-              className="px-3.5 py-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
-              title="Supprimer ou archiver ce dossier patient (Propriétaire)"
-            >
-              <Trash2 className="w-4 h-4 text-rose-600" />
-              <span>Supprimer / Archiver</span>
-            </button>
-          )}
+          {/* Supprimer / Archiver le dossier */}
+          <button
+            onClick={() => {
+              if (
+                confirm(
+                  `Confirmez-vous l'archivage ou la suppression du dossier de ${patient.prenom} ${patient.nom} ?`
+                )
+              ) {
+                removePatient(patient.id);
+                router.push('/patients');
+              }
+            }}
+            className="px-3.5 py-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+            title="Supprimer ou archiver ce dossier patient"
+          >
+            <Trash2 className="w-4 h-4 text-rose-600" />
+            <span>Supprimer / Archiver</span>
+          </button>
         </div>
       </div>
 
@@ -723,102 +733,195 @@ export default function PatientDetailPage() {
         </div>
       </div>
 
-      {/* Tabs Navigation */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-px">
-        {/* TAB 1: BILAN KINÉ */}
-        {isHassnaOrKine || !isAssistante ? (
-          <button
-            onClick={() => setActiveTab('bilan')}
-            className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
-              activeTab === 'bilan'
-                ? 'border-[#0B57D0] text-[#0B57D0] bg-blue-50/50 rounded-t-xl'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <Stethoscope className="w-4 h-4" />
-            <span>Bilan Kiné & Dossier Médical</span>
-          </button>
-        ) : (
-          <div
-            title="Réservé au kinésithérapeute"
-            className="flex items-center gap-1.5 px-4 py-3 text-xs font-semibold text-slate-400 opacity-60 cursor-not-allowed select-none border-b-2 border-transparent"
-          >
-            <Lock className="w-3.5 h-3.5" />
-            <span>Dossier Médical (Réservé Kiné)</span>
-          </div>
-        )}
+      {/* Tabs Navigation - Tous les onglets visibles en permanence */}
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-px overflow-x-auto">
+        {/* ONGLET 1: INFOS */}
+        <button
+          onClick={() => setActiveTab('infos')}
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            activeTab === 'infos'
+              ? 'border-[#0B57D0] text-[#0B57D0] bg-blue-50/50 rounded-t-xl'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <UserCircle2 className="w-4 h-4" />
+          <span>Infos Patient</span>
+        </button>
 
-        {/* TAB RADIOS & DOCUMENTS MÉDICAUX */}
-        {isHassnaOrKine || !isAssistante ? (
-          <button
-            onClick={() => setActiveTab('radios')}
-            className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'radios'
-                ? 'border-[#0B57D0] text-[#0B57D0] bg-blue-50/50 rounded-t-xl'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <ImageIcon className="w-4 h-4" />
-            <span>Radios & Documents Médicaux</span>
-            <span className="px-2 py-0.5 rounded-full bg-blue-100 text-[#0B57D0] text-xs font-bold">
-              {medicalDocs.length}
-            </span>
-          </button>
-        ) : null}
+        {/* ONGLET 2: BILAN KINÉ */}
+        <button
+          onClick={() => setActiveTab('bilan')}
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            activeTab === 'bilan'
+              ? 'border-[#0B57D0] text-[#0B57D0] bg-blue-50/50 rounded-t-xl'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <Stethoscope className="w-4 h-4 text-[#0B57D0]" />
+          <span>Bilan Kiné</span>
+          <span className="px-2 py-0.5 rounded-full bg-blue-100 text-[#0B57D0] text-[10px] font-extrabold uppercase tracking-wide">
+            Direct
+          </span>
+        </button>
 
+        {/* ONGLET 3: SÉANCES */}
         <button
           onClick={() => setActiveTab('seances')}
-          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
             activeTab === 'seances'
               ? 'border-[#0B57D0] text-[#0B57D0] bg-blue-50/50 rounded-t-xl'
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
           <Calendar className="w-4 h-4" />
-          <span>Historique des Séances</span>
+          <span>Séances</span>
           <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs">
             {appointments.length}
           </span>
         </button>
 
+        {/* ONGLET 4: DOCUMENTS & RADIOS */}
+        <button
+          onClick={() => setActiveTab('radios')}
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            activeTab === 'radios'
+              ? 'border-[#0B57D0] text-[#0B57D0] bg-blue-50/50 rounded-t-xl'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <ImageIcon className="w-4 h-4" />
+          <span>Documents & Radios</span>
+          <span className="px-2 py-0.5 rounded-full bg-blue-100 text-[#0B57D0] text-xs font-bold">
+            {medicalDocs.length}
+          </span>
+        </button>
+
+        {/* ONGLET 5: FACTURATION */}
         <button
           onClick={() => setActiveTab('paiements')}
-          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-5 py-3 text-sm font-bold border-b-2 transition-all cursor-pointer whitespace-nowrap ${
             activeTab === 'paiements'
               ? 'border-[#0B57D0] text-[#0B57D0] bg-blue-50/50 rounded-t-xl'
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
           <Receipt className="w-4 h-4" />
-          <span>Historique des Règlements</span>
+          <span>Facturation</span>
           <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs">
             {payments.length}
           </span>
         </button>
       </div>
 
-      {/* TAB 1: BILAN KINÉ FORM */}
-      {activeTab === 'bilan' && (
-        !isHassnaOrKine && isAssistante ? (
-          <div className="bg-white rounded-2xl border border-amber-200/90 p-8 text-center max-w-lg mx-auto my-8 shadow-xs">
-            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center mx-auto mb-3">
-              <Lock className="w-6 h-6" />
+      {/* ONGLET INFOS : FICHE DÉTAILLÉE DU PATIENT */}
+      {activeTab === 'infos' && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                  <UserCircle2 className="w-5 h-5 text-[#0B57D0]" />
+                  <span>Dossier & Informations Générales</span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Fiche administrative, contact, antécédents et couverture médicale.
+                </p>
+              </div>
+
+              {/* Raccourci Bilan Kiné depuis l'onglet infos */}
+              <button
+                onClick={() => {
+                  setActiveTab('bilan');
+                  setTimeout(() => {
+                    const el = document.getElementById('bilan-section');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }, 50);
+                }}
+                className="px-4 py-2.5 bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] text-white text-xs font-bold rounded-xl shadow-xs hover:shadow-md transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <Stethoscope className="w-4 h-4 text-sky-200" />
+                <span>Accéder au Bilan Kiné</span>
+              </button>
             </div>
-            <h3 className="text-base font-bold text-slate-900">Accès Restreint</h3>
-            <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-              Le Dossier Médical et le Bilan Kiné sont réservés exclusivement au kinésithérapeute.
-              En tant qu&apos;assistante, vous pouvez gérer les séances et les règlements.
-            </p>
-            <button
-              type="button"
-              onClick={() => setActiveTab('seances')}
-              className="mt-4 px-4 py-2 bg-[#0B57D0] hover:bg-[#0D47A1] text-white text-xs font-bold rounded-xl cursor-pointer shadow-xs transition-all"
-            >
-              Consulter les séances
-            </button>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+              <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/80">
+                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide block mb-1">
+                  Identité Complète
+                </span>
+                <p className="font-bold text-slate-900 text-base">
+                  {patient.civilite || 'M.'} {patient.prenom} {patient.nom}
+                </p>
+                <p className="text-xs text-slate-600 mt-1">
+                  {patient.gender === 'F' ? 'Femme' : 'Homme'} • {patient.age} ans
+                  {patient.profession ? ` • ${patient.profession}` : ''}
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/80">
+                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide block mb-1">
+                  Coordonnées & Contact
+                </span>
+                <p className="font-semibold text-slate-900 flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-[#0B57D0]" />
+                  <a href={`tel:${patient.telephone}`} className="hover:underline">{patient.telephone}</a>
+                </p>
+                <p className="text-xs text-slate-600 mt-1">
+                  CIN : <span className="font-mono font-bold text-slate-800">{patient.cin}</span>
+                </p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Adresse : {patient.adresse || 'Fès, Maroc'}
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/80">
+                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide block mb-1">
+                  Prise en charge & Mutuelle
+                </span>
+                <div className="mt-1">{getAssuranceBadge(patient.assurance)}</div>
+                <p className="text-xs text-slate-600 mt-2">
+                  Statut dossier : <span className="font-bold text-emerald-700">{patient.statut || 'Actif'}</span>
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/80">
+                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide block mb-1">
+                  Médecin Prescripteur
+                </span>
+                <p className="font-bold text-slate-800 text-sm">
+                  {patient.medecin_traitant || 'Non renseigné'}
+                </p>
+                <p className="text-xs text-slate-500 mt-1">
+                  Date création : {patient.created_at ? new Date(patient.created_at).toLocaleDateString('fr-FR') : 'Récente'}
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/80 md:col-span-2">
+                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide block mb-1">
+                  Motif de Consultation / Diagnostic
+                </span>
+                <p className="font-semibold text-slate-800 text-sm">
+                  {patient.motif_consultation || 'Bilan kinésithérapique initial'}
+                </p>
+                {patient.antecedents && (
+                  <p className="text-xs text-slate-600 mt-2">
+                    <strong className="text-slate-700">Antécédents :</strong> {patient.antecedents}
+                  </p>
+                )}
+                {patient.notes && (
+                  <p className="text-xs text-slate-600 mt-1">
+                    <strong className="text-slate-700">Observations :</strong> {patient.notes}
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
-        ) : (
-        <form onSubmit={handleSaveMedicalRecord} className="space-y-6">
+        </div>
+      )}
+
+      {/* TAB 2: BILAN KINÉ FORM (ACCÈS DIRECT TOTAL) */}
+      {activeTab === 'bilan' && (
+        <form id="bilan-section" onSubmit={handleSaveMedicalRecord} className="space-y-6">
           {/* Permanent Action Toolbar for Bilan Kiné */}
           <div className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
@@ -832,42 +935,53 @@ export default function PatientDetailPage() {
             </div>
 
             <div className="flex items-center flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setMedicalRecord({
-                    patient_id: id,
-                    diagnostic: '',
-                    pathologie: '',
-                    medecin_prescripteur: patient.medecin_traitant || '',
-                    seances_prescrites: patient.nombre_seances_prescrites || 10,
-                    seances_effectuees: patient.nombre_seances_effectuees || 0,
-                    objectifs_reeducation: '',
-                    bilan_initial: '',
-                    bilan_articulaire: '',
-                    bilan_musculaire: '',
-                    eva_douleur: 5,
-                    antecedents: patient.antecedents || '',
-                    observations: '',
-                    date_bilan: new Date().toISOString().split('T')[0],
-                  });
-                }}
-                className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
-                title="Créer un nouveau bilan kiné vierge"
-              >
-                <Plus className="w-3.5 h-3.5 text-[#0B57D0]" />
-                <span>Nouveau Bilan</span>
-              </button>
+              {!isHassnaOrKine && (
+                <span className="px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 text-xs font-semibold inline-flex items-center gap-1.5 shadow-2xs">
+                  <Lock className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Consultation seule (Édition réservée au kinésithérapeute)</span>
+                </span>
+              )}
 
-              <button
-                type="submit"
-                disabled={isSavingRecord}
-                className="px-4 py-2 rounded-xl bg-[#0B57D0] hover:bg-[#0D47A1] text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
-                title="Enregistrer les modifications du bilan"
-              >
-                <Save className="w-3.5 h-3.5" />
-                <span>Modifier / Enregistrer</span>
-              </button>
+              {isHassnaOrKine && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMedicalRecord({
+                        patient_id: id,
+                        diagnostic: '',
+                        pathologie: '',
+                        medecin_prescripteur: patient.medecin_traitant || '',
+                        seances_prescrites: patient.nombre_seances_prescrites || 10,
+                        seances_effectuees: patient.nombre_seances_effectuees || 0,
+                        objectifs_reeducation: '',
+                        bilan_initial: '',
+                        bilan_articulaire: '',
+                        bilan_musculaire: '',
+                        eva_douleur: 5,
+                        antecedents: patient.antecedents || '',
+                        observations: '',
+                        date_bilan: new Date().toISOString().split('T')[0],
+                      });
+                    }}
+                    className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                    title="Créer un nouveau bilan kiné vierge"
+                  >
+                    <Plus className="w-3.5 h-3.5 text-[#0B57D0]" />
+                    <span>Nouveau Bilan</span>
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={isSavingRecord}
+                    className="px-4 py-2 rounded-xl bg-[#0B57D0] hover:bg-[#0D47A1] text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                    title="Enregistrer les modifications du bilan"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Modifier / Enregistrer</span>
+                  </button>
+                </>
+              )}
 
               <button
                 type="button"
@@ -909,6 +1023,7 @@ export default function PatientDetailPage() {
             </div>
           )}
 
+          <fieldset disabled={!isHassnaOrKine} className="contents">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left 2 Cols: Clinical Form */}
             <div className="lg:col-span-2 space-y-6">
@@ -1234,23 +1349,30 @@ export default function PatientDetailPage() {
                   Enregistre le bilan initial et les objectifs thérapeutiques dans la table
                   médicale du patient.
                 </p>
-                <button
-                  type="submit"
-                  disabled={isSavingRecord}
-                  className="w-full py-3 rounded-xl bg-[#F05A28] hover:bg-[#FF7A45] active:bg-orange-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer disabled:opacity-50"
-                >
-                  {isSavingRecord ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                      <span>Enregistrement en cours...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Save className="w-4 h-4" />
-                      <span>Enregistrer le Bilan Kiné</span>
-                    </>
-                  )}
-                </button>
+                {isHassnaOrKine ? (
+                  <button
+                    type="submit"
+                    disabled={isSavingRecord}
+                    className="w-full py-3 rounded-xl bg-[#F05A28] hover:bg-[#FF7A45] active:bg-orange-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    {isSavingRecord ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        <span>Enregistrement en cours...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4" />
+                        <span>Enregistrer le Bilan Kiné</span>
+                      </>
+                    )}
+                  </button>
+                ) : (
+                  <div className="w-full py-3 px-3 rounded-xl bg-white/10 border border-white/20 text-blue-100 text-xs font-semibold text-center flex items-center justify-center gap-2">
+                    <Lock className="w-4 h-4 text-amber-300" />
+                    <span>Consultation seule (Réservé au Kiné)</span>
+                  </div>
+                )}
 
                 <button
                   type="button"
@@ -1263,8 +1385,8 @@ export default function PatientDetailPage() {
               </div>
             </div>
           </div>
+          </fieldset>
         </form>
-        )
       )}
 
       {/* TAB 2: HISTORIQUE DES SÉANCES (APPOINTMENTS) */}
@@ -1517,26 +1639,14 @@ export default function PatientDetailPage() {
 
       {/* TAB 4: RADIOS & DOCUMENTS MÉDICAUX */}
       {activeTab === 'radios' && (
-        !isAssistante ? (
-          <MedicalDocumentsGallery
-            patientId={id}
-            patientName={`${patient.prenom} ${patient.nom}`}
-            medicalDocs={medicalDocs}
-            onAddDocument={handleAddMedicalDoc}
-            onDeleteDocument={handleDeleteMedicalDoc}
-            isKine={isKine}
-          />
-        ) : (
-          <div className="bg-white rounded-2xl border border-amber-200/90 p-8 text-center max-w-lg mx-auto my-8 shadow-xs">
-            <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center mx-auto mb-3">
-              <Lock className="w-6 h-6" />
-            </div>
-            <h3 className="text-base font-bold text-slate-900">Accès Restreint</h3>
-            <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-              La galerie des radios et documents médicaux est réservée exclusivement au kinésithérapeute.
-            </p>
-          </div>
-        )
+        <MedicalDocumentsGallery
+          patientId={id}
+          patientName={`${patient.prenom} ${patient.nom}`}
+          medicalDocs={medicalDocs}
+          onAddDocument={handleAddMedicalDoc}
+          onDeleteDocument={handleDeleteMedicalDoc}
+          isKine={true}
+        />
       )}
 
       {/* Official Receipt Print Modal */}

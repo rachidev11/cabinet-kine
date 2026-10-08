@@ -779,15 +779,11 @@ export default function DashboardPage() {
           await incrementSeanceCount(p);
           await fetchDashboardData(true);
         }}
-        onDelete={
-          isKine
-            ? async (id) => {
-                await removePatient(id);
-                setSelectedPatient(null);
-                await fetchDashboardData(true);
-              }
-            : undefined
-        }
+        onDelete={async (id) => {
+          await removePatient(id);
+          setSelectedPatient(null);
+          await fetchDashboardData(true);
+        }}
       />
 
       {/* Add Patient Modal */}

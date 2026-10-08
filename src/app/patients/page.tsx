@@ -24,10 +24,12 @@ import {
   LayoutGrid,
   Table as TableIcon,
   FolderOpen,
+  Stethoscope,
 } from 'lucide-react';
 import { Patient, AssuranceType } from '@/types/patient';
 import PatientDetailsModal from '@/components/PatientDetailsModal';
 import AddPatientModal from '@/components/AddPatientModal';
+import WhatsAppReminderModal from '@/components/WhatsAppReminderModal';
 import { useAuth } from '@/context/AuthContext';
 
 export default function PatientsPage() {
@@ -51,6 +53,7 @@ export default function PatientsPage() {
   // Modal states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [whatsAppPatient, setWhatsAppPatient] = useState<Patient | null>(null);
 
   // Filter patients based on search and dropdowns
   const filteredPatients = useMemo(() => {
@@ -314,12 +317,26 @@ export default function PatientsPage() {
                             {patient.nom[0]}
                           </Link>
                           <div>
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex items-center gap-1.5 flex-wrap">
                               {patient.civilite && (
                                 <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
                                   {patient.civilite === 'Monsieur' ? 'M.' : patient.civilite === 'Madame' ? 'Mme' : 'Mlle'}
                                 </span>
                               )}
+                              <span
+                                className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${
+                                  patient.gender === 'F' || patient.civilite === 'Madame' || patient.civilite === 'Mademoiselle'
+                                    ? 'bg-rose-50 text-rose-700 border-rose-200'
+                                    : 'bg-blue-50 text-blue-700 border-blue-200'
+                                }`}
+                                title={
+                                  patient.gender === 'F' || patient.civilite === 'Madame' || patient.civilite === 'Mademoiselle'
+                                    ? 'Femme / أنثى'
+                                    : 'Homme / ذكر'
+                                }
+                              >
+                                {patient.gender === 'F' || patient.civilite === 'Madame' || patient.civilite === 'Mademoiselle' ? 'F' : 'M'}
+                              </span>
                               <Link
                                 href={`/patients/${patient.id}`}
                                 onClick={(e) => e.stopPropagation()}
@@ -417,11 +434,29 @@ export default function PatientsPage() {
                             <span className="hidden xl:inline">Voir Dossier</span>
                           </Link>
 
+                          {/* Direct Bilan Kiné Link */}
+                          <Link
+                            href={`/patients/${patient.id}?tab=bilan`}
+                            title="Ouvrir le Bilan Kiné"
+                            className="p-1.5 text-[#0B57D0] hover:text-[#0D47A1] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
+                          >
+                            <Stethoscope className="w-4 h-4" />
+                          </Link>
+
+                          {/* Rappel WhatsApp (AR/FR) */}
+                          <button
+                            onClick={() => setWhatsAppPatient(patient)}
+                            title="Envoyer un rappel de rendez-vous WhatsApp (Français / Arabe)"
+                            className="p-1.5 text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors cursor-pointer"
+                          >
+                            <MessageSquare className="w-4 h-4 text-emerald-600" />
+                          </button>
+
                           {/* Validate session (+1) */}
                           <button
                             onClick={() => incrementSeanceCount(patient)}
                             title="Valider une séance effectuée (+1)"
-                            className="p-1.5 text-[#0B57D0] hover:text-[#0D47A1] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors cursor-pointer"
                           >
                             <CheckCircle className="w-4 h-4" />
                           </button>
@@ -435,24 +470,22 @@ export default function PatientsPage() {
                             <Eye className="w-4 h-4" />
                           </button>
 
-                          {/* Delete (Réservé au kinésithérapeute / Propriétaire) */}
-                          {isKine && (
-                            <button
-                              onClick={() => {
-                                if (
-                                  confirm(
-                                    `Supprimer le dossier de ${patient.prenom} ${patient.nom} ?`
-                                  )
-                                ) {
-                                  removePatient(patient.id);
-                                }
-                              }}
-                              title="Supprimer définitivement (Propriétaire)"
-                              className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
+                          {/* Delete */}
+                          <button
+                            onClick={() => {
+                              if (
+                                confirm(
+                                  `Supprimer le dossier de ${patient.prenom} ${patient.nom} ?`
+                                )
+                              ) {
+                                removePatient(patient.id);
+                              }
+                            }}
+                            title="Supprimer le dossier"
+                            className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -488,12 +521,26 @@ export default function PatientsPage() {
                       {patient.nom[0]}
                     </Link>
                     <div>
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 flex-wrap">
                         {patient.civilite && (
                           <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
                             {patient.civilite === 'Monsieur' ? 'M.' : patient.civilite === 'Madame' ? 'Mme' : 'Mlle'}
                           </span>
                         )}
+                        <span
+                          className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${
+                            patient.gender === 'F' || patient.civilite === 'Madame' || patient.civilite === 'Mademoiselle'
+                              ? 'bg-rose-50 text-rose-700 border-rose-200'
+                              : 'bg-blue-50 text-blue-700 border-blue-200'
+                          }`}
+                          title={
+                            patient.gender === 'F' || patient.civilite === 'Madame' || patient.civilite === 'Mademoiselle'
+                              ? 'Femme / أنثى'
+                              : 'Homme / ذكر'
+                          }
+                        >
+                          {patient.gender === 'F' || patient.civilite === 'Madame' || patient.civilite === 'Mademoiselle' ? 'F' : 'M'}
+                        </span>
                         <Link
                           href={`/patients/${patient.id}`}
                           onClick={(e) => e.stopPropagation()}
@@ -550,16 +597,31 @@ export default function PatientsPage() {
 
                   <div className="flex items-center gap-1">
                     <Link
-                      href={`/patients/${patient.id}`}
-                      className="px-2 py-1 text-xs font-bold text-[#0B57D0] hover:text-[#0D47A1] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors inline-flex items-center gap-1"
-                      title="Voir dossier médical"
+                      href={`/patients/${patient.id}?tab=bilan`}
+                      className="px-2 py-1 text-xs font-bold text-white bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 rounded-lg transition-all inline-flex items-center gap-1 shadow-2xs"
+                      title="Ouvrir directement le Bilan Kiné"
                     >
-                      <FolderOpen className="w-3.5 h-3.5 text-[#0B57D0]" />
+                      <Stethoscope className="w-3.5 h-3.5 text-sky-200" />
+                      <span>Bilan</span>
+                    </Link>
+                    <Link
+                      href={`/patients/${patient.id}`}
+                      className="px-2 py-1 text-xs font-bold text-slate-700 hover:text-[#0B57D0] bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors inline-flex items-center gap-1"
+                      title="Voir dossier complet"
+                    >
+                      <FolderOpen className="w-3.5 h-3.5 text-slate-500" />
                       <span>Dossier</span>
                     </Link>
                     <button
+                      onClick={() => setWhatsAppPatient(patient)}
+                      title="Envoyer un rappel de rendez-vous WhatsApp (Français / Arabe)"
+                      className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
+                    >
+                      <MessageSquare className="w-4 h-4 text-emerald-600" />
+                    </button>
+                    <button
                       onClick={() => incrementSeanceCount(patient)}
-                      className="p-1.5 text-[#0B57D0] hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
                       title="Valider séance (+1)"
                     >
                       <CheckCircle className="w-4 h-4" />
@@ -571,23 +633,21 @@ export default function PatientsPage() {
                     >
                       <Eye className="w-4 h-4" />
                     </button>
-                    {isKine && (
-                      <button
-                        onClick={() => {
-                          if (
-                            confirm(
-                              `Supprimer le dossier de ${patient.prenom} ${patient.nom} ?`
-                            )
-                          ) {
-                            removePatient(patient.id);
-                          }
-                        }}
-                        title="Supprimer définitivement (Propriétaire)"
-                        className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    )}
+                    <button
+                      onClick={() => {
+                        if (
+                          confirm(
+                            `Supprimer le dossier de ${patient.prenom} ${patient.nom} ?`
+                          )
+                        ) {
+                          removePatient(patient.id);
+                        }
+                      }}
+                      title="Supprimer le dossier"
+                      className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -602,8 +662,17 @@ export default function PatientsPage() {
         isOpen={Boolean(selectedPatient)}
         onClose={() => setSelectedPatient(null)}
         onIncrementSeance={incrementSeanceCount}
-        onDelete={isKine ? removePatient : undefined}
+        onDelete={removePatient}
       />
+
+      {/* WhatsApp Reminder Modal (Bilingue AR / FR) */}
+      {whatsAppPatient && (
+        <WhatsAppReminderModal
+          isOpen={Boolean(whatsAppPatient)}
+          onClose={() => setWhatsAppPatient(null)}
+          patient={whatsAppPatient}
+        />
+      )}
 
       {/* Add Patient Modal */}
       <AddPatientModal

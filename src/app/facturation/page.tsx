@@ -388,7 +388,14 @@ function NewPaymentModal({
 // MAIN PAGE
 // =====================================================================
 export default function FacturationPage() {
-  const { isKine } = useAuth();
+  const { isKine, isOwner, profile, isAssistante } = useAuth();
+  const isHassnaOrKine = Boolean(
+    isKine ||
+    isOwner ||
+    profile?.role === 'kine' ||
+    profile?.isOwner === true ||
+    (profile?.name && profile.name.includes('Hassna'))
+  );
   const [payments, setPayments] = useState<Payment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
@@ -538,8 +545,8 @@ export default function FacturationPage() {
           </button>
         </div>
 
-        {/* KPI Cards */}
-        {isKine ? (
+        {/* KPI Cards : Statistiques financières globales pour Hassna, caisse du jour pour Assistante */}
+        {isHassnaOrKine ? (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <KpiCard
               icon={TrendingUp}
@@ -569,28 +576,19 @@ export default function FacturationPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <KpiCard
               icon={CreditCard}
-              label="Caisse & Encaissements du jour"
+              label="Total encaissé aujourd'hui (Caisse du jour)"
               value={formatCurrency(kpis.totalAujourdhui)}
               suffix="DH"
+              gradient="bg-gradient-to-br from-[#0B57D0] to-[#0D47A1]"
+              iconBg="bg-gradient-to-br from-[#0B57D0] to-[#0A387E]"
+            />
+            <KpiCard
+              icon={CalendarCheck}
+              label="Séances enregistrées ce mois"
+              value={String(kpis.totalSeancesReglees)}
               gradient="bg-gradient-to-br from-blue-400 to-cyan-500"
               iconBg="bg-gradient-to-br from-blue-500 to-cyan-600"
             />
-            <div className="relative overflow-hidden rounded-2xl bg-slate-50 border border-dashed border-slate-200/90 p-5 flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-slate-200/70 flex items-center justify-center text-slate-500 shrink-0">
-                <Lock className="w-5 h-5 text-slate-500" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-0.5">
-                  Statistiques & Chiffre d&apos;Affaires
-                </p>
-                <p className="text-sm font-semibold text-slate-700">
-                  Accès réservé à la Propriétaire (Hassna El-Hmaidi)
-                </p>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Les bilans financiers globaux sont masqués pour le profil Assistante.
-                </p>
-              </div>
-            </div>
           </div>
         )}
 

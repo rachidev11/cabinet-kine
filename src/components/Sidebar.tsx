@@ -85,73 +85,56 @@ export default function Sidebar({
     ))
   );
 
-  // Build navigation dynamically: All menus without exception for Hassna / Kiné
-  const navigation = isHassnaOrKine
-    ? [
-        {
-          name: 'Tableau de bord',
-          href: '/',
-          icon: LayoutDashboard,
-          badge: null as string | null,
-        },
-        {
-          name: 'Agenda (3 salles)',
-          href: '/agenda',
-          icon: Calendar,
-          badge: null as string | null,
-        },
-        {
-          name: 'Patients & Dossiers',
-          href: '/patients',
-          icon: Users,
-          badge: patientCount > 0 ? patientCount.toString() : null,
-        },
-        {
-          name: 'Facturation & Devis',
-          href: '/facturation',
-          icon: CreditCard,
-          badge: null as string | null,
-        },
-        {
-          name: 'Statistiques & Revenus globaux',
-          href: '/facturation',
-          icon: TrendingUp,
-          badge: null as string | null,
-        },
-        {
-          name: 'Paramètres',
-          href: '#settings',
-          icon: Settings,
-          badge: null as string | null,
-          onClick: () => onOpenSqlModal(),
-        },
-      ]
-    : [
-        {
-          name: t('dashboard'),
-          href: '/',
-          icon: LayoutDashboard,
-          badge: null as string | null,
-        },
-        {
-          name: 'Agenda (3 salles)',
-          href: '/agenda',
-          icon: Calendar,
-          badge: null as string | null,
-        },
-        {
-          name: 'Patients & Dossiers',
-          href: '/patients',
-          icon: Users,
-          badge: patientCount > 0 ? patientCount.toString() : null,
-        },
-        {
-          name: t('caisseJour'),
-          href: '/facturation',
-          icon: CreditCard,
-          badge: null as string | null,
-        },
-      ];
+  // Navigation items conforming to user roles
+  const navigation = [
+    {
+      name: 'Tableau de bord',
+      href: '/',
+      icon: LayoutDashboard,
+      badge: null as string | null,
+    },
+    {
+      name: 'Agenda (3 salles)',
+      href: '/agenda',
+      icon: Calendar,
+      badge: null as string | null,
+    },
+    {
+      name: 'Patients & Dossiers',
+      href: '/patients',
+      icon: Users,
+      badge: patientCount > 0 ? patientCount.toString() : null,
+    },
+    {
+      name: 'Bilan Kiné',
+      href: '/bilan-kine',
+      icon: Stethoscope,
+      badge: 'Direct',
+    },
+    {
+      name: 'Facturation & Reçus',
+      href: '/facturation',
+      icon: CreditCard,
+      badge: null as string | null,
+    },
+    ...((isKine || isOwner)
+      ? [
+          {
+            name: 'Statistiques & Revenus',
+            href: '/facturation',
+            icon: TrendingUp,
+            badge: null as string | null,
+          },
+        ]
+      : []),
+    {
+      name: 'Paramètres SQL',
+      href: '#settings',
+      icon: Settings,
+      badge: null as string | null,
+      onClick: () => onOpenSqlModal(),
+    },
+  ];
 
   const handleSignOut = () => {
     onClose();
@@ -199,16 +182,33 @@ export default function Sidebar({
           </div>
         </div>
 
-        {/* Quick Add Patient Button */}
-        <div className="p-3.5 border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
+        {/* Quick Direct Actions : Bilan Kiné 1-Clic & Ajouter Patient */}
+        <div className="p-3 border-b border-slate-100 bg-slate-50/80 flex-shrink-0 space-y-2">
+          {/* Bouton bien visible "Bilan Kiné" pour accès direct en 1 clic */}
+          <Link
+            href="/bilan-kine"
+            onClick={onClose}
+            className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#0B57D0] via-[#0D47A1] to-[#0A387E] hover:brightness-110 text-white font-bold text-sm flex items-center justify-between shadow-sm shadow-blue-700/25 transition-all hover:shadow-md cursor-pointer active:scale-[0.99] border border-blue-400/40"
+            title="Accéder directement aux Bilans Kiné"
+          >
+            <div className="flex items-center gap-2">
+              <Stethoscope className="w-4 h-4 text-sky-200" />
+              <span>Bilan Kiné</span>
+            </div>
+            <span className="text-[10px] bg-white/20 text-white font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+              1-Clic
+            </span>
+          </Link>
+
+          {/* Quick Add Patient Button */}
           <button
             onClick={() => {
               onClose();
               onOpenAddPatient();
             }}
-            className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#0B57D0] to-[#0D47A1] hover:brightness-110 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm shadow-blue-600/25 transition-all hover:shadow-md cursor-pointer active:scale-[0.99]"
+            className="w-full py-2 px-3 rounded-xl bg-white hover:bg-slate-100/80 text-slate-700 font-bold text-xs flex items-center justify-center gap-2 border border-slate-200 shadow-2xs transition-all cursor-pointer active:scale-[0.99]"
           >
-            <Sparkles className="w-4 h-4 text-[#F05A28]" />
+            <Sparkles className="w-3.5 h-3.5 text-[#F05A28]" />
             <span>{t('quickAddPatient')}</span>
           </button>
         </div>
@@ -287,59 +287,46 @@ export default function Sidebar({
             );
           })}
 
-          {/* Kine-only section */}
-          {isHassnaOrKine && (
-            <>
-              <div className="pt-6 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                {t('clinicalSpace')}
+          {/* Clinical Space section - Always visible */}
+          <div className="pt-5 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            {t('clinicalSpace')}
+          </div>
+          <Link
+            href="/bilan-kine"
+            onClick={onClose}
+            className="group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 bg-blue-50/70 hover:bg-blue-100/80 border border-blue-200/80 transition-all cursor-pointer shadow-2xs"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#0B57D0] flex items-center justify-center text-white shadow-2xs">
+                <ClipboardList className="w-4 h-4" />
               </div>
-              {NAV_KINE_ONLY.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    onClick={onClose}
-                    className="group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 bg-blue-50/70 hover:bg-blue-100/80 border border-blue-200/80 transition-all cursor-pointer shadow-2xs"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-[#0B57D0] flex items-center justify-center text-white shadow-2xs">
-                        <Icon className="w-4 h-4" />
-                      </div>
-                      <span className="text-[#0D47A1] font-bold">{t('medicalRecord')}</span>
-                    </div>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F05A28]/15 text-[#F05A28] font-bold">Kiné</span>
-                  </Link>
-                );
-              })}
-            </>
-          )}
+              <span className="text-[#0D47A1] font-bold">{t('medicalRecord')}</span>
+            </div>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#0B57D0]/10 text-[#0B57D0] font-bold">Accès Total</span>
+          </Link>
 
-          {isHassnaOrKine && (
-            <>
-              <div className="pt-6 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                {t('supabaseDb')}
-              </div>
+          {/* Supabase & Paramètres SQL - Always visible */}
+          <div className="pt-4 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            {t('supabaseDb')}
+          </div>
 
-              <div className="space-y-1 text-sm text-slate-500">
-                <button
-                  onClick={() => {
-                    onClose();
-                    onOpenSqlModal();
-                  }}
-                  className="w-full group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 transition-all text-left rtl:text-right cursor-pointer"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:text-emerald-700 group-hover:bg-emerald-50">
-                      <Database className="w-4 h-4" />
-                    </div>
-                    <span>{t('supabaseDb')} & SQL</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-slate-400 rtl:rotate-180" />
-                </button>
+          <div className="space-y-1 text-sm text-slate-500">
+            <button
+              onClick={() => {
+                onClose();
+                onOpenSqlModal();
+              }}
+              className="w-full group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 transition-all text-left rtl:text-right cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:text-emerald-700 group-hover:bg-emerald-50">
+                  <Database className="w-4 h-4" />
+                </div>
+                <span>{t('supabaseDb')} & SQL</span>
               </div>
-            </>
-          )}
+              <ChevronRight className="w-4 h-4 text-slate-400 rtl:rotate-180" />
+            </button>
+          </div>
         </nav>
 
         {/* User Profile & Logout */}
@@ -347,8 +334,14 @@ export default function Sidebar({
           <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-slate-200/80 shadow-xs">
             {/* Avatar */}
             <div className="relative flex-shrink-0">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1] flex items-center justify-center text-white font-bold text-sm shadow-xs">
-                {profile ? getInitials(profile.full_name) : <UserCircle2 className="w-5 h-5" />}
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-xs ${
+                  isKine || isOwner
+                    ? 'bg-gradient-to-tr from-[#0B57D0] to-[#0D47A1]'
+                    : 'bg-gradient-to-tr from-[#F05A28] to-[#FF7A45]'
+                }`}
+              >
+                {isKine || isOwner ? 'HE' : 'AS'}
               </div>
               <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
             </div>
@@ -356,11 +349,20 @@ export default function Sidebar({
             {/* Name & Role */}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-slate-900 truncate">
-                {profile?.full_name ?? 'Utilisateur'}
+                {isKine || isOwner ? 'Hassna El-Hmaidi' : (profile?.name || 'Assistante')}
               </p>
-              <p className="text-[11px] text-[#0B57D0] font-semibold truncate flex items-center gap-1">
-                <Stethoscope className="w-3 h-3 text-[#0B57D0] flex-shrink-0" />
-                {isHassnaOrKine ? `${t('kineName')} — ${t('kineRole')}` : t('assistantRole')}
+              <p className="text-[11px] font-semibold truncate flex items-center gap-1">
+                {isKine || isOwner ? (
+                  <>
+                    <Stethoscope className="w-3 h-3 text-[#0B57D0] flex-shrink-0" />
+                    <span className="text-[#0B57D0]">Kinésithérapeute (Accès Total)</span>
+                  </>
+                ) : (
+                  <>
+                    <UserCircle2 className="w-3 h-3 text-[#F05A28] flex-shrink-0" />
+                    <span className="text-[#F05A28]">Assistante (Accueil & Encaissement)</span>
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -369,9 +371,10 @@ export default function Sidebar({
           <button
             onClick={handleSignOut}
             className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-300 text-slate-700 hover:text-rose-700 font-semibold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs active:scale-[0.99]"
+            title="Se déconnecter et revenir à la page de connexion"
           >
             <LogOut className="w-3.5 h-3.5 text-rose-500" />
-            <span>{t('logout')}</span>
+            <span>Déconnexion / Changer de profil</span>
           </button>
         </div>
       </aside>

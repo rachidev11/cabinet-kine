@@ -46,33 +46,42 @@ export const PROFILES_CONFIG: Record<UserRole, UserProfile> = {
 
 const STORAGE_KEY = 'cabinet_auth_profile';
 
+export const DEFAULT_HASSNA_PROFILE: UserProfile = {
+  id: 'hassna-kine',
+  name: 'Hassna El-Hmaidi',
+  full_name: 'Hassna El-Hmaidi',
+  role: 'kine',
+  email: 'hassna.elhmaidi@cabinet-kine.ma',
+  isOwner: true,
+  permissions: ['all'],
+};
+
 function getInitialProfile(): UserProfile | null {
   if (typeof window === 'undefined') return null;
   try {
     const rawUser = localStorage.getItem('currentUser') || localStorage.getItem(STORAGE_KEY);
-    if (rawUser) {
-      const parsed = JSON.parse(rawUser);
-      if (parsed) {
-        const isHassna = Boolean(
-          parsed.role === 'kine' ||
-          parsed.isOwner === true ||
-          (parsed.name && parsed.name.includes('Hassna'))
-        );
-        return {
-          id: parsed.id || (isHassna ? 'hassna-kine' : 'assistante-cabinet'),
-          name: parsed.name || (isHassna ? 'Hassna El-Hmaidi' : 'Assistante Médicale'),
-          full_name: parsed.full_name || parsed.name || (isHassna ? 'Hassna El-Hmaidi' : 'Assistante Médicale'),
-          role: isHassna ? 'kine' : (parsed.role || 'assistante'),
-          email: parsed.email || (isHassna ? 'hassna.elhmaidi@cabinet-kine.ma' : 'assistante@cabinet-kine.ma'),
-          isOwner: isHassna,
-          permissions: parsed.permissions || (isHassna ? ['all'] : ['reception']),
-        };
-      }
-    }
+    if (!rawUser) return null;
+
+    const parsed = JSON.parse(rawUser);
+    if (!parsed || typeof parsed !== 'object') return null;
+
+    const role: UserRole = parsed.role === 'assistante' ? 'assistante' : 'kine';
+    const isOwner: boolean = role === 'kine' || Boolean(parsed.isOwner);
+    const name: string = parsed.name || (role === 'kine' ? 'Hassna El-Hmaidi' : 'Assistante');
+
+    return {
+      id: role === 'kine' ? 'hassna-kine' : 'assistante-cabinet',
+      name,
+      full_name: name,
+      role,
+      email: role === 'kine' ? 'hassna.elhmaidi@cabinet-kine.ma' : 'assistante@cabinet-kine.ma',
+      isOwner,
+      permissions: role === 'kine' ? ['all'] : ['reception'],
+    };
   } catch (err) {
     console.warn('Erreur lecture session locale:', err);
+    return null;
   }
-  return null;
 }
 
 interface AuthContextType {
@@ -101,12 +110,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Restore session from localStorage on mount and sync state
+  // Restore session from localStorage on mount
   useEffect(() => {
     const current = getInitialProfile();
-    if (current) {
-      setProfile(current);
-    }
+    setProfile(current);
     setLoading(false);
   }, []);
 
@@ -132,13 +139,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setProfile(hassnaUser);
 
       try {
-        localStorage.setItem('currentUser', JSON.stringify({
-          id: 'hassna-kine',
-          name: 'Hassna El-Hmaidi',
-          role: 'kine',
-          isOwner: true,
-          permissions: ['all'],
-        }));
+        localStorage.setItem(
+          'currentUser',
+          JSON.stringify({
+            role: 'kine',
+            name: 'Hassna El-Hmaidi',
+            isOwner: true,
+          })
+        );
         localStorage.setItem(STORAGE_KEY, JSON.stringify(hassnaUser));
       } catch (err) {
         console.warn('localStorage save error:', err);
@@ -148,13 +156,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     if (trimmed !== '000000') {
-      return { success: false, error: 'Code PIN incorrect. Veuillez réessayer.' };
+      return { success: false, error: 'Code PIN incorrect pour l\'assistante (Code: 000000).' };
     }
 
     const assistantUser = {
       id: 'assistante-cabinet',
-      name: 'Assistante Médicale',
-      full_name: 'Assistante Médicale',
+      name: 'Assistante',
+      full_name: 'Assistante',
       role: 'assistante' as const,
       isOwner: false,
       permissions: ['reception'],
@@ -164,13 +172,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setProfile(assistantUser);
 
     try {
-      localStorage.setItem('currentUser', JSON.stringify({
-        id: 'assistante-cabinet',
-        name: 'Assistante Médicale',
-        role: 'assistante',
-        isOwner: false,
-        permissions: ['reception'],
-      }));
+      localStorage.setItem(
+        'currentUser',
+        JSON.stringify({
+          role: 'assistante',
+          name: 'Assistante',
+          isOwner: false,
+        })
+      );
       localStorage.setItem(STORAGE_KEY, JSON.stringify(assistantUser));
     } catch (err) {
       console.warn('localStorage save error:', err);
@@ -209,17 +218,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSession(null);
   }, []);
 
+  // Role permissions
   const isKine = Boolean(
-    profile?.role === 'kine' ||
-    profile?.isOwner === true ||
-    (profile?.name && profile.name.includes('Hassna'))
+    profile && (profile.role === 'kine' || profile.isOwner === true || profile.name?.includes('Hassna'))
   );
   const isOwner = Boolean(
-    profile?.isOwner === true ||
-    profile?.role === 'kine' ||
-    (profile?.name && profile.name.includes('Hassna'))
+    profile && (profile.isOwner === true || profile.role === 'kine' || profile.name?.includes('Hassna'))
   );
-  const isAssistante = profile?.role === 'assistante' && !isKine;
+  const isAssistante = Boolean(
+    profile && profile.role === 'assistante' && !isKine
+  );
 
   return (
     <AuthContext.Provider
